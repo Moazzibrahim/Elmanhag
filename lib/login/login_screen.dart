@@ -2,6 +2,7 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/login/sign_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
@@ -178,8 +179,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontSize: 18),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              // Handle the sign-up click
-                              print("Sign up clicked");
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>  SignScreen()),
+                              );
                             },
                         ),
                       ],
