@@ -2,6 +2,7 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/forget_password/forget_password.dart';
 import 'package:flutter_application_1/login/sign_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -93,7 +94,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: redcolor,
                           decoration: TextDecoration.underline),
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const ForgetPasswordScreen()));
+                    },
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -182,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>  SignScreen()),
+                                    builder: (context) => const SignScreen()),
                               );
                             },
                         ),
