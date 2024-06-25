@@ -1,5 +1,6 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: avoid_print, library_private_types_in_public_api
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -186,11 +187,26 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 20),
                 Center(
-                  child: TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'ليس لديك حساب؟ انشاء حساب',
-                      style: TextStyle(color: redcolor),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: 'ليس لديك حساب؟ ',
+                          style: TextStyle(color: greycolor, fontSize: 18),
+                        ),
+                        TextSpan(
+                          text: 'إنشاء حساب',
+                          style: const TextStyle(
+                              color: redcolor,
+                              decoration: TextDecoration.underline,
+                              fontSize: 18),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // Handle the sign-up click
+                              print("Sign up clicked");
+                            },
+                        ),
+                      ],
                     ),
                   ),
                 ),
