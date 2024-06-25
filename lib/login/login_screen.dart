@@ -2,31 +2,8 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: LoginScreen(),
-      locale: Locale('ar', 'EG'), // Set the locale to Arabic
-      supportedLocales: [Locale('ar', 'EG')],
-      localizationsDelegates: [
-        // Add localization delegates
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-    );
-  }
-}
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isObscured = true;
-
   @override
   Widget build(BuildContext context) {
     return Directionality(
