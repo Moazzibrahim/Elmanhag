@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/forget_password/forget_password.dart';
 import 'package:flutter_application_1/login/sign_screen.dart';
+import 'package:flutter_application_1/screens/home_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
@@ -103,7 +104,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 30),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (ctx)=> const HomeScreen())
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: redcolor,
                       padding: const EdgeInsets.symmetric(
