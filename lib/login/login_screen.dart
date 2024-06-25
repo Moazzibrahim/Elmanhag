@@ -1,0 +1,204 @@
+// ignore_for_file: library_private_types_in_public_api
+
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_application_1/constants/colors.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: LoginScreen(),
+      locale: Locale('ar', 'EG'), // Set the locale to Arabic
+      supportedLocales: [Locale('ar', 'EG')],
+      localizationsDelegates: [
+        // Add localization delegates
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+    );
+  }
+}
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _isObscured = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl, // Set the text direction to RTL
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const SizedBox(height: 50),
+                const SizedBox(height: 20),
+                const Center(
+                  child: Text(
+                    'المنهج',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 32,
+                      color: redcolor,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'أهلا بك',
+                  style: TextStyle(
+                    fontSize: 32,
+                    color: greycolor,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const TextField(
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(
+                    labelText: 'الاسم',
+                    hintText: 'اسم المستخدم',
+                    labelStyle: TextStyle(color: greycolor),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: redcolor),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                TextField(
+                  textAlign: TextAlign.right,
+                  obscureText: _isObscured,
+                  decoration: InputDecoration(
+                    labelText: 'الرقم السري',
+                    hintText: 'رقمك السري',
+                    labelStyle: const TextStyle(color: greycolor),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: redcolor),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isObscured ? Icons.visibility_off : Icons.visibility,
+                        color: redcolor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isObscured = !_isObscured;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    child: const Text(
+                      'هل نسيت كلمه المرور؟',
+                      style: TextStyle(
+                          color: redcolor,
+                          decoration: TextDecoration.underline),
+                    ),
+                    onTap: () {},
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 100, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'تسجيل الدخول',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Divider(
+                          color: greycolor,
+                          height: 50,
+                        ),
+                      ),
+                    ),
+                    Text("أو"),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Divider(
+                          color: greycolor,
+                          height: 50,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.facebook,
+                          color: redcolor),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.instagram,
+                          color: redcolor),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.xTwitter,
+                          color: redcolor),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'ليس لديك حساب؟ انشاء حساب',
+                      style: TextStyle(color: redcolor),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
