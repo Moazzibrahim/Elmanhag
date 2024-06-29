@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, library_private_types_in_public_api
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
@@ -57,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                     child: Text(
                       _errorMessage!,
-                      style: const TextStyle(color: Colors.red, fontSize: 16),
+                      style: const TextStyle(color: redcolor, fontSize: 16),
                     ),
                   ),
                 const SizedBox(height: 10),
@@ -123,15 +125,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       if (email.isEmpty || password.isEmpty) {
                         setState(() {
-                          _errorMessage = 'يجب ملء البريد الإلكتروني وكلمة المرور';
+                          _errorMessage =
+                              'يجب ملء البريد الإلكتروني وكلمة المرور';
                         });
                       } else {
-                        String response = await Provider.of<LoginModel>(context, listen: false)
+                        String response = await Provider.of<LoginModel>(context,
+                                listen: false)
                             .loginUser(context, email, password);
-                        
+
                         if (response == 'Authentication failed') {
                           setState(() {
-                            _errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                            _errorMessage =
+                                'البريد الإلكتروني أو كلمة المرور غير صحيحة';
                           });
                         } else {
                           setState(() {
