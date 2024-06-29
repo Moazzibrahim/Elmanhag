@@ -7,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:provider/provider.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -19,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isObscured = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String? _errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +53,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
+                if (_errorMessage != null)
+                  Center(
+                    child: Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                  ),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _emailController,
                   textAlign: TextAlign.right,
@@ -112,10 +120,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () async {
                       String email = _emailController.text;
                       String password = _passwordController.text;
-                      String response = await Provider.of<LoginModel>(context, listen: false)
-                          .loginUser(context, email, password);
-                      // Optionally handle the response here if needed
-                      print(response);
+
+                      if (email.isEmpty || password.isEmpty) {
+                        setState(() {
+                          _errorMessage = 'يجب ملء البريد الإلكتروني وكلمة المرور';
+                        });
+                      } else {
+                        String response = await Provider.of<LoginModel>(context, listen: false)
+                            .loginUser(context, email, password);
+                        
+                        if (response == 'Authentication failed') {
+                          setState(() {
+                            _errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                          });
+                        } else {
+                          setState(() {
+                            _errorMessage = null;
+                          });
+                        }
+
+                        print(response);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: redcolor,
