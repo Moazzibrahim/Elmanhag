@@ -12,7 +12,6 @@ class SecondSignScreen extends StatefulWidget {
   final String parentName;
   final String parentPhone;
 
-  // ignore: use_super_parameters
   const SecondSignScreen({
     Key? key,
     required this.name,
@@ -23,7 +22,6 @@ class SecondSignScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _SecondSignScreenState createState() => _SecondSignScreenState();
 }
 
@@ -100,15 +98,15 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              const TextField(
+              TextField(
                 decoration: InputDecoration(
-                  labelText: 'رقم تليفون الطالب ',
-                  prefixIcon: Icon(Icons.phone),
-                  border: UnderlineInputBorder(),
-                  focusedBorder: UnderlineInputBorder(
+                  labelText: 'رقم تليفون الطالب',
+                  prefixIcon: const Icon(Icons.phone, color: redcolor),
+                  border: const UnderlineInputBorder(),
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: redcolor),
                   ),
-                  enabledBorder: UnderlineInputBorder(
+                  enabledBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: redcolor),
                   ),
                 ),
@@ -118,13 +116,13 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 value: selectedCountryId,
                 items: countries.map((Country country) {
                   return DropdownMenuItem<String>(
-                    value: country.id.toString(), // Use ID here
+                    value: country.id.toString(),
                     child: Text(country.countryName),
                   );
                 }).toList(),
                 decoration: const InputDecoration(
                   labelText: 'البلد',
-                  prefixIcon: Icon(Icons.public),
+                  prefixIcon: Icon(Icons.public, color: redcolor),
                   border: UnderlineInputBorder(),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: redcolor),
@@ -148,13 +146,13 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 value: selectedCityId,
                 items: cities.map((City city) {
                   return DropdownMenuItem<String>(
-                    value: city.id.toString(), // Use ID here
+                    value: city.id.toString(),
                     child: Text(city.cityName),
                   );
                 }).toList(),
                 decoration: const InputDecoration(
-                  labelText: 'المدينة ',
-                  prefixIcon: Icon(Icons.location_city),
+                  labelText: 'المدينة',
+                  prefixIcon: Icon(Icons.location_city, color: redcolor),
                   border: UnderlineInputBorder(),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: redcolor),
@@ -177,13 +175,13 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 value: selectedCategoryId,
                 items: categories.map((Category category) {
                   return DropdownMenuItem<String>(
-                    value: category.id.toString(), // Use ID here
+                    value: category.id.toString(),
                     child: Text(category.category),
                   );
                 }).toList(),
                 decoration: const InputDecoration(
                   labelText: 'السنة الدراسية',
-                  prefixIcon: Icon(Icons.school),
+                  prefixIcon: Icon(Icons.school, color: redcolor),
                   border: UnderlineInputBorder(),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: redcolor),
@@ -213,7 +211,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 }).toList(),
                 decoration: const InputDecoration(
                   labelText: 'الفئة',
-                  prefixIcon: Icon(Icons.language),
+                  prefixIcon: Icon(Icons.language, color: redcolor),
                   border: UnderlineInputBorder(),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: redcolor),
@@ -248,18 +246,6 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-              ),
-              const SizedBox(height: 30),
-              const Row(
-                children: [
-                  Expanded(child: Divider(color: Colors.grey)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Text('أو',
-                        style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  ),
-                  Expanded(child: Divider(color: Colors.grey)),
-                ],
               ),
               const SizedBox(height: 30),
               Row(
