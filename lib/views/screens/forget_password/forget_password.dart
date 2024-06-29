@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/views/screens/OTP/otp_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
@@ -67,6 +68,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           "المنهج",
           style: TextStyle(color: redcolor),
         ),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios)),
       ),
       body: Padding(
         padding: EdgeInsets.all(19.w),
@@ -107,25 +113,30 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   ),
                 ),
                 SizedBox(height: 25.sp),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: redcolor,
-                    padding: EdgeInsets.symmetric(
-                      vertical: 12.sp,
-                      horizontal: 130.sp,
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => OtpScreen()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12.sp,
+                        horizontal: 130.sp,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.sp),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.sp),
-                    ),
-                  ),
-                  child: Text(
-                    'اكمل',
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    child: Text(
+                      'اكمل',
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
