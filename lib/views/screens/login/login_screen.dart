@@ -2,9 +2,9 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/forget_password/forget_password.dart';
-import 'package:flutter_application_1/login/sign_screen.dart';
-import 'package:flutter_application_1/screens/home_screen.dart';
+import 'package:flutter_application_1/views/screens/forget_password/forget_password.dart';
+import 'package:flutter_application_1/views/screens/login/sign_screen.dart';
+import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 

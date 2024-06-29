@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/screens/curriculums_screen.dart';
+import 'package:flutter_application_1/views/screens/curriculums_screen.dart';
 
 class HomeGrid extends StatelessWidget {
   const HomeGrid({super.key});

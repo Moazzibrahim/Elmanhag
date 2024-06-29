@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/widgets/home_grid.dart';
+import 'package:flutter_application_1/views/widgets/curriculum_grid.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class CurriculumsScreen extends StatelessWidget {
+  const CurriculumsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
                 CircleAvatar(),
               ],
             ),
-            Expanded(child: HomeGrid()),
+            Expanded(child: CurriculumGrid()),
           ],
         ),
       ),
