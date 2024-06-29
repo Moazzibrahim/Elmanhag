@@ -1,28 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/views/screens/login/second_sign_screen.dart';
+import 'package:flutter_application_1/controller/Auth/country_provider.dart';
+import 'package:flutter_application_1/controller/Auth/sign_up.dart';
+import 'package:flutter_application_1/model/login/sign_up_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class SignScreen extends StatefulWidget {
-  const SignScreen({super.key});
+class SecondSignScreen extends StatefulWidget {
+  final String name;
+  final String email;
+  final String password;
+  final String parentName;
+  final String parentPhone;
+
+  // ignore: use_super_parameters
+  const SecondSignScreen({
+    Key? key,
+    required this.name,
+    required this.email,
+    required this.password,
+    required this.parentName,
+    required this.parentPhone,
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _SignScreenState createState() => _SignScreenState();
+  _SecondSignScreenState createState() => _SecondSignScreenState();
 }
 
-class _SignScreenState extends State<SignScreen> {
-  bool _passwordVisible = false;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _parentNameController = TextEditingController();
-  final TextEditingController _parentPhoneController = TextEditingController();
+class _SecondSignScreenState extends State<SecondSignScreen> {
+  String? selectedCountryId;
+  String? selectedCityId;
+  String? selectedCategoryId;
+  String? selectedType;
+
+  String? selectedCountryName;
+  String? selectedCityName;
+  String? selectedCategoryName;
+
+  List<Country> countries = [];
+  List<City> cities = [];
+  List<Category> categories = [];
+  List<String> types = ['عربي', 'لغات'];
 
   @override
   void initState() {
     super.initState();
-    _passwordVisible = false;
+    fetchData().then((data) {
+      setState(() {
+        countries = data.countries;
+        cities = data.cities;
+        categories = data.categories;
+      });
+    });
+  }
+
+  void signUp() {
+    ApiService.signUp(
+      name: widget.name,
+      email: widget.email,
+      password: widget.password,
+      parentName: widget.parentName,
+      parentPhone: widget.parentPhone,
+      selectedCountryId: selectedCountryId,
+      selectedCityId: selectedCityId,
+      selectedCategoryId: selectedCategoryId,
+      selectedType: selectedType,
+      context: context,
+    );
   }
 
   @override
@@ -56,83 +100,9 @@ class _SignScreenState extends State<SignScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'الاسم',
-                  prefixIcon: Icon(Icons.person),
-                  border: UnderlineInputBorder(),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'الايميل',
-                  prefixIcon: Icon(Icons.email),
-                  border: UnderlineInputBorder(),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: _passwordController,
-                obscureText: !_passwordVisible,
+              const TextField(
                 decoration: InputDecoration(
-                  labelText: 'الرقم السري',
-                  prefixIcon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _passwordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
-                    },
-                  ),
-                  border: const UnderlineInputBorder(),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: _parentNameController,
-                decoration: const InputDecoration(
-                  labelText: 'اسم ولي الامر',
-                  prefixIcon: Icon(Icons.person_outline),
-                  border: UnderlineInputBorder(),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: _parentPhoneController,
-                decoration: const InputDecoration(
-                  labelText: 'رقم ولي الامر',
+                  labelText: 'رقم تليفون الطالب ',
                   prefixIcon: Icon(Icons.phone),
                   border: UnderlineInputBorder(),
                   focusedBorder: UnderlineInputBorder(
@@ -143,22 +113,126 @@ class _SignScreenState extends State<SignScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 15),
+              DropdownButtonFormField<String>(
+                value: selectedCountryId,
+                items: countries.map((Country country) {
+                  return DropdownMenuItem<String>(
+                    value: country.id.toString(), // Use ID here
+                    child: Text(country.countryName),
+                  );
+                }).toList(),
+                decoration: const InputDecoration(
+                  labelText: 'البلد',
+                  prefixIcon: Icon(Icons.public),
+                  border: UnderlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: redcolor),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: redcolor),
+                  ),
+                ),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedCountryId = newValue;
+                    selectedCountryName = countries
+                        .firstWhere(
+                            (country) => country.id == int.parse(newValue!))
+                        .countryName;
+                  });
+                },
+              ),
+              const SizedBox(height: 15),
+              DropdownButtonFormField<String>(
+                value: selectedCityId,
+                items: cities.map((City city) {
+                  return DropdownMenuItem<String>(
+                    value: city.id.toString(), // Use ID here
+                    child: Text(city.cityName),
+                  );
+                }).toList(),
+                decoration: const InputDecoration(
+                  labelText: 'المدينة ',
+                  prefixIcon: Icon(Icons.location_city),
+                  border: UnderlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: redcolor),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: redcolor),
+                  ),
+                ),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedCityId = newValue;
+                    selectedCityName = cities
+                        .firstWhere((city) => city.id == int.parse(newValue!))
+                        .cityName;
+                  });
+                },
+              ),
+              const SizedBox(height: 15),
+              DropdownButtonFormField<String>(
+                value: selectedCategoryId,
+                items: categories.map((Category category) {
+                  return DropdownMenuItem<String>(
+                    value: category.id.toString(), // Use ID here
+                    child: Text(category.category),
+                  );
+                }).toList(),
+                decoration: const InputDecoration(
+                  labelText: 'السنة الدراسية',
+                  prefixIcon: Icon(Icons.school),
+                  border: UnderlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: redcolor),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: redcolor),
+                  ),
+                ),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedCategoryId = newValue;
+                    selectedCategoryName = categories
+                        .firstWhere(
+                            (category) => category.id == int.parse(newValue!))
+                        .category;
+                  });
+                },
+              ),
+              const SizedBox(height: 15),
+              DropdownButtonFormField<String>(
+                value: selectedType,
+                items: types.map((String type) {
+                  return DropdownMenuItem<String>(
+                    value: type,
+                    child: Text(type),
+                  );
+                }).toList(),
+                decoration: const InputDecoration(
+                  labelText: 'الفئة',
+                  prefixIcon: Icon(Icons.language),
+                  border: UnderlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: redcolor),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: redcolor),
+                  ),
+                ),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedType = newValue;
+                  });
+                },
+              ),
               const SizedBox(height: 30),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SecondSignScreen(
-                          name: _nameController.text,
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                          parentName: _parentNameController.text,
-                          parentPhone: _parentPhoneController.text,
-                        ),
-                      ),
-                    );
+                    signUp();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: redcolor,
@@ -170,7 +244,7 @@ class _SignScreenState extends State<SignScreen> {
                     ),
                   ),
                   child: const Text(
-                    'اكمل',
+                    'ارسال',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
