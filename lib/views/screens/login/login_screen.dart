@@ -1,12 +1,12 @@
-// ignore_for_file: avoid_print, library_private_types_in_public_api
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/views/screens/forget_password/forget_password.dart';
 import 'package:flutter_application_1/views/screens/login/sign_screen.dart';
-import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:provider/provider.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +17,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isObscured = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -50,9 +53,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const TextField(
+                TextField(
+                  controller: _emailController,
                   textAlign: TextAlign.right,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'الاسم',
                     hintText: 'اسم المستخدم',
                     labelStyle: TextStyle(color: greycolor),
@@ -63,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 15),
                 TextField(
+                  controller: _passwordController,
                   textAlign: TextAlign.right,
                   obscureText: _isObscured,
                   decoration: InputDecoration(
@@ -104,10 +109,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 30),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx)=> const HomeScreen())
-                      );
+                    onPressed: () async {
+                      String email = _emailController.text;
+                      String password = _passwordController.text;
+                      String response = await Provider.of<LoginModel>(context, listen: false)
+                          .loginUser(context, email, password);
+                      // Optionally handle the response here if needed
+                      print(response);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: redcolor,
