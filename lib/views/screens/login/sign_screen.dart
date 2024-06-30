@@ -3,27 +3,16 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/login/second_sign_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class SignScreen extends StatefulWidget {
-  const SignScreen({super.key});
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _SignScreenState createState() => _SignScreenState();
-}
-
-class _SignScreenState extends State<SignScreen> {
-  bool _passwordVisible = false;
+class SignScreen extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _parentNameController = TextEditingController();
   final TextEditingController _parentPhoneController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _passwordVisible = false;
-  }
+  SignScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,109 +45,76 @@ class _SignScreenState extends State<SignScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              TextField(
+              buildTextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'الاسم',
-                  prefixIcon: Icon(Icons.person),
-                  border: UnderlineInputBorder(),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                ),
+                labelText: 'الاسم',
+                prefixIcon: const Icon(Icons.person, color: redcolor),
               ),
               const SizedBox(height: 15),
-              TextField(
+              buildTextField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'الايميل',
-                  prefixIcon: Icon(Icons.email),
-                  border: UnderlineInputBorder(),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                ),
+                labelText: 'الايميل',
+                prefixIcon: const Icon(Icons.email, color: redcolor),
               ),
               const SizedBox(height: 15),
-              TextField(
-                controller: _passwordController,
-                obscureText: !_passwordVisible,
-                decoration: InputDecoration(
-                  labelText: 'الرقم السري',
-                  prefixIcon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _passwordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
-                    },
-                  ),
-                  border: const UnderlineInputBorder(),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                ),
-              ),
+              buildPasswordField(_passwordController, 'الرقم السري'),
               const SizedBox(height: 15),
-              TextField(
+              buildPasswordField(
+                  _confirmPasswordController, 'تأكيد الرقم السري'),
+              const SizedBox(height: 15),
+              buildTextField(
                 controller: _parentNameController,
-                decoration: const InputDecoration(
-                  labelText: 'اسم ولي الامر',
-                  prefixIcon: Icon(Icons.person_outline),
-                  border: UnderlineInputBorder(),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                ),
+                labelText: 'اسم ولي الامر',
+                prefixIcon: const Icon(Icons.person_outline, color: redcolor),
               ),
               const SizedBox(height: 15),
-              TextField(
+              buildTextField(
                 controller: _parentPhoneController,
-                decoration: const InputDecoration(
-                  labelText: 'رقم ولي الامر',
-                  prefixIcon: Icon(Icons.phone),
-                  border: UnderlineInputBorder(),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: redcolor),
-                  ),
-                ),
+                labelText: 'رقم ولي الامر',
+                prefixIcon: const Icon(Icons.phone, color: redcolor),
               ),
               const SizedBox(height: 30),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SecondSignScreen(
-                          name: _nameController.text,
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                          parentName: _parentNameController.text,
-                          parentPhone: _parentPhoneController.text,
+                    if (_nameController.text.isEmpty ||
+                        _emailController.text.isEmpty ||
+                        _passwordController.text.isEmpty ||
+                        _confirmPasswordController.text.isEmpty ||
+                        _parentNameController.text.isEmpty ||
+                        _parentPhoneController.text.isEmpty) {
+                      // Show an error message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('يجب ملء جميع الحقول'),
+                          backgroundColor: Colors.red,
                         ),
-                      ),
-                    );
+                      );
+                    } else if (_passwordController.text !=
+                        _confirmPasswordController.text) {
+                      // Show an error message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('كلمتا السر غير متطابقتين'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    } else {
+                      // Navigate to the next screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SecondSignScreen(
+                            confpassword: _confirmPasswordController.text,
+                            name: _nameController.text,
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                            parentName: _parentNameController.text,
+                            parentPhone: _parentPhoneController.text,
+                          ),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: redcolor,
@@ -176,41 +132,16 @@ class _SignScreenState extends State<SignScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              const Row(
-                children: [
-                  Expanded(child: Divider(color: Colors.grey)),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Text('أو',
-                        style: TextStyle(fontSize: 18, color: Colors.grey)),
-                  ),
-                  Expanded(child: Divider(color: Colors.grey)),
-                ],
-              ),
+              const Divider(color: Colors.grey),
               const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.facebook,
-                        color: redcolor),
-                    iconSize: 30,
-                    onPressed: () {},
-                  ),
+                  buildSocialIconButton(FontAwesomeIcons.facebook),
                   const SizedBox(width: 20),
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.instagram,
-                        color: redcolor),
-                    iconSize: 30,
-                    onPressed: () {},
-                  ),
+                  buildSocialIconButton(FontAwesomeIcons.instagram),
                   const SizedBox(width: 20),
-                  IconButton(
-                    icon:
-                        const FaIcon(FontAwesomeIcons.twitter, color: redcolor),
-                    iconSize: 30,
-                    onPressed: () {},
-                  ),
+                  buildSocialIconButton(FontAwesomeIcons.twitter),
                 ],
               ),
               const SizedBox(height: 30),
@@ -229,6 +160,79 @@ class _SignScreenState extends State<SignScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    Widget? prefixIcon,
+  }) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        prefixIcon: prefixIcon,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: redcolor),
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: redcolor),
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+      ),
+    );
+  }
+
+  Widget buildPasswordField(
+      TextEditingController controller, String labelText) {
+    bool _passwordVisible = false;
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return TextField(
+          controller: controller,
+          obscureText: !_passwordVisible,
+          decoration: InputDecoration(
+            labelText: labelText,
+            prefixIcon: const Icon(Icons.lock, color: redcolor),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                color: redcolor,
+              ),
+              onPressed: () {
+                setState(() {
+                  _passwordVisible = !_passwordVisible;
+                });
+              },
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: redcolor),
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: redcolor),
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildSocialIconButton(IconData icon) {
+    return IconButton(
+      icon: FaIcon(icon, color: redcolor),
+      iconSize: 30,
+      onPressed: () {},
     );
   }
 }

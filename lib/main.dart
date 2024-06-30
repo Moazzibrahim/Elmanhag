@@ -28,6 +28,12 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
+          theme: ThemeData(
+            scaffoldBackgroundColor: Colors.white,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white
+            )
+          ),
           debugShowCheckedModeBanner: false,
           home: child,
         );
