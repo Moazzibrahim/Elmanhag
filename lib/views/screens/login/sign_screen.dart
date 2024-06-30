@@ -131,9 +131,9 @@ class SignScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               const Divider(color: Colors.grey),
-              const SizedBox(height: 30),
+              const SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -144,7 +144,7 @@ class SignScreen extends StatelessWidget {
                   buildSocialIconButton(FontAwesomeIcons.twitter),
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 15),
               Center(
                 child: TextButton(
                   onPressed: () {
