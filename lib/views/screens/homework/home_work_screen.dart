@@ -21,8 +21,8 @@ class _HomeWorkScreenState extends State<HomeWorkScreen> {
         if (taskStars[index] == 3 && index + 1 < taskStars.length) {
           unlockedTasks = index + 2;
         }
-        // Check if the previous task card has 2 stars to unlock the next one
-        if (index > 0 && taskStars[index - 1] == 2) {
+        // Check if the previous task card has at least 2 stars to unlock the next one
+        if (index > 0 && taskStars[index - 1] >= 2) {
           unlockedTasks = index + 1;
         }
       }
@@ -47,8 +47,7 @@ class _HomeWorkScreenState extends State<HomeWorkScreen> {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
-          itemCount: taskStars
-              .length, // Use taskStars.length instead of a fixed value like 30
+          itemCount: taskStars.length,
           itemBuilder: (context, index) {
             if (index < unlockedTasks) {
               return TaskCard(
@@ -57,8 +56,8 @@ class _HomeWorkScreenState extends State<HomeWorkScreen> {
                 onTap: () => _incrementStars(index),
               );
             } else {
-              // Check if the previous task card has exactly 2 stars to replace LockedCard
-              if (index > 0 && taskStars[index - 1] == 2) {
+              // Check if the previous task card has at least 2 stars to replace LockedCard
+              if (index > 0 && taskStars[index - 1] >= 2) {
                 return TaskCard(
                   index: index + 1,
                   stars: taskStars[index],
