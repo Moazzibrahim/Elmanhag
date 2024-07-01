@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/login/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThirdOnboarding extends StatelessWidget {
   const ThirdOnboarding({super.key});
@@ -90,7 +93,9 @@ class ThirdOnboarding extends StatelessWidget {
 
   Widget _buildNextButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: ()async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isNewUser', false);
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const LoginScreen(),
         ));

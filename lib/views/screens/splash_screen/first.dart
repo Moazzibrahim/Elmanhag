@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/views/screens/onboarding_screens/first_onboarding.dart';
+import 'package:flutter_application_1/views/screens/onboarding_screens/onboarding_check.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,15 +15,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToLogin();
+    _navigateTosplash();
   }
 
-  _navigateToLogin() async {
+  _navigateTosplash() async {
     await Future.delayed(
         const Duration(seconds: 2), () {}); // Duration of the splash screen
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+      MaterialPageRoute(builder: (context) => const OnBoardingCheck()),
     );
   }
 
