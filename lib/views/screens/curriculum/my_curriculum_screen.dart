@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/subjects_services.dart';
+import 'package:provider/provider.dart';
 
 class MyCurriculumScreen extends StatelessWidget {
   const MyCurriculumScreen({super.key});
@@ -39,7 +41,19 @@ class MyCurriculumScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const Center(child: Text('موادي هنااااا'),)
+            Consumer<SubjectProvider>(builder: (context, subjectProvider, _) {
+              if(subjectProvider.allSubjects.isEmpty){
+                return const Center(child: CircularProgressIndicator(color: redcolor,),);
+              }else{
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for(var e in subjectProvider.allSubjects)
+                      Text(e.name),
+                  ],
+                );
+              }
+            },)
           ],
         ),
       ),

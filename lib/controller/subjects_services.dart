@@ -2,25 +2,44 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/models/subjects_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-class SubjectProvider with ChangeNotifier{
+class SubjectProvider with ChangeNotifier {
   List<Subject> allSubjects = [];
-  Future<void> getSubjects() async{
-    try{
-      final response =await http.get(Uri.parse('https://my.elmanhag.shop/api/subjects'));
-      if(response.statusCode == 200){
-        Map<String,dynamic> responseData = jsonDecode(response.body);
-        log('$responseData');
+  Future<void> getSubjects(BuildContext context) async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+    try {
+      final response = await http
+          .get(Uri.parse('https://my.elmanhag.shop/api/subjects'),
+          headers: {});
+      if (response.statusCode == 200) {
+        log('responseBooody: ${response.body}');
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        log('response: $responseData');
         Subjects subjects = Subjects.fromJson(responseData);
-        List<Subject> subjectList = subjects.subjectsList.map((e) => Subject.fromJson(e),).toList();
+        List<Subject> subjectList = subjects.subjectsList
+            .map(
+              (e) => Subject.fromJson(e),
+            )
+            .toList();
+        SubjectsBundleList subjectsBundleList =
+            SubjectsBundleList.fromJson(responseData);
+        List<Subject> sbl = subjectsBundleList.subjectsList
+            .map(
+              (e) => Subject.fromJson(e),
+            )
+            .toList();
+        allSubjects = [...subjectList, ...sbl];
         allSubjects = subjectList;
         notifyListeners();
-      }else{
+      } else {
         log('error statuscode: ${response.statusCode}');
       }
-    }catch(e){
+    } catch (e) {
       log('error in get subject: $e');
     }
   }

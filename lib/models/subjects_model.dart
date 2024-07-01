@@ -20,3 +20,12 @@ class Subjects{
   factory Subjects.fromJson(Map<String, dynamic> json) =>
   Subjects(subjectsList: json['subjects']);
 }
+
+class SubjectsBundleList{
+  final List<dynamic> subjectsList;
+
+  SubjectsBundleList({required this.subjectsList});
+
+  factory SubjectsBundleList.fromJson(Map<String, dynamic> json) =>
+  SubjectsBundleList(subjectsList: json['b_subjects']);
+}
