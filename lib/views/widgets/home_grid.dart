@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/views/screens/curriculum/select_courses.dart';
+import 'package:flutter_application_1/controller/subjects_services.dart';
+import 'package:flutter_application_1/views/screens/curriculum/my_curriculum_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomeGrid extends StatelessWidget {
   const HomeGrid({super.key});
@@ -18,10 +20,11 @@ class HomeGrid extends StatelessWidget {
         itemCount: texts.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: (){
+          onTap: () {
             if(texts[index] == 'مناهج'){
+              Provider.of<SubjectProvider>(context,listen: false).getSubjects(context);
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx)=> const SelectCourse())
+                MaterialPageRoute(builder: (ctx)=> const MyCurriculumScreen())
               );
             }
           },
