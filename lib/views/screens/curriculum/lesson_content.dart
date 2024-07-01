@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter_x5/webview_flutter.dart'; // Add this import for SystemChrome
@@ -182,7 +183,14 @@ class _IdeasContentState extends State<IdeasContent> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text('الوحده الاولى الدرس الثالث')
+                          Text('الوحده الاولى الدرس الثالث'),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "هذا فديو رائع لهذه الوحده يوجد بها",
+                            style: TextStyle(color: greycolor),
+                          ),
                         ],
                       ),
                     )
