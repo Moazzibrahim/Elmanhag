@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/onboarding_screens/second_onboarding.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -90,7 +91,9 @@ class OnboardingScreen extends StatelessWidget {
 
   Widget _buildNextButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isNewUser', false);
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const SecondOnboardingScreen(),
         ));
