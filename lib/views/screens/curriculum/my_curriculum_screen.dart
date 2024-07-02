@@ -1,6 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/sections_services.dart';
 import 'package:flutter_application_1/controller/subjects_services.dart';
+import 'package:flutter_application_1/views/screens/curriculum/sections_screen.dart';
 import 'package:provider/provider.dart';
 
 class MyCurriculumScreen extends StatelessWidget {
@@ -8,7 +11,7 @@ class MyCurriculumScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -41,19 +44,53 @@ class MyCurriculumScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Consumer<SubjectProvider>(builder: (context, subjectProvider, _) {
-              if(subjectProvider.allSubjects.isEmpty){
-                return const Center(child: CircularProgressIndicator(color: redcolor,),);
-              }else{
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for(var e in subjectProvider.allSubjects)
-                      Text(e.name),
-                  ],
-                );
-              }
-            },)
+            Consumer<SubjectProvider>(
+              builder: (context, subjectProvider, _) {
+                final subjects = subjectProvider.allSubjects;
+                if (subjectProvider.allSubjects.isEmpty) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: redcolor,
+                    ),
+                  );
+                } else {
+                  return Expanded(
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 20,
+                              ),
+                              itemCount:subjects.length ,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Provider.of<SectionsProvider>(context,listen: false).getSections(context, subjects[index].id);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (ctx)=> SectionsScreen(id: subjects[index].id))
+                            );
+                          },
+                          child: Card(
+                                  color: Colors.white,
+                                  elevation: 3,
+                                  shadowColor: redcolor,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(subjects[index].name,style:const TextStyle(color: redcolor,fontSize: 20) ,),
+                                      const SizedBox(height: 7,),
+                                      // Image.asset(images[index]),
+                                    ],
+                                  ),
+                                ),
+                        );
+                      },
+                    ),
+                  );
+                }
+              },
+            )
           ],
         ),
       ),

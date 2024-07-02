@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/country_provider.dart';
 import 'package:flutter_application_1/controller/Auth/sign_up_provider.dart';
-import 'package:flutter_application_1/model/login/sign_up_model.dart';
+import 'package:flutter_application_1/models/sign_up_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SecondSignScreen extends StatefulWidget {

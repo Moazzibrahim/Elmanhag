@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter_application_1/model/login/sign_up_model.dart';
+import 'package:flutter_application_1/models/sign_up_model.dart';
 import 'package:http/http.dart' as http;
 
 Future<DataModel> fetchData() async {

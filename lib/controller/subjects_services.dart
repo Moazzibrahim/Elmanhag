@@ -14,18 +14,17 @@ class SubjectProvider with ChangeNotifier {
     final token = tokenProvider.token;
     try {
       final response = await http
-          .get(Uri.parse('https://my.elmanhag.shop/api/subjects'),
-          headers: {});
+          .get(Uri.parse('https://my.elmanhag.shop/api/subjects'), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
       if (response.statusCode == 200) {
-        log('responseBooody: ${response.body}');
+        
         Map<String, dynamic> responseData = jsonDecode(response.body);
-        log('response: $responseData');
+
         Subjects subjects = Subjects.fromJson(responseData);
-        List<Subject> subjectList = subjects.subjectsList
-            .map(
-              (e) => Subject.fromJson(e),
-            )
-            .toList();
+        List<Subject> subjectList = subjects.subjectsList.map((e) => Subject.fromJson(e),).toList();
         SubjectsBundleList subjectsBundleList =
             SubjectsBundleList.fromJson(responseData);
         List<Subject> sbl = subjectsBundleList.subjectsList
@@ -34,7 +33,6 @@ class SubjectProvider with ChangeNotifier {
             )
             .toList();
         allSubjects = [...subjectList, ...sbl];
-        allSubjects = subjectList;
         notifyListeners();
       } else {
         log('error statuscode: ${response.statusCode}');
