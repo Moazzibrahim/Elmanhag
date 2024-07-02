@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/views/screens/curriculum/select_courses.dart';
+import 'package:flutter_application_1/views/screens/curriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/home_work_screen.dart';
 
 class HomeGrid extends StatelessWidget {
@@ -36,7 +36,7 @@ class HomeGrid extends StatelessWidget {
           onTap: () {
             if (texts[index] == 'مناهج') {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const SelectCourse()));
+                  MaterialPageRoute(builder: (ctx) => const MyCurriculumScreen()));
             }
             if (texts[index] == 'واجبات') {
               Navigator.of(context).push(

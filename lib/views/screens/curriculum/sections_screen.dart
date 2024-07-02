@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/sections_services.dart';
+import 'package:flutter_application_1/views/screens/curriculum/video_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -57,7 +58,9 @@ class SectionsScreen extends StatelessWidget {
                 for(var e in lessons)
                   GestureDetector(
                     onTap: () {
-                      
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (ctx)=> const LessonsVideos())
+                      );
                     },
                     child: Row(
                       children: [

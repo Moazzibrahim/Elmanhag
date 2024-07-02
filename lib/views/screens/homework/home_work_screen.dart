@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
 class HomeWorkScreen extends StatefulWidget {
-  const HomeWorkScreen({Key? key}) : super(key: key);
+  const HomeWorkScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeWorkScreenState createState() => _HomeWorkScreenState();
 }
 
 class _HomeWorkScreenState extends State<HomeWorkScreen> {
   // Adjust taskStars to generate 30 items
   List<int> taskStars = List.generate(30, (index) => index < 4 ? 3 - index : 0);
-  int unlockedTasks =
-      4; // Initialize based on how many tasks you want to initially unlock
+  int unlockedTasks = 4; // Initialize based on how many tasks you want to initially unlock
 
   void _incrementStars(int index) {
     setState(() {
@@ -32,12 +32,6 @@ class _HomeWorkScreenState extends State<HomeWorkScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('الواجبات', style: TextStyle(color: redcolor)),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: redcolor),
-        elevation: 0,
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.builder(
@@ -56,7 +50,6 @@ class _HomeWorkScreenState extends State<HomeWorkScreen> {
                 onTap: () => _incrementStars(index),
               );
             } else {
-              // Check if the previous task card has at least 2 stars to replace LockedCard
               if (index > 0 && taskStars[index - 1] >= 2) {
                 return TaskCard(
                   index: index + 1,
@@ -83,8 +76,8 @@ class TaskCard extends StatelessWidget {
     required this.index,
     required this.stars,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +120,7 @@ class TaskCard extends StatelessWidget {
 }
 
 class LockedCard extends StatelessWidget {
-  const LockedCard({Key? key}) : super(key: key);
+  const LockedCard({super.key});
 
   @override
   Widget build(BuildContext context) {

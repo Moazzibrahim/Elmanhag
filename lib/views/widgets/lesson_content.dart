@@ -18,25 +18,25 @@ class _IdeasContentState extends State<IdeasContent> {
   late VideoPlayerController controller;
   int rating = 0;
   int viewedVideoIndex = 0;
-  @override
-  void initState() {
-    super.initState();
-    WebView.platform;
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WebView.platform;
+  //   SystemChrome.setPreferredOrientations([
+  //     DeviceOrientation.landscapeRight,
+  //     DeviceOrientation.landscapeLeft,
+  //   ]);
+  // }
 
-  @override
-  void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    controller.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   SystemChrome.setPreferredOrientations([
+  //     DeviceOrientation.portraitUp,
+  //     DeviceOrientation.portraitDown,
+  //   ]);
+  //   controller.dispose();
+  //   super.dispose();
+  // }
 
   void updateRating(int newRating) {
     setState(() {
