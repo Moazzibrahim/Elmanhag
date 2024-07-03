@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/views/screens/Exams/match.dart';
 
 class ExamScreenWriteOrWrong extends StatefulWidget {
   const ExamScreenWriteOrWrong({super.key});
@@ -133,7 +134,8 @@ class _ExamScreenState extends State<ExamScreenWriteOrWrong> {
                     backgroundColor: redcolor,
                   ),
                   onPressed: () {
-                    // Handle next button press
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const ExamScreenMatch()));
                   },
                   child: const Text(
                     'التالي',
