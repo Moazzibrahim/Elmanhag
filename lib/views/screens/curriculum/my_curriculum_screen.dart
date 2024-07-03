@@ -26,7 +26,14 @@ class MyCurriculumScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: const Icon(Icons.arrow_back)),
+                    icon: Container(
+                      margin: const EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(9),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: const Color.fromARGB(255, 213, 213, 213),
+                      ),
+                      child: const Icon(Icons.arrow_back_ios,color: redcolor,))),
                 const Row(
                   children: [
                     Text(

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for SystemChrome and DeviceOrientation
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:video_player/video_player.dart';
-import 'package:flutter/services.dart';
-import 'package:webview_flutter_x5/webview_flutter.dart'; // Add this import for SystemChrome
+import 'package:webview_flutter_x5/webview_flutter.dart';
 
 class IdeasContent extends StatefulWidget {
   const IdeasContent({
     super.key,
   });
-  //final Lesson lesson;
 
   @override
   State<IdeasContent> createState() => _IdeasContentState();
@@ -18,29 +17,28 @@ class _IdeasContentState extends State<IdeasContent> {
   late VideoPlayerController controller;
   int rating = 0;
   int viewedVideoIndex = 0;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WebView.platform;
-  //   SystemChrome.setPreferredOrientations([
-  //     DeviceOrientation.landscapeRight,
-  //     DeviceOrientation.landscapeLeft,
-  //   ]);
-  // }
-
-  // @override
-  // void dispose() {
-  //   SystemChrome.setPreferredOrientations([
-  //     DeviceOrientation.portraitUp,
-  //     DeviceOrientation.portraitDown,
-  //   ]);
-  //   controller.dispose();
-  //   super.dispose();
-  // }
+  bool isLandscape = false;
 
   void updateRating(int newRating) {
     setState(() {
       rating = newRating;
+    });
+  }
+
+  void toggleRotation() {
+    if (isLandscape) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+    }
+    setState(() {
+      isLandscape = !isLandscape;
     });
   }
 
@@ -57,8 +55,7 @@ class _IdeasContentState extends State<IdeasContent> {
                 initialUrl:
                     "https://ucloud.mfscripts.com/video/embed/4g/640x320/Iron_Sky_Trailer.mp4", //widget.lesson.videos[viewedVideoIndex].videoLink,
                 javascriptMode: JavascriptMode.unrestricted,
-                initialMediaPlaybackPolicy:
-                    AutoMediaPlaybackPolicy.always_allow,
+                initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
               ),
             ),
             const SizedBox(
@@ -122,7 +119,15 @@ class _IdeasContentState extends State<IdeasContent> {
                 ),
               ],
             ),
-            //widget.lesson.videos.isNotEmpty
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(isLandscape ? Icons.screen_lock_rotation : Icons.screen_rotation,color: redcolor,),
+                  onPressed: toggleRotation,
+                ),
+                const Text('اقلب الشاشة لمشاهدة الفيديو كامل', style: TextStyle(fontSize: 16),)
+              ],
+            ),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -156,8 +161,7 @@ class _IdeasContentState extends State<IdeasContent> {
                                   padding: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    color: const Color.fromARGB(
-                                        255, 195, 194, 194),
+                                    color: const Color.fromARGB(255, 195, 194, 194),
                                   ),
                                   child: const Text('2:30'),
                                 ),
@@ -197,7 +201,7 @@ class _IdeasContentState extends State<IdeasContent> {
                   ],
                 );
               },
-            )
+            ),
           ],
         ),
       ),
