@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/sections_services.dart';
 import 'package:flutter_application_1/views/screens/curriculum/video_screen.dart';
+import 'package:flutter_application_1/views/widgets/leading_icon.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +14,8 @@ class SectionsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('الوحدات'),
+        centerTitle: true,
+        leading: const LeadingIcon(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
