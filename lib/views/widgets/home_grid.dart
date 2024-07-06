@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/main.dart';
 import 'package:flutter_application_1/views/screens/curriculum/select_courses.dart';
 import 'package:flutter_application_1/views/screens/homework/home_work_screen.dart';
+import 'package:flutter_application_1/views/screens/live/live_Screens.dart';
 
 class HomeGrid extends StatelessWidget {
   const HomeGrid({super.key});
@@ -41,6 +43,10 @@ class HomeGrid extends StatelessWidget {
             if (texts[index] == 'واجبات') {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (ctx) => const HomeWorkScreen()));
+            }
+            if (texts[index] == 'حصص لايف') {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (ctx) => MyHomePage()));
             }
           },
           child: Card(
