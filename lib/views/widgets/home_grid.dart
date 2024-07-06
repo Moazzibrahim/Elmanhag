@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/main.dart';
-import 'package:flutter_application_1/views/screens/curriculum/select_courses.dart';
+import 'package:flutter_application_1/controller/subjects_services.dart';
+import 'package:flutter_application_1/views/screens/Exams/levels_screen.dart';
+import 'package:flutter_application_1/views/screens/curriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/home_work_screen.dart';
 import 'package:flutter_application_1/views/screens/live/live_Screens.dart';
+import 'package:provider/provider.dart';
 
 class HomeGrid extends StatelessWidget {
   const HomeGrid({super.key});
@@ -37,16 +39,22 @@ class HomeGrid extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             if (texts[index] == 'مناهج') {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const SelectCourse()));
+              Provider.of<SubjectProvider>(context, listen: false)
+                  .getSubjects(context);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => const MyCurriculumScreen()));
             }
             if (texts[index] == 'واجبات') {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (ctx) => const HomeWorkScreen()));
             }
-            if (texts[index] == 'حصص لايف') {
+            if (texts[index] == "حل امتحانات") {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => const LevelsScreen()));
+            }
+            if (texts[index] == "حصص لايف ") {
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (ctx) => MyHomePage()));
+                  .push(MaterialPageRoute(builder: (ctx) => LiveScreen()));
             }
           },
           child: Card(

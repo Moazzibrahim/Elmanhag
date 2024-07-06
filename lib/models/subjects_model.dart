@@ -7,7 +7,7 @@ class Subject {
 
   factory Subject.fromJson(Map<String, dynamic> json) => Subject(
         id: json['id'],
-        price: json['price'],
+        price: json['price'].toDouble(),
         name: json['name'],
       );
 }

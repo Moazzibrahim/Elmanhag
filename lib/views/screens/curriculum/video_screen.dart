@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/views/screens/curriculum/lesson_content.dart';
+import 'package:flutter_application_1/views/screens/homework/home_work_screen.dart';
+import 'package:flutter_application_1/views/widgets/lesson_content.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LessonsVideos extends StatefulWidget {
@@ -63,7 +64,8 @@ class _LessonsVideosState extends State<LessonsVideos> {
               ),
               const Expanded(
                 child: TabBarView(children: [
-                  IdeasContent(), //lesson: widget.lesson,),// replace this text with ideas Widgets
+                  IdeasContent(),
+                  HomeWorkScreen()
                 ]),
               ),
             ],

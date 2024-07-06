@@ -1,42 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/views/widgets/leading_icon.dart';
+import 'task_screen.dart';
 
 class HomeWorkScreen extends StatefulWidget {
-  const HomeWorkScreen({Key? key}) : super(key: key);
+  const HomeWorkScreen({super.key});
 
   @override
-  _HomeWorkScreenState createState() => _HomeWorkScreenState();
+  HomeWorkScreenState createState() => HomeWorkScreenState();
 }
 
-class _HomeWorkScreenState extends State<HomeWorkScreen> {
-  // Adjust taskStars to generate 30 items
-  List<int> taskStars = List.generate(30, (index) => index < 4 ? 3 - index : 0);
-  int unlockedTasks =
-      4; // Initialize based on how many tasks you want to initially unlock
-
-  void _incrementStars(int index) {
-    setState(() {
-      if (taskStars[index] < 3) {
-        taskStars[index]++;
-        if (taskStars[index] == 3 && index + 1 < taskStars.length) {
-          unlockedTasks = index + 2;
-        }
-        // Check if the previous task card has at least 2 stars to unlock the next one
-        if (index > 0 && taskStars[index - 1] >= 2) {
-          unlockedTasks = index + 1;
-        }
-      }
-    });
-  }
+class HomeWorkScreenState extends State<HomeWorkScreen> {
+  List<int> taskStars = List.generate(30, (index) => 0);
+  int unlockedTasks = 1; // Only one task initially unlocked
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الواجبات', style: TextStyle(color: redcolor)),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: redcolor),
-        elevation: 0,
+        leading: const LeadingIcon(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,19 +35,17 @@ class _HomeWorkScreenState extends State<HomeWorkScreen> {
               return TaskCard(
                 index: index + 1,
                 stars: taskStars[index],
-                onTap: () => _incrementStars(index),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TaskScreen(taskIndex: index + 1),
+                    ),
+                  );
+                },
               );
             } else {
-              // Check if the previous task card has at least 2 stars to replace LockedCard
-              if (index > 0 && taskStars[index - 1] >= 2) {
-                return TaskCard(
-                  index: index + 1,
-                  stars: taskStars[index],
-                  onTap: () => _incrementStars(index),
-                );
-              } else {
-                return const LockedCard();
-              }
+              return const LockedCard();
             }
           },
         ),
@@ -83,8 +63,8 @@ class TaskCard extends StatelessWidget {
     required this.index,
     required this.stars,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +107,7 @@ class TaskCard extends StatelessWidget {
 }
 
 class LockedCard extends StatelessWidget {
-  const LockedCard({Key? key}) : super(key: key);
+  const LockedCard({super.key});
 
   @override
   Widget build(BuildContext context) {
