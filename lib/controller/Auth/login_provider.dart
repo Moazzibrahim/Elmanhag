@@ -30,9 +30,7 @@ class LoginModel with ChangeNotifier {
   late int _id; // Define the _id variable
   int get id => _id; // Define a getter for id
 
-  // Constructor and other methods...
 
-  // Method to set id
   void setId(int id) {
     _id = id;
     notifyListeners();
@@ -42,7 +40,7 @@ class LoginModel with ChangeNotifier {
       BuildContext context, String email, String password) async {
     // API endpoint to authenticate user
     String apiUrl = 'https://my.elmanhag.shop/api/login';
-    http.Response? response; // Define response variable outside try block
+    http.Response? response; 
 
     try {
       response = await http.post(
@@ -77,17 +75,13 @@ class LoginModel with ChangeNotifier {
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
 
-        // Return success message
         return "successful login";
       } else {
-        // Authentication failed, return error message
         return "Authentication failed";
       }
     } catch (error) {
-      // Handle any errors that occur during the API call
       log('Error occurred: $error');
 
-      // Check if response is null (indicating error before HTTP response)
       if (response == null) {
         log('Error: No HTTP response');
       } else {

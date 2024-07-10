@@ -14,6 +14,7 @@ class SecondSignScreen extends StatefulWidget {
   final String parentName;
   final String parentPhone;
 
+  // ignore: use_super_parameters
   const SecondSignScreen({
     Key? key,
     required this.name,
@@ -25,6 +26,7 @@ class SecondSignScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _SecondSignScreenState createState() => _SecondSignScreenState();
 }
 

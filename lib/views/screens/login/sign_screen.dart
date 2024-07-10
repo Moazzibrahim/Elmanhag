@@ -190,6 +190,7 @@ class SignScreen extends StatelessWidget {
 
   Widget buildPasswordField(
       TextEditingController controller, String labelText) {
+    // ignore: no_leading_underscores_for_local_identifiers
     bool _passwordVisible = false;
 
     return StatefulBuilder(

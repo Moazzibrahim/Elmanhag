@@ -17,7 +17,9 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   int _countdown = 180; // 3 minutes in seconds
   late Timer _timer;
+  // ignore: unused_field
   String _pin = '';
+  // ignore: unused_field, prefer_final_fields
   bool _isLoading = false;
 
   @override

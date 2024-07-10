@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/screens/login/login_screen.dart';
 import 'package:http/http.dart' as http;

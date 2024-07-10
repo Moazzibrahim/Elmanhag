@@ -4,7 +4,7 @@ import 'package:flutter_application_1/controller/subjects_services.dart';
 import 'package:flutter_application_1/views/screens/Exams/levels_screen.dart';
 import 'package:flutter_application_1/views/screens/curriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/home_work_screen.dart';
-import 'package:flutter_application_1/views/screens/live/live_Screens.dart';
+import 'package:flutter_application_1/views/screens/live/live_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeGrid extends StatelessWidget {
@@ -52,9 +52,9 @@ class HomeGrid extends StatelessWidget {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (ctx) => const LevelsScreen()));
             }
-            if (texts[index] == "حصص لايف ") {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (ctx) => LiveScreen()));
+            if (texts[index] == "حصص لايف") {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => const LiveScreen()));
             }
           },
           child: Card(
