@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:flutter_application_1/constants/colors.dart';
+
 class StepPathPainter extends CustomPainter {
   final List<StepData> steps;
 
@@ -9,7 +11,7 @@ class StepPathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
-      ..color = Colors.red
+      ..color = redcolor
       ..strokeWidth = 2;
 
     // Define control points for the quadratic Bezier curve
@@ -29,8 +31,8 @@ class StepPathPainter extends CustomPainter {
       }
 
       // Draw circle
-      paint.color = steps[i].isLocked ? Colors.grey : Colors.red;
-      canvas.drawCircle(offset, 20, paint);
+      paint.color = steps[i].isLocked ? Colors.grey : redcolor;
+      canvas.drawCircle(offset, 30, paint);
 
       // Draw step number or lock icon
       var textPainter = TextPainter(
@@ -44,19 +46,19 @@ class StepPathPainter extends CustomPainter {
       textPainter.paint(canvas,
           offset - Offset(textPainter.width / 2, textPainter.height / 2));
 
-      // Draw step label
+      // Draw step label next to the circle
       textPainter = TextPainter(
         text: TextSpan(
           text: steps[i].label,
           style: TextStyle(
-            color: steps[i].isLocked ? Colors.grey : Colors.red,
+            color: steps[i].isLocked ? Colors.grey : redcolor,
             fontSize: 16,
           ),
         ),
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
-      textPainter.paint(canvas, offset + Offset(-textPainter.width / 2, 30));
+      textPainter.paint(canvas, offset + Offset(40, -textPainter.height / 2));
 
       previousOffset = offset;
     }
@@ -116,27 +118,48 @@ class StepPath extends StatelessWidget {
   final List<StepData> steps = [
     StepData(1, 'هيا نتعلم يا جدي', false),
     StepData(2, 'حرف الألف', false),
-    StepData(3, 'حرف الميم', false),
-    StepData(4, 'حرف الباء', true),
+    StepData(3, 'حرف الباء', false),
+    StepData(4, 'حرف التاء', true),
     StepData(5, 'أنا مميز', true),
   ];
-
-  StepPath({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFE7CACD),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            // Define the action for the back button here
-          },
+        leading: Container(
+          width: 40.0, // Adjust width as needed
+          height: 40.0, // Adjust height as needed
+          margin: const EdgeInsets.all(8.0), // Adjust margin as needed
+          decoration: BoxDecoration(
+            color: Colors.white, // White background color
+            border: Border.all(color: Colors.white, width: 2.0),
+            borderRadius:
+                BorderRadius.circular(8.0), // Optional: rounded corners
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: redcolor),
+            onPressed: () {
+              // Define the action for the back button here
+            },
+          ),
         ),
-        title: const Text(
-          'هيا ابدأ الوحده الثانية',
-          style: TextStyle(color: Colors.white, fontSize: 20),
+        title: Container(
+          padding: const EdgeInsets.all(8.0), // Adjust padding as needed
+          decoration: BoxDecoration(
+            color: Colors.white, // White background color
+            border: Border.all(color: Colors.white, width: 2.0),
+            borderRadius:
+                BorderRadius.circular(8.0), // Optional: rounded corners
+          ),
+          child: const Text(
+            'هيا ابدأ الوحده الثانية',
+            style: TextStyle(
+                color: redcolor,
+                fontSize: 20,
+                fontWeight: FontWeight.bold), // Text color
+          ),
         ),
         centerTitle: true,
       ),
@@ -151,10 +174,4 @@ class StepPath extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: StepPath(),
-  ));
 }
