@@ -123,6 +123,8 @@ class StepPath extends StatelessWidget {
     StepData(5, 'أنا مميز', true),
   ];
 
+  StepPath({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

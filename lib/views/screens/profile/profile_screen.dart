@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/views/screens/login/login_screen.dart';
 import 'package:flutter_application_1/views/screens/profile/edit_profile.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,8 +22,6 @@ class CustomProfileScreen extends StatelessWidget {
               icon: const Icon(Icons.arrow_back, color: redcolor),
               onPressed: () {
                 Navigator.of(context).pop();
-
-                // Handle back button action
               },
             ),
             title: Row(
@@ -55,6 +54,15 @@ class CustomProfileScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (ctx) => const EditProfileScreen()));
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.logout, color: redcolor),
+                  onPressed: () {
+                    // Perform logout action
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (ctx) =>
+                            const LoginScreen())); // Replace LoginScreen with your actual login screen route
                   },
                 ),
               ],
