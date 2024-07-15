@@ -3,7 +3,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
-import 'package:flutter_application_1/views/screens/aa.dart';
+import 'package:flutter_application_1/views/screens/forget_password/forget_password.dart';
 import 'package:flutter_application_1/views/screens/login/sign_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -111,8 +111,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           decoration: TextDecoration.underline),
                     ),
                     onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => StepPath()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const ForgetPasswordScreen()));
                     },
                   ),
                 ),

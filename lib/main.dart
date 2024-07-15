@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/sections_services.dart';
 import 'package:flutter_application_1/controller/subjects_services.dart';
-import 'package:flutter_application_1/views/screens/splash_screen/first.dart';
+import 'package:flutter_application_1/views/screens/splash_screen/splash_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
