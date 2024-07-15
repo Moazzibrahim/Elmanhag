@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for SystemChrome and DeviceOrientation
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:video_player/video_player.dart';
 import 'package:webview_flutter_x5/webview_flutter.dart';
 
 class IdeasContent extends StatefulWidget {
@@ -14,7 +13,6 @@ class IdeasContent extends StatefulWidget {
 }
 
 class _IdeasContentState extends State<IdeasContent> {
-  late VideoPlayerController controller;
   int rating = 0;
   int viewedVideoIndex = 0;
   bool isLandscape = false;
