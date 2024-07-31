@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// ignore: unnecessary_import
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/views/screens/login/login_screen.dart';
@@ -23,7 +24,7 @@ class HomeScreen extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: redcolor,
               ),
               child: Column(
@@ -73,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                 // Handle the logout functionality here
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (ctx) =>
-                        LoginScreen())); // Implement your logout logic here, e.g., clearing user session, navigating to the login screen, etc.
+                        const LoginScreen())); // Implement your logout logic here, e.g., clearing user session, navigating to the login screen, etc.
               },
             ),
             // Add more ListTiles for additional drawer items here

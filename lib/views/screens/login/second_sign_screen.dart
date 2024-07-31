@@ -15,7 +15,7 @@ class SecondSignScreen extends StatefulWidget {
   final String parentPhone;
 
   const SecondSignScreen({
-    Key? key,
+    super.key,
     required this.email,
     required this.password,
     required this.confpassword,
@@ -23,9 +23,10 @@ class SecondSignScreen extends StatefulWidget {
     required this.parentPhone,
     required this.firstName,
     required this.lastName,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _SecondSignScreenState createState() => _SecondSignScreenState();
 }
 
