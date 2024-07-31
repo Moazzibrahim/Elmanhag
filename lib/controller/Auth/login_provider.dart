@@ -1,4 +1,5 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
@@ -17,19 +18,10 @@ class TokenModel with ChangeNotifier {
     notifyListeners();
   }
 }
-// class Idmodel with ChangeNotifier {
-//   late String _id = ''; // Initialize _id with an empty string
-//   String get id => _id;
 
-//   void setid(String id) {
-//     _id = id;
-//     notifyListeners();
-//   }
-// }
 class LoginModel with ChangeNotifier {
-  late int _id; // Define the _id variable
-  int get id => _id; // Define a getter for id
-
+  int? _id; // Use nullable type for _id
+  int? get id => _id; // Define a nullable getter for id
 
   void setId(int id) {
     _id = id;
@@ -38,13 +30,11 @@ class LoginModel with ChangeNotifier {
 
   Future<String> loginUser(
       BuildContext context, String email, String password) async {
-    // API endpoint to authenticate user
-    String apiUrl = 'https://my.elmanhag.shop/api/login';
-    http.Response? response; 
+    String apiUrl = 'https://bdev.elmanhag.shop/api/admin/auth/login';
+    http.Response? response;
 
     try {
       response = await http.post(
-        // Assign response inside try block
         Uri.parse(apiUrl),
         headers: {
           'Content-Type': 'application/json',
@@ -57,25 +47,31 @@ class LoginModel with ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        // If authentication is successful, extract token from response
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        String token = responseData['token'];
-        int id = responseData['user']['id'];
+        if (responseData.containsKey('_token')) {
+          String token = responseData['_token'];
+          Provider.of<TokenModel>(context, listen: false).setToken(token);
 
-        // Use provider to set the token
-        Provider.of<TokenModel>(context, listen: false).setToken(token);
-        Provider.of<LoginModel>(context, listen: false).setId(id);
-        log("status code: ${response.statusCode}");
-        log("Token: $token");
-        log("id: $id");
-        log("$responseData");
+          if (responseData.containsKey('detailes') &&
+              responseData['detailes'] is Map<String, dynamic> &&
+              responseData['detailes'].containsKey('id')) {
+            int id = responseData['detailes']['id'];
+            Provider.of<LoginModel>(context, listen: false).setId(id);
+          }
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
+          log("status code: ${response.statusCode}");
+          log("Token: $token");
+          log("$responseData");
 
-        return "successful login";
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+
+          return "successful login";
+        } else {
+          return "Token not found in response";
+        }
       } else {
         return "Authentication failed";
       }
@@ -85,8 +81,8 @@ class LoginModel with ChangeNotifier {
       if (response == null) {
         log('Error: No HTTP response');
       } else {
-        log('Response status code: ${response.statusCode}'); // Access response variable safely
-        log('Response body: ${response.body}'); // Access response variable safely
+        log('Response status code: ${response.statusCode}');
+        log('Response body: ${response.body}');
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
