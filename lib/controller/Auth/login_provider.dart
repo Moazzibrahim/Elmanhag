@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
@@ -52,10 +53,17 @@ class LoginModel with ChangeNotifier {
           Provider.of<TokenModel>(context, listen: false).setToken(token);
 
           if (responseData.containsKey('detailes') &&
-              responseData['detailes'] is Map<String, dynamic> &&
-              responseData['detailes'].containsKey('id')) {
-            int id = responseData['detailes']['id'];
-            Provider.of<LoginModel>(context, listen: false).setId(id);
+              responseData['detailes'] is Map<String, dynamic>) {
+            Map<String, dynamic> details = responseData['detailes'];
+            if (details.containsKey('id')) {
+              int id = details['id'];
+              Provider.of<LoginModel>(context, listen: false).setId(id);
+            }
+
+            if (details.containsKey('type')) {
+              String type = details['type'];
+              log("Type: $type");
+            }
           }
 
           log("status code: ${response.statusCode}");
