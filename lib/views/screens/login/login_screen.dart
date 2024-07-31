@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/forget_password/forget_password.dart';
-import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:flutter_application_1/views/screens/login/sign_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -126,11 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     String email = _emailController.text;
                     String password = _passwordController.text;
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
-                      ),
-                    );
 
                     if (email.isEmpty || password.isEmpty) {
                       setState(() {
