@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 
 class PrivateLiveScreen extends StatefulWidget {
   const PrivateLiveScreen({super.key});
@@ -13,76 +14,84 @@ class _PrivateLiveScreenState extends State<PrivateLiveScreen> {
   String? selectedUnit;
   String? selectedLesson;
 
-  final List<String> units = ['الوحدة 1', 'الوحدة 2', 'الوحدة 3'];
-  final List<String> lessons = ['الدرس 1', 'الدرس 2', 'الدرس 3'];
-
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'حصص برايفت',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              color: redcolor,
-            ),
+    final localizations = AppLocalizations.of(context);
+
+    final List<String> units = [
+      localizations.translate('unit_1'),
+      localizations.translate('unit_2'),
+      localizations.translate('unit_3')
+    ];
+
+    final List<String> lessons = [
+      localizations.translate('lesson_1'),
+      localizations.translate('lesson_2'),
+      localizations.translate('lesson_3')
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          localizations.translate('private_classes'),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+            color: redcolor,
           ),
-          centerTitle: true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              buildDropdownField(
-                label: 'اختيار الوحدة',
-                value: selectedUnit,
-                items: units,
-                onChanged: (value) {
-                  setState(() {
-                    selectedUnit = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              buildDropdownField(
-                label: 'اختيار الدرس',
-                value: selectedLesson,
-                items: lessons,
-                onChanged: (value) {
-                  setState(() {
-                    selectedLesson = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () {
-                  // Handle button press
-                },
-                // ignore: sort_child_properties_last
-                child: const Text(
-                  'طلب',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: redcolor,
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            buildDropdownField(
+              label: localizations.translate('select_unit'),
+              value: selectedUnit,
+              items: units,
+              onChanged: (value) {
+                setState(() {
+                  selectedUnit = value;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            buildDropdownField(
+              label: localizations.translate('select_lesson'),
+              value: selectedLesson,
+              items: lessons,
+              onChanged: (value) {
+                setState(() {
+                  selectedLesson = value;
+                });
+              },
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                // Handle button press
+              },
+              // ignore: sort_child_properties_last
+              child: Text(
+                localizations.translate('request'),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
-          ),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: redcolor,
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

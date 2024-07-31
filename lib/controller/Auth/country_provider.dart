@@ -3,8 +3,8 @@ import 'package:flutter_application_1/models/sign_up_model.dart';
 import 'package:http/http.dart' as http;
 
 Future<DataModel> fetchData() async {
-  final response =
-      await http.get(Uri.parse('https://my.elmanhag.shop/api/sign_up'));
+  final response = await http
+      .get(Uri.parse('https://bdev.elmanhag.shop/api/admin/auth/signup'));
 
   if (response.statusCode == 200) {
     // If the server returns a 200 OK response, parse the JSON

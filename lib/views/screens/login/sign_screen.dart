@@ -4,11 +4,11 @@ import 'package:flutter_application_1/views/screens/login/second_sign_screen.dar
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignScreen extends StatelessWidget {
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final TextEditingController _parentNameController = TextEditingController();
   final TextEditingController _parentPhoneController = TextEditingController();
 
@@ -30,134 +30,136 @@ class SignScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'أهلا بك معنا',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.grey,
-                ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'أهلا بك معنا',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.grey,
               ),
-              const SizedBox(height: 30),
-              buildTextField(
-                controller: _nameController,
-                labelText: 'الاسم',
-                prefixIcon: const Icon(Icons.person, color: redcolor),
-              ),
-              const SizedBox(height: 15),
-              buildTextField(
-                controller: _emailController,
-                labelText: 'الايميل',
-                prefixIcon: const Icon(Icons.email, color: redcolor),
-              ),
-              const SizedBox(height: 15),
-              buildPasswordField(_passwordController, 'الرقم السري'),
-              const SizedBox(height: 15),
-              buildPasswordField(
-                  _confirmPasswordController, 'تأكيد الرقم السري'),
-              const SizedBox(height: 15),
-              buildTextField(
-                controller: _parentNameController,
-                labelText: 'اسم ولي الامر',
-                prefixIcon: const Icon(Icons.person_outline, color: redcolor),
-              ),
-              const SizedBox(height: 15),
-              buildTextField(
-                controller: _parentPhoneController,
-                labelText: 'رقم ولي الامر',
-                prefixIcon: const Icon(Icons.phone, color: redcolor),
-              ),
-              const SizedBox(height: 30),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_nameController.text.isEmpty ||
-                        _emailController.text.isEmpty ||
-                        _passwordController.text.isEmpty ||
-                        _confirmPasswordController.text.isEmpty ||
-                        _parentNameController.text.isEmpty ||
-                        _parentPhoneController.text.isEmpty) {
-                      // Show an error message
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('يجب ملء جميع الحقول'),
-                          backgroundColor: Colors.red,
+            ),
+            const SizedBox(height: 30),
+            buildTextField(
+              controller: _firstNameController,
+              labelText: 'الاسم الاول',
+              prefixIcon: const Icon(Icons.person, color: redcolor),
+            ),
+            const SizedBox(height: 15),
+            buildTextField(
+              controller: _lastNameController,
+              labelText: 'الاسم الاخير',
+              prefixIcon: const Icon(Icons.person, color: redcolor),
+            ),
+            const SizedBox(height: 15),
+            buildTextField(
+              controller: _emailController,
+              labelText: 'الايميل',
+              prefixIcon: const Icon(Icons.email, color: redcolor),
+            ),
+            const SizedBox(height: 15),
+            buildPasswordField(_passwordController, 'الرقم السري'),
+            const SizedBox(height: 15),
+            buildPasswordField(_confirmPasswordController, 'تأكيد الرقم السري'),
+            const SizedBox(height: 15),
+            buildTextField(
+              controller: _parentNameController,
+              labelText: 'اسم ولي الامر',
+              prefixIcon: const Icon(Icons.person_outline, color: redcolor),
+            ),
+            const SizedBox(height: 15),
+            buildTextField(
+              controller: _parentPhoneController,
+              labelText: 'رقم ولي الامر',
+              prefixIcon: const Icon(Icons.phone, color: redcolor),
+            ),
+            const SizedBox(height: 30),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_firstNameController.text.isEmpty ||
+                      _lastNameController.text.isEmpty ||
+                      _emailController.text.isEmpty ||
+                      _passwordController.text.isEmpty ||
+                      _confirmPasswordController.text.isEmpty ||
+                      _parentNameController.text.isEmpty ||
+                      _parentPhoneController.text.isEmpty) {
+                    // Show an error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('يجب ملء جميع الحقول'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else if (_passwordController.text != _confirmPasswordController.text) {
+                    // Show an error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('كلمتا السر غير متطابقتين'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    // Navigate to the next screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SecondSignScreen(
+                          firstName: _firstNameController.text,
+                          lastName: _lastNameController.text,
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                          confpassword: _confirmPasswordController.text,
+                          parentName: _parentNameController.text,
+                          parentPhone: _parentPhoneController.text,
                         ),
-                      );
-                    } else if (_passwordController.text !=
-                        _confirmPasswordController.text) {
-                      // Show an error message
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('كلمتا السر غير متطابقتين'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    } else {
-                      // Navigate to the next screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SecondSignScreen(
-                            confpassword: _confirmPasswordController.text,
-                            name: _nameController.text,
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                            parentName: _parentNameController.text,
-                            parentPhone: _parentPhoneController.text,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: redcolor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    textStyle: const TextStyle(fontSize: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    'اكمل',
-                    style: TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: redcolor,
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  textStyle: const TextStyle(fontSize: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              const Divider(color: Colors.grey),
-              const SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  buildSocialIconButton(FontAwesomeIcons.facebook),
-                  const SizedBox(width: 20),
-                  buildSocialIconButton(FontAwesomeIcons.instagram),
-                  const SizedBox(width: 20),
-                  buildSocialIconButton(FontAwesomeIcons.twitter),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    'لديك حساب؟ تسجيل الدخول',
-                    style: TextStyle(fontSize: 18, color: redcolor),
-                  ),
+                child: const Text(
+                  'اكمل',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+            const Divider(color: Colors.grey),
+            const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildSocialIconButton(FontAwesomeIcons.facebook),
+                const SizedBox(width: 20),
+                buildSocialIconButton(FontAwesomeIcons.instagram),
+                const SizedBox(width: 20),
+                buildSocialIconButton(FontAwesomeIcons.twitter),
+              ],
+            ),
+            const SizedBox(height: 15),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'لديك حساب؟ تسجيل الدخول',
+                  style: TextStyle(fontSize: 18, color: redcolor),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -188,8 +190,7 @@ class SignScreen extends StatelessWidget {
     );
   }
 
-  Widget buildPasswordField(
-      TextEditingController controller, String labelText) {
+  Widget buildPasswordField(TextEditingController controller, String labelText) {
     // ignore: no_leading_underscores_for_local_identifiers
     bool _passwordVisible = false;
 

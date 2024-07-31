@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/subjects_services.dart';
-import 'package:flutter_application_1/views/screens/Exams/levels_screen.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/curriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/home_work_screen.dart';
 import 'package:flutter_application_1/views/screens/live/live_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_application_1/views/screens/Exams/levels_screen.dart';
 
 class HomeGrid extends StatelessWidget {
   const HomeGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     List<String> texts = [
-      'واجبات',
-      'مناهج',
-      'حصص لايف',
-      'مراجعات الشهور',
-      'حل امتحانات',
-      'مراجعة نهائية'
+      localizations.translate('tasks'),
+      localizations.translate('curriculum'),
+      localizations.translate('live_classes'),
+      localizations.translate('monthly_reviews'),
+      localizations.translate('exam_solutions'),
+      localizations.translate('final_review'),
     ];
     List<String> images = [
       'assets/images/Frame.png',
@@ -38,23 +41,23 @@ class HomeGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            if (texts[index] == 'مناهج') {
+            if (texts[index] == localizations.translate('curriculum')) {
               Provider.of<SubjectProvider>(context, listen: false)
                   .getSubjects(context);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (ctx) => const MyCurriculumScreen()));
             }
-            if (texts[index] == 'واجبات') {
+            if (texts[index] == localizations.translate('tasks')) {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (ctx) => const HomeWorkScreen()));
             }
-            if (texts[index] == "حل امتحانات") {
+            if (texts[index] == localizations.translate('exam_solutions')) {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (ctx) => const LevelsScreen()));
             }
-            if (texts[index] == "حصص لايف") {
+            if (texts[index] == localizations.translate('live_classes')) {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const LiveScreen()));
+                  MaterialPageRoute(builder: (ctx) =>  const LiveScreen()));
             }
           },
           child: Card(
@@ -68,9 +71,7 @@ class HomeGrid extends StatelessWidget {
                   texts[index],
                   style: const TextStyle(color: redcolor, fontSize: 20),
                 ),
-                const SizedBox(
-                  height: 7,
-                ),
+                const SizedBox(height: 7),
                 Image.asset(images[index]),
               ],
             ),

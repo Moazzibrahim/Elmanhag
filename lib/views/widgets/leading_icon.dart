@@ -12,13 +12,18 @@ class LeadingIcon extends StatelessWidget {
         color: const Color.fromARGB(255, 213, 213, 213),
         borderRadius: BorderRadius.circular(14),
       ),
-      child:  Center(
+      child: Center(
         child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-          child: const Icon(Icons.arrow_back_ios,color: redcolor,)),
-      ),  
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: const Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: 12.0), // Adjust padding here
+            child: Icon(Icons.arrow_back_ios, color: redcolor),
+          ),
+        ),
+      ),
     );
   }
 }

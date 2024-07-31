@@ -14,6 +14,8 @@ class NotficationsParentScreen extends StatelessWidget {
         leading: const LeadingIcon(),
       ),
       body: ListView.builder(itemBuilder: (context, index) {
+        return null;
+      
         
       },),
     );

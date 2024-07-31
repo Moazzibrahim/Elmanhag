@@ -7,43 +7,53 @@ import 'dart:convert';
 
 class ApiService {
   static Future<void> signUp({
-    required String name,
+    required String firstName,
+    required String lastName,
     required String email,
     required String password,
     required String confpassword,
     required String parentName,
     required String parentPhone,
-    required String phone, // Added phone parameter
+    required String phone,
     required String? selectedCountryId,
     required String? selectedCityId,
     required String? selectedCategoryId,
-    required String? selectedType,
+    required String language, // Updated parameter
     required BuildContext context,
   }) async {
-    const url = 'https://my.elmanhag.shop/api/api_sign_up_add';
+    const url = 'https://bdev.elmanhag.shop/api/admin/auth/signup_proccess';
+    final requestBody = json.encode({
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'password': password,
+      'conf_password': confpassword,
+      'parent_name': parentName,
+      'parent_phone': parentPhone,
+      'phone': phone,
+      'city_id': selectedCityId,
+      'country_id': selectedCountryId,
+      'category_id': selectedCategoryId,
+      'language': language, // Updated key
+    });
+
+    // Log the data being sent to the API
+    print('Sending data to API: $requestBody');
+
     final response = await http.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'name': name,
-        'email': email,
-        'password': password,
-        'conf_password': confpassword,
-        'parent_name': parentName,
-        'parent_phone': parentPhone,
-        'phone': phone,
-        'countryId': selectedCountryId,
-        'city_id': selectedCityId,
-        'category_id': selectedCategoryId,
-        'type': selectedType,
-      }),
+      body: requestBody,
     );
 
     if (response.statusCode == 200) {
-      // Successfully sent data to the API
       _showSuccessDialog(context);
+      print('Response Status: ${response.statusCode}');
+      print('Response Body: ${response.body}');
     } else {
-      // Error sending data to the API
+      print('Response Status: ${response.statusCode}');
+      print('Error: ${response.reasonPhrase}');
+      print('Response Body: ${response.body}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${response.reasonPhrase}')),
       );

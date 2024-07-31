@@ -1,107 +1,135 @@
 class Country {
-  final int id;
-  final String countryName;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  int id;
+  String name;
+  String status;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   Country({
     required this.id,
-    required this.countryName,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.name,
+    required this.status,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory Country.fromJson(Map<String, dynamic> json) {
     return Country(
       id: json['id'],
-      countryName: json['country_name'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      name: json['name'],
+      status: json['status'],
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'country_name': countryName,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'name': name,
+      'status': status,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 }
 
 class City {
-  final int id;
-  final int countryId;
-  final String cityName;
+  int id;
+  String name;
+  int countryId;
+  String status;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   City({
     required this.id,
+    required this.name,
     required this.countryId,
-    required this.cityName,
+    required this.status,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory City.fromJson(Map<String, dynamic> json) {
     return City(
       id: json['id'],
-      countryId: int.parse(json['country']),
-      cityName: json['city_name'],
+      name: json['name'],
+      countryId: json['country_id'],
+      status: json['status'],
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'country': countryId.toString(),
-      'city_name': cityName,
+      'name': name,
+      'country_id': countryId,
+      'status': status,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 }
 
 class Category {
-  final int id;
-  final String category;
-  final String status;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int? parent;
+  int id;
+  String name;
+  int categoryId;
+  String status;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   Category({
     required this.id,
-    required this.category,
+    required this.name,
+    required this.categoryId,
     required this.status,
-    required this.createdAt,
-    required this.updatedAt,
-    this.parent,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
       id: json['id'],
-      category: json['category'],
+      name: json['name'],
+      categoryId: json['category_id'],
       status: json['status'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
-      parent: json['parent'],
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'category': category,
+      'name': name,
+      'category_id': categoryId,
       'status': status,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-      'parent': parent,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 }
 
 class DataModel {
-  final List<Country> countries;
-  final List<City> cities;
-  final List<Category> categories;
+  List<Country> countries;
+  List<City> cities;
+  List<Category> categories;
 
   DataModel({
     required this.countries,
@@ -110,28 +138,20 @@ class DataModel {
   });
 
   factory DataModel.fromJson(Map<String, dynamic> json) {
-    var countriesJson = json['countries'] as List;
-    var citiesJson = json['cities'] as List;
-    var categoriesJson = json['categories'] as List;
-
-    List<Country> countriesList =
-        countriesJson.map((i) => Country.fromJson(i)).toList();
-    List<City> citiesList = citiesJson.map((i) => City.fromJson(i)).toList();
-    List<Category> categoriesList =
-        categoriesJson.map((i) => Category.fromJson(i)).toList();
-
     return DataModel(
-      countries: countriesList,
-      cities: citiesList,
-      categories: categoriesList,
+      countries:
+          List<Country>.from(json['countries'].map((x) => Country.fromJson(x))),
+      cities: List<City>.from(json['cities'].map((x) => City.fromJson(x))),
+      categories: List<Category>.from(
+          json['categories'].map((x) => Category.fromJson(x))),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'countries': countries.map((country) => country.toJson()).toList(),
-      'cities': cities.map((city) => city.toJson()).toList(),
-      'categories': categories.map((category) => category.toJson()).toList(),
+      'countries': List<dynamic>.from(countries.map((x) => x.toJson())),
+      'cities': List<dynamic>.from(cities.map((x) => x.toJson())),
+      'categories': List<dynamic>.from(categories.map((x) => x.toJson())),
     };
   }
 }

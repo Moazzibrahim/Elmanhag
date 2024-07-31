@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/OTP/confirm_password.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
@@ -42,7 +43,6 @@ class _OtpScreenState extends State<OtpScreen> {
         setState(() {
           if (_countdown < 1) {
             timer.cancel();
-            // Add your logic when the countdown reaches 0
           } else {
             _countdown--;
           }
@@ -61,6 +61,8 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     final defaultPinTheme = PinTheme(
       width: 56.w,
       height: 60.h,
@@ -74,17 +76,19 @@ class _OtpScreenState extends State<OtpScreen> {
         border: Border.all(color: Colors.transparent),
       ),
     );
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "المنهج",
-          style: TextStyle(color: redcolor),
+        title: Text(
+          localizations.translate('title'), // Localized title
+          style: const TextStyle(color: redcolor),
         ),
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios)),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.w),
@@ -96,7 +100,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.h),
                 child: Text(
-                  "التحقق من OTP",
+                  localizations.translate('otp_verification'), // Localized OTP verification
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20.sp,
@@ -107,7 +111,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
-                  "أدخل كلمة مرور OTP المرسلة - ",
+                  localizations.translate('enter_otp'), // Localized enter OTP
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 18.sp,
@@ -132,7 +136,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.h),
                 child: Text(
-                  " $timerText",
+                  timerText,
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 18.sp,
@@ -141,15 +145,16 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               RichText(
                 text: TextSpan(
-                  text: 'لم تتلقي الرمز ؟',
+                  text: localizations.translate('did_not_receive_code'), // Localized did not receive code
                   style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w400),
-                  children: const <TextSpan>[
+                    fontSize: 15.sp,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  children: [
                     TextSpan(
-                      text: 'اعادة ارسال',
-                      style: TextStyle(
+                      text: localizations.translate('resend'), // Localized resend
+                      style: const TextStyle(
                         color: redcolor,
                         fontWeight: FontWeight.bold,
                       ),
@@ -166,20 +171,23 @@ class _OtpScreenState extends State<OtpScreen> {
                       builder: (context) => const ConfirmPassword()));
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: redcolor,
-                    padding: EdgeInsets.symmetric(
-                      vertical: 12.h,
-                      horizontal: 130.w,
-                    ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r))),
+                  backgroundColor: redcolor,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 12.h,
+                    horizontal: 130.w,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
                 child: Text(
+                  localizations.translate('submit'), // Localized submit
                   maxLines: 1,
-                  'ارسال',
                   style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 15.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],

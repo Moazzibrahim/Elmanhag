@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ConfirmPassword extends StatefulWidget {
@@ -26,19 +27,22 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
+        title: Center(
           child: Text(
-            "المنهج",
-            style: TextStyle(color: redcolor, fontSize: 32),
+            localizations.translate('title'), // Localized title
+            style: const TextStyle(color: redcolor, fontSize: 32),
           ),
         ),
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios)),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15), // Use ScreenUtil for padding
@@ -47,17 +51,15 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      'انشاء رقم سري جديد',
-                      style: TextStyle(
-                          fontSize: 35.sp,
-                          fontWeight: FontWeight.w400,
-                          color: greycolor), // Use ScreenUtil for font size
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    localizations
+                        .translate('create_new_password'), // Localized text
+                    style: TextStyle(
+                        fontSize: 35.sp,
+                        fontWeight: FontWeight.w400,
+                        color: greycolor), // Use ScreenUtil for font size
                   ),
                 ),
               ],
@@ -71,7 +73,8 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
                 controller: passwordController,
                 obscureText: obscurePassword,
                 decoration: InputDecoration(
-                  labelText: 'الرقم السري',
+                  labelText:
+                      localizations.translate('password'), // Localized text
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide: const BorderSide(
@@ -113,7 +116,8 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
                 controller: confirmpasswordController,
                 obscureText: obscurePassword,
                 decoration: InputDecoration(
-                  labelText: 'تأكيد الرقم السري',
+                  labelText: localizations
+                      .translate('confirm_password'), // Localized text
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide: const BorderSide(
@@ -166,7 +170,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
                     ),
                     child: Text(
                       maxLines: 1,
-                      'ارسال',
+                      localizations.translate('submit'), // Localized text
                       style: TextStyle(
                         fontSize: 15.sp,
                         color: Colors.white,

@@ -35,42 +35,38 @@ class _LevelsScreenState extends State<LevelsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Directionality(
-        textDirection: TextDirection
-            .rtl, // Set text direction to RTL for the entire screen
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 1,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: taskStars.length,
-            itemBuilder: (context, index) {
-              if (index < unlockedTasks) {
-                return TaskCard(
-                  index: index + 1,
-                  stars: taskStars[index],
-                  onTap: () => _incrementStars(index),
-                );
-              } else {
-                if (index > 0 && taskStars[index - 1] >= 2) {
-                  return TaskCard(
-                      index: index + 1,
-                      stars: taskStars[index],
-                      onTap: () {
-                        _incrementStars(index);
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const ExamScreen()));
-                      });
-                } else {
-                  return const LockedCard();
-                }
-              }
-            },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: 1,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
           ),
+          itemCount: taskStars.length,
+          itemBuilder: (context, index) {
+            if (index < unlockedTasks) {
+              return TaskCard(
+                index: index + 1,
+                stars: taskStars[index],
+                onTap: () => _incrementStars(index),
+              );
+            } else {
+              if (index > 0 && taskStars[index - 1] >= 2) {
+                return TaskCard(
+                    index: index + 1,
+                    stars: taskStars[index],
+                    onTap: () {
+                      _incrementStars(index);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const ExamScreen()));
+                    });
+              } else {
+                return const LockedCard();
+              }
+            }
+          },
         ),
       ),
     );
