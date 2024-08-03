@@ -30,7 +30,7 @@ class LoginModel with ChangeNotifier {
 
   Future<String> loginUser(
       BuildContext context, String email, String password) async {
-    String apiUrl = 'https://bdev.elmanhag.shop/api/admin/auth/login';
+    String apiUrl = 'https://bdev.elmanhag.shop/api/user/auth/login';
     http.Response? response;
 
     try {
