@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 // ignore: unnecessary_import
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
-import 'package:flutter_application_1/views/screens/login/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
@@ -67,14 +67,15 @@ class HomeScreen extends StatelessWidget {
                 Navigator.pop(context); // Close the drawer
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: Text(localizations.translate('logout')),
-              onTap: () {
-                // Handle the logout functionality here
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) =>
-                        const LoginScreen())); // Implement your logout logic here, e.g., clearing user session, navigating to the login screen, etc.
+            Consumer<LogoutModel>(
+              builder: (context, logoutModel, child) {
+                return ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Log Out'),
+                  onTap: () async {
+                    await logoutModel.logout(context);
+                  },
+                );
               },
             ),
             // Add more ListTiles for additional drawer items here

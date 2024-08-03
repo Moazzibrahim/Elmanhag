@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'localization/app_localizations.dart';
@@ -8,12 +9,14 @@ import 'controller/sections_services.dart';
 import 'controller/subjects_services.dart';
 import 'views/screens/splash_screen/splash_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TokenModel()),
         ChangeNotifierProvider(create: (_) => LoginModel()),
+        ChangeNotifierProvider(create: (_) => LogoutModel()),
         ChangeNotifierProvider(create: (_) => SubjectProvider()),
         ChangeNotifierProvider(create: (_) => SectionsProvider()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
