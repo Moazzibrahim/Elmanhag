@@ -6,8 +6,7 @@ import 'package:flutter_application_1/models/sign_up_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SecondSignScreen extends StatefulWidget {
-  final String firstName;
-  final String lastName;
+  final String name;
   final String email;
   final String password;
   final String confpassword;
@@ -21,8 +20,7 @@ class SecondSignScreen extends StatefulWidget {
     required this.confpassword,
     required this.parentName,
     required this.parentPhone,
-    required this.firstName,
-    required this.lastName,
+    required this.name,
   });
 
   @override
@@ -81,8 +79,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
         selectedType == 'عربي' ? '0' : '1'; // Updated to use '0' and '1'
 
     ApiService.signUp(
-      firstName: widget.firstName,
-      lastName: widget.lastName,
+      Name: widget.name,
       email: widget.email,
       password: widget.password,
       confpassword: widget.confpassword,

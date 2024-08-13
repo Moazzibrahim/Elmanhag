@@ -1,7 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/views/parent%20screens/home_parent_screen.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -63,19 +62,45 @@ class LoginModel with ChangeNotifier {
             if (details.containsKey('type')) {
               String type = details['type'];
               log("Type: $type");
+
+              // Navigate based on user type
+              if (type == 'student') {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              } else if (type == 'parent') {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HomeParentScreen()),
+                );
+              } else {
+                log('Unknown user type: $type');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Unknown user type'),
+                  ),
+                );
+                return 'Unknown user type';
+              }
+            } else {
+              return 'Type not found in response';
             }
+
+            log("status code: ${response.statusCode}");
+            log("Token: $token");
+            log("$responseData");
+
+            return "successful login";
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Authentication failed'),
+              ),
+            );
+            return "Token not found in response";
           }
-
-          log("status code: ${response.statusCode}");
-          log("Token: $token");
-          log("$responseData");
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
-
-          return "successful login";
         } else {
           return "Token not found in response";
         }

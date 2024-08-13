@@ -7,8 +7,7 @@ import 'dart:convert';
 
 class ApiService {
   static Future<void> signUp({
-    required String firstName,
-    required String lastName,
+    required String Name,
     required String email,
     required String password,
     required String confpassword,
@@ -21,10 +20,9 @@ class ApiService {
     required String language, // Updated parameter
     required BuildContext context,
   }) async {
-    const url = 'https://bdev.elmanhag.shop/api/admin/auth/signup_proccess';
+    const url = 'https://bdev.elmanhag.shop/student/auth/signup/create';
     final requestBody = json.encode({
-      'firstName': firstName,
-      'lastName': lastName,
+      'name': Name,
       'email': email,
       'password': password,
       'conf_password': confpassword,

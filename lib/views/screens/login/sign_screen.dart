@@ -4,11 +4,11 @@ import 'package:flutter_application_1/views/screens/login/second_sign_screen.dar
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignScreen extends StatelessWidget {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _parentNameController = TextEditingController();
   final TextEditingController _parentPhoneController = TextEditingController();
 
@@ -44,14 +44,8 @@ class SignScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             buildTextField(
-              controller: _firstNameController,
-              labelText: 'الاسم الاول',
-              prefixIcon: const Icon(Icons.person, color: redcolor),
-            ),
-            const SizedBox(height: 15),
-            buildTextField(
-              controller: _lastNameController,
-              labelText: 'الاسم الاخير',
+              controller: _nameController,
+              labelText: 'الاسم',
               prefixIcon: const Icon(Icons.person, color: redcolor),
             ),
             const SizedBox(height: 15),
@@ -80,8 +74,7 @@ class SignScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  if (_firstNameController.text.isEmpty ||
-                      _lastNameController.text.isEmpty ||
+                  if (_nameController.text.isEmpty ||
                       _emailController.text.isEmpty ||
                       _passwordController.text.isEmpty ||
                       _confirmPasswordController.text.isEmpty ||
@@ -94,7 +87,8 @@ class SignScreen extends StatelessWidget {
                         backgroundColor: Colors.red,
                       ),
                     );
-                  } else if (_passwordController.text != _confirmPasswordController.text) {
+                  } else if (_passwordController.text !=
+                      _confirmPasswordController.text) {
                     // Show an error message
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -108,8 +102,7 @@ class SignScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => SecondSignScreen(
-                          firstName: _firstNameController.text,
-                          lastName: _lastNameController.text,
+                          name: _nameController.text,
                           email: _emailController.text,
                           password: _passwordController.text,
                           confpassword: _confirmPasswordController.text,
@@ -122,7 +115,8 @@ class SignScreen extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: redcolor,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   textStyle: const TextStyle(fontSize: 18),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -190,7 +184,8 @@ class SignScreen extends StatelessWidget {
     );
   }
 
-  Widget buildPasswordField(TextEditingController controller, String labelText) {
+  Widget buildPasswordField(
+      TextEditingController controller, String labelText) {
     // ignore: no_leading_underscores_for_local_identifiers
     bool _passwordVisible = false;
 

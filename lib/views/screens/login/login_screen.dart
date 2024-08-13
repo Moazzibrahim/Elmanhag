@@ -10,6 +10,51 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+// Define RotatingImageIndicator widget
+class RotatingImageIndicator extends StatefulWidget {
+  @override
+  _RotatingImageIndicatorState createState() => _RotatingImageIndicatorState();
+}
+
+class _RotatingImageIndicatorState extends State<RotatingImageIndicator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.rotate(
+          angle: _controller.value * 2.0 * 3.14,
+          child: child,
+        );
+      },
+      child: Image.asset(
+        'assets/images/amin2.png', // Path to your image
+        height: 50, // Adjust the height as needed
+        width: 50, // Adjust the width as needed
+      ),
+    );
+  }
+}
+
+// LoginScreen class
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -19,6 +64,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isObscured = true;
+  bool _isLoading = false; // Track if the login process is ongoing
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String? _errorMessage;
@@ -121,54 +167,62 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 30),
               Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    String email = _emailController.text;
-                    String password = _passwordController.text;
+                child: _isLoading
+                    ? RotatingImageIndicator() // Show loading indicator
+                    : ElevatedButton(
+                        onPressed: () async {
+                          String email = _emailController.text;
+                          String password = _passwordController.text;
 
-                    if (email.isEmpty || password.isEmpty) {
-                      setState(() {
-                        _errorMessage =
-                            localizations.translate('error_empty_fields');
-                      });
-                    } else {
-                      String response =
-                          await Provider.of<LoginModel>(context, listen: false)
-                              .loginUser(context, email, password);
+                          if (email.isEmpty || password.isEmpty) {
+                            setState(() {
+                              _errorMessage =
+                                  localizations.translate('error_empty_fields');
+                            });
+                          } else {
+                            setState(() {
+                              _isLoading = true;
+                              _errorMessage = null;
+                            });
 
-                      if (response == 'Authentication failed') {
-                        setState(() {
-                          _errorMessage =
-                              localizations.translate('error_auth_failed');
-                        });
-                      } else {
-                        setState(() {
-                          _errorMessage = null;
-                        });
+                            String response = await Provider.of<LoginModel>(
+                                    context,
+                                    listen: false)
+                                .loginUser(context, email, password);
 
-                        // Navigate to home screen upon successful login
-                      }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: redcolor,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 100,
-                      vertical: 15,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Text(
-                    localizations.translate('login'),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                            setState(() {
+                              _isLoading = false; // Hide loading indicator
+                            });
+
+                            if (response == 'Authentication failed') {
+                              setState(() {
+                                _errorMessage = localizations
+                                    .translate('error_auth_failed');
+                              });
+                            } else {
+                              // Navigate to home screen upon successful login
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: redcolor,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 100,
+                            vertical: 15,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          localizations.translate('login'),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
               ),
               const SizedBox(height: 20),
               Row(

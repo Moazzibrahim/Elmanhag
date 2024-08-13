@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/views/parent%20screens/notfications_parent_screen.dart';
 import 'package:flutter_application_1/views/parent%20widgets/home_parent_grid.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
+import 'package:flutter_application_1/views/screens/login/login_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:developer';
+import 'package:provider/provider.dart'; // Import Provider
 
 class HomeParentScreen extends StatelessWidget {
   const HomeParentScreen({super.key});
@@ -23,18 +29,30 @@ class HomeParentScreen extends StatelessWidget {
                 Row(
                   children: [
                     InkWell(
-                      onTap: (){},
-                      child: const Icon(Icons.person_outline,color: redcolor,),
+                      onTap: () async {
+                        // Invoke the logout function
+                        await Provider.of<LogoutModel>(context, listen: false)
+                            .logout(context);
+                      },
+                      child: const Icon(
+                        Icons.logout, // Replace with logout icon
+                        color: redcolor,
+                      ),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     InkWell(
                       onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (ctx)=> const NotficationsParentScreen())
-                        );
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) =>
+                                const NotficationsParentScreen()));
                       },
                       borderRadius: BorderRadius.circular(20),
-                      child: const Icon(Icons.notifications_outlined,color: redcolor,),
+                      child: const Icon(
+                        Icons.notifications_outlined,
+                        color: redcolor,
+                      ),
                     )
                   ],
                 ),
@@ -59,7 +77,9 @@ class HomeParentScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             const Expanded(child: HomeParentGrid()),
           ],
         ),
