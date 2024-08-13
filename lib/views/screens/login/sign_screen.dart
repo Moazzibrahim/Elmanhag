@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/login/second_sign_screen.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_application_1/views/widgets/text_field.dart';
 
 class SignScreen extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
@@ -9,8 +9,7 @@ class SignScreen extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-  final TextEditingController _parentNameController = TextEditingController();
-  final TextEditingController _parentPhoneController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   SignScreen({super.key});
 
@@ -50,6 +49,12 @@ class SignScreen extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             buildTextField(
+              controller: _phoneController,
+              labelText: 'رقم الهاتف',
+              prefixIcon: const Icon(Icons.phone, color: redcolor),
+            ),
+            const SizedBox(height: 15),
+            buildTextField(
               controller: _emailController,
               labelText: 'الايميل',
               prefixIcon: const Icon(Icons.email, color: redcolor),
@@ -58,18 +63,6 @@ class SignScreen extends StatelessWidget {
             buildPasswordField(_passwordController, 'الرقم السري'),
             const SizedBox(height: 15),
             buildPasswordField(_confirmPasswordController, 'تأكيد الرقم السري'),
-            const SizedBox(height: 15),
-            buildTextField(
-              controller: _parentNameController,
-              labelText: 'اسم ولي الامر',
-              prefixIcon: const Icon(Icons.person_outline, color: redcolor),
-            ),
-            const SizedBox(height: 15),
-            buildTextField(
-              controller: _parentPhoneController,
-              labelText: 'رقم ولي الامر',
-              prefixIcon: const Icon(Icons.phone, color: redcolor),
-            ),
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(
@@ -78,9 +71,7 @@ class SignScreen extends StatelessWidget {
                       _emailController.text.isEmpty ||
                       _passwordController.text.isEmpty ||
                       _confirmPasswordController.text.isEmpty ||
-                      _parentNameController.text.isEmpty ||
-                      _parentPhoneController.text.isEmpty) {
-                    // Show an error message
+                      _phoneController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('يجب ملء جميع الحقول'),
@@ -89,7 +80,6 @@ class SignScreen extends StatelessWidget {
                     );
                   } else if (_passwordController.text !=
                       _confirmPasswordController.text) {
-                    // Show an error message
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('كلمتا السر غير متطابقتين'),
@@ -97,7 +87,6 @@ class SignScreen extends StatelessWidget {
                       ),
                     );
                   } else {
-                    // Navigate to the next screen
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -106,8 +95,7 @@ class SignScreen extends StatelessWidget {
                           email: _emailController.text,
                           password: _passwordController.text,
                           confpassword: _confirmPasswordController.text,
-                          parentName: _parentNameController.text,
-                          parentPhone: _parentPhoneController.text,
+                          phone: _phoneController.text,
                         ),
                       ),
                     );
@@ -128,20 +116,9 @@ class SignScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             const Divider(color: Colors.grey),
-            const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildSocialIconButton(FontAwesomeIcons.facebook),
-                const SizedBox(width: 20),
-                buildSocialIconButton(FontAwesomeIcons.instagram),
-                const SizedBox(width: 20),
-                buildSocialIconButton(FontAwesomeIcons.twitter),
-              ],
-            ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
             Center(
               child: TextButton(
                 onPressed: () {
@@ -156,80 +133,6 @@ class SignScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget buildTextField({
-    required TextEditingController controller,
-    required String labelText,
-    Widget? prefixIcon,
-  }) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: labelText,
-        prefixIcon: prefixIcon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: redcolor),
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: redcolor),
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-      ),
-    );
-  }
-
-  Widget buildPasswordField(
-      TextEditingController controller, String labelText) {
-    // ignore: no_leading_underscores_for_local_identifiers
-    bool _passwordVisible = false;
-
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return TextField(
-          controller: controller,
-          obscureText: !_passwordVisible,
-          decoration: InputDecoration(
-            labelText: labelText,
-            prefixIcon: const Icon(Icons.lock, color: redcolor),
-            suffixIcon: IconButton(
-              icon: Icon(
-                _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                color: redcolor,
-              ),
-              onPressed: () {
-                setState(() {
-                  _passwordVisible = !_passwordVisible;
-                });
-              },
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: redcolor),
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: redcolor),
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildSocialIconButton(IconData icon) {
-    return IconButton(
-      icon: FaIcon(icon, color: redcolor),
-      iconSize: 30,
-      onPressed: () {},
     );
   }
 }

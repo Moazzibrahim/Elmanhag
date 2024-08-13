@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/country_provider.dart';
-import 'package:flutter_application_1/controller/Auth/sign_up_provider.dart';
 import 'package:flutter_application_1/models/sign_up_model.dart';
+import 'package:flutter_application_1/views/screens/login/third_sign_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SecondSignScreen extends StatefulWidget {
@@ -10,21 +10,18 @@ class SecondSignScreen extends StatefulWidget {
   final String email;
   final String password;
   final String confpassword;
-  final String parentName;
-  final String parentPhone;
+  final String phone;
 
   const SecondSignScreen({
     super.key,
     required this.email,
     required this.password,
     required this.confpassword,
-    required this.parentName,
-    required this.parentPhone,
     required this.name,
+    required this.phone,
   });
 
   @override
-  // ignore: library_private_types_in_public_api
   _SecondSignScreenState createState() => _SecondSignScreenState();
 }
 
@@ -58,39 +55,23 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
   }
 
   void signUp() {
-    if (_studentPhoneController.text.isEmpty ||
-        selectedCountryId == null ||
-        selectedCityId == null ||
-        selectedCategoryId == null ||
-        selectedType == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'من فضلك املأ جميع البيانات',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: redcolor,
+    String languageValue = selectedType == 'عربي' ? '0' : '1';
+
+    // Navigate to the ThirdSignUp screen and pass the data
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ThirdSignUp(
+          name: widget.name,
+          email: widget.email,
+          password: widget.password,
+          confpassword: widget.confpassword,
+          phone: _studentPhoneController.text,
+          countryId: selectedCountryId!,
+          cityId: selectedCityId!,
+          categoryId: selectedCategoryId!,
+          language: languageValue,
         ),
-      );
-      return;
-    }
-
-    String languageValue =
-        selectedType == 'عربي' ? '0' : '1'; // Updated to use '0' and '1'
-
-    ApiService.signUp(
-      Name: widget.name,
-      email: widget.email,
-      password: widget.password,
-      confpassword: widget.confpassword,
-      parentName: widget.parentName,
-      parentPhone: widget.parentPhone,
-      phone: _studentPhoneController.text,
-      selectedCountryId: selectedCountryId,
-      selectedCityId: selectedCityId,
-      selectedCategoryId: selectedCategoryId,
-      language: languageValue, // Updated language parameter
-      context: context,
+      ),
     );
   }
 
@@ -123,24 +104,6 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            TextField(
-              controller: _studentPhoneController,
-              decoration: InputDecoration(
-                labelText: 'رقم تليفون الطالب',
-                prefixIcon: const Icon(Icons.phone, color: redcolor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
-            ),
             const SizedBox(height: 15),
             DropdownButtonFormField<String>(
               value: selectedCountryId,
