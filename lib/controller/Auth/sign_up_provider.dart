@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/screens/login/login_screen.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +9,7 @@ import 'dart:convert';
 
 class ApiService {
   static Future<void> signUp({
-    required String Name,
+    required String name,
     required String email,
     required String password,
     required String confpassword,
@@ -15,12 +17,17 @@ class ApiService {
     required String? selectedCountryId,
     required String? selectedCityId,
     required String? selectedCategoryId,
-    required String language, // Updated parameter
+    required String? selectedEducationId,
+    required String parentname,
+    required String parentemail,
+    required String parentpassword,
+    required String parentphone,
+    required String? selectedparentrealtionId,
     required BuildContext context,
   }) async {
     const url = 'https://bdev.elmanhag.shop/student/auth/signup/create';
     final requestBody = json.encode({
-      'name': Name,
+      'name': name,
       'email': email,
       'password': password,
       'conf_password': confpassword,
@@ -28,7 +35,12 @@ class ApiService {
       'city_id': selectedCityId,
       'country_id': selectedCountryId,
       'category_id': selectedCategoryId,
-      'language': language, // Updated key
+      'education_id': selectedEducationId,
+      'parent_name': parentname,
+      'parent_phone': parentphone,
+      'parent_email': parentemail,
+      'parent_password': parentpassword,
+      'parent_relation_id': selectedparentrealtionId
     });
 
     // Log the data being sent to the API
@@ -42,12 +54,15 @@ class ApiService {
 
     if (response.statusCode == 200) {
       _showSuccessDialog(context);
-      print('Response Status: ${response.statusCode}');
-      print('Response Body: ${response.body}');
+      log('Response Status: ${response.statusCode}');
+      log('Response Body: ${response.body}');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
     } else {
-      print('Response Status: ${response.statusCode}');
-      print('Error: ${response.reasonPhrase}');
-      print('Response Body: ${response.body}');
+      log('Response Status: ${response.statusCode}');
+      log('Response Body: ${response.body}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${response.reasonPhrase}')),
       );
