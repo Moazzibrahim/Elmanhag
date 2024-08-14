@@ -14,7 +14,7 @@ class LogoutModel with ChangeNotifier {
       final tokenProvider = Provider.of<TokenModel>(context, listen: false);
       final token = tokenProvider.token;
       final response = await http.post(
-        Uri.parse('https://elmanhag.shop/backend/public/api/admin/auth/logout'),
+        Uri.parse('https://bdev.elmanhag.shop/student/auth/logout'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -39,5 +39,6 @@ class LogoutModel with ChangeNotifier {
     } catch (error) {
       log('Error: $error');
     }
+    
   }
 }

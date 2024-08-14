@@ -1,5 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
-
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, unused_field
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
@@ -12,6 +11,8 @@ import 'package:provider/provider.dart';
 
 // Define RotatingImageIndicator widget
 class RotatingImageIndicator extends StatefulWidget {
+  const RotatingImageIndicator({super.key});
+
   @override
   _RotatingImageIndicatorState createState() => _RotatingImageIndicatorState();
 }
@@ -101,14 +102,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: greycolor,
                 ),
               ),
-              const SizedBox(height: 20),
-              if (_errorMessage != null)
-                Center(
-                  child: Text(
-                    _errorMessage!,
-                    style: const TextStyle(color: redcolor, fontSize: 16),
-                  ),
-                ),
               const SizedBox(height: 10),
               TextField(
                 controller: _emailController,
@@ -168,17 +161,17 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 30),
               Center(
                 child: _isLoading
-                    ? RotatingImageIndicator() // Show loading indicator
+                    ? const RotatingImageIndicator() // Show loading indicator
                     : ElevatedButton(
                         onPressed: () async {
                           String email = _emailController.text;
                           String password = _passwordController.text;
 
                           if (email.isEmpty || password.isEmpty) {
-                            setState(() {
-                              _errorMessage =
-                                  localizations.translate('error_empty_fields');
-                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("يجب مليء جميع البيانات")),
+                            );
                           } else {
                             setState(() {
                               _isLoading = true;
@@ -191,16 +184,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .loginUser(context, email, password);
 
                             setState(() {
-                              _isLoading = false; // Hide loading indicator
+                              _isLoading = false;
                             });
 
-                            if (response == 'Authentication failed') {
-                              setState(() {
-                                _errorMessage = localizations
-                                    .translate('error_auth_failed');
-                              });
+                            if (response == 'successful login') {
+                              // Handle successful login
                             } else {
-                              // Navigate to home screen upon successful login
+                              setState(() {
+                                _errorMessage =
+                                    response; // Show the error under the text fields
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(response)),
+                              );
                             }
                           }
                         },
