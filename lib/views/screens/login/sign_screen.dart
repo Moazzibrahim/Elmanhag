@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/login/second_sign_screen.dart';
+import 'package:flutter_application_1/views/widgets/progress_widget.dart';
 import 'package:flutter_application_1/views/widgets/text_field.dart';
 
 class SignScreen extends StatelessWidget {
@@ -34,6 +37,8 @@ class SignScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const ProgressCircles(currentScreen: 1),
+            const SizedBox(height: 15),
             const Text(
               'أهلا بك معنا',
               style: TextStyle(
@@ -60,9 +65,12 @@ class SignScreen extends StatelessWidget {
               prefixIcon: const Icon(Icons.email, color: redcolor),
             ),
             const SizedBox(height: 15),
-            buildPasswordField(_passwordController, 'الرقم السري'),
+            PasswordField(
+                controller: _passwordController, labelText: "الرقم السري"),
             const SizedBox(height: 15),
-            buildPasswordField(_confirmPasswordController, 'تأكيد الرقم السري'),
+            PasswordField(
+                controller: _confirmPasswordController,
+                labelText: "تاكيدالرقم السري"),
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(
@@ -74,8 +82,8 @@ class SignScreen extends StatelessWidget {
                       _phoneController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('يجب ملء جميع الحقول'),
-                        backgroundColor: Colors.red,
+                        content: Text('يجب ملء جميع البيانات'),
+                        backgroundColor: redcolor,
                       ),
                     );
                   } else if (_passwordController.text !=
@@ -111,7 +119,7 @@ class SignScreen extends StatelessWidget {
                   ),
                 ),
                 child: const Text(
-                  'اكمل',
+                  'التالي',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -126,7 +134,10 @@ class SignScreen extends StatelessWidget {
                 },
                 child: const Text(
                   'لديك حساب؟ تسجيل الدخول',
-                  style: TextStyle(fontSize: 18, color: redcolor),
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: redcolor,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),

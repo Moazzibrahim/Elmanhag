@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controller/Auth/country_provider.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
+import 'package:flutter_application_1/controller/Auth/progress_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'localization/app_localizations.dart';
@@ -20,6 +22,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => SubjectProvider()),
         ChangeNotifierProvider(create: (_) => SectionsProvider()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => DataProvider()),
       ],
       child: const MyApp(),
     ),

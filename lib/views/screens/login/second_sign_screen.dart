@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/views/widgets/progress_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/country_provider.dart';
 import 'package:flutter_application_1/models/sign_up_model.dart';
@@ -31,48 +35,67 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
   String? selectedCountryId;
   String? selectedCityId;
   String? selectedCategoryId;
-  String? selectedType;
+  String? selectedEducationId;
 
   String? selectedCountryName;
   String? selectedCityName;
   String? selectedCategoryName;
+  String? selectedEducationName;
 
   List<Country> countries = [];
   List<City> cities = [];
   List<Category> categories = [];
-  List<String> language = ['عربي', 'لغات'];
+  List<Education> educations = [];
 
   @override
   void initState() {
     super.initState();
-    fetchData().then((data) {
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    dataProvider.fetchData(context).then((_) {
       setState(() {
-        countries = data.countries;
-        cities = data.cities;
-        categories = data.categories;
+        countries = dataProvider.dataModel?.countries ?? [];
+        cities = dataProvider.dataModel?.cities ?? [];
+        categories = dataProvider.dataModel?.categories ?? [];
+        educations = dataProvider.dataModel?.educations ?? [];
       });
     });
   }
 
   void signUp() {
-    String languageValue = selectedType == 'عربي' ? '0' : '1';
+    if (selectedCountryId != null &&
+        selectedCityId != null &&
+        selectedCategoryId != null &&
+        selectedEducationId != null) {
+      // Ensure the phone number is assigned correctly
+      String phoneToPass = _studentPhoneController.text.isNotEmpty
+          ? _studentPhoneController.text
+          : widget.phone;
 
-    // Navigate to the ThirdSignUp screen and pass the data
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ThirdSignUp(
-          name: widget.name,
-          email: widget.email,
-          password: widget.password,
-          confpassword: widget.confpassword,
-          phone: _studentPhoneController.text,
-          countryId: selectedCountryId!,
-          cityId: selectedCityId!,
-          categoryId: selectedCategoryId!,
-          language: languageValue,
+      log('Phone number in second: $phoneToPass');
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ThirdSignUp(
+            name: widget.name,
+            email: widget.email,
+            password: widget.password,
+            confpassword: widget.confpassword,
+            phone: phoneToPass, // Check this value
+            countryId: selectedCountryId!,
+            cityId: selectedCityId!,
+            categoryId: selectedCategoryId!,
+            educationId: selectedEducationId!,
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('يجب ملء جميع البيانات '),
+          backgroundColor: redcolor,
+        ),
+      );
+    }
   }
 
   @override
@@ -96,6 +119,8 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ProgressCircles(currentScreen: 2),
+            const SizedBox(height: 15),
             const Text(
               'أهلا بك معنا',
               style: TextStyle(
@@ -104,7 +129,6 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            const SizedBox(height: 15),
             DropdownButtonFormField<String>(
               value: selectedCountryId,
               items: countries.map((Country country) {
@@ -133,10 +157,12 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                   selectedCountryId = newValue;
                   selectedCountryName = countries
                       .firstWhere(
-                          (country) => country.id == int.parse(newValue!))
+                          (country) => country.id.toString() == newValue)
                       .name;
                 });
               },
+              validator: (value) =>
+                  value == null ? 'Please select a country' : null,
             ),
             const SizedBox(height: 15),
             DropdownButtonFormField<String>(
@@ -166,10 +192,12 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 setState(() {
                   selectedCityId = newValue;
                   selectedCityName = cities
-                      .firstWhere((city) => city.id == int.parse(newValue!))
+                      .firstWhere((city) => city.id.toString() == newValue)
                       .name;
                 });
               },
+              validator: (value) =>
+                  value == null ? 'Please select a city' : null,
             ),
             const SizedBox(height: 15),
             DropdownButtonFormField<String>(
@@ -200,23 +228,25 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                   selectedCategoryId = newValue;
                   selectedCategoryName = categories
                       .firstWhere(
-                          (category) => category.id == int.parse(newValue!))
+                          (category) => category.id.toString() == newValue)
                       .name;
                 });
               },
+              validator: (value) =>
+                  value == null ? 'Please select a category' : null,
             ),
             const SizedBox(height: 15),
             DropdownButtonFormField<String>(
-              value: selectedType,
-              items: language.map((String type) {
+              value: selectedEducationId,
+              items: educations.map((Education education) {
                 return DropdownMenuItem<String>(
-                  value: type,
-                  child: Text(type),
+                  value: education.id.toString(),
+                  child: Text(education.name),
                 );
               }).toList(),
               decoration: InputDecoration(
-                labelText: 'الفئة',
-                prefixIcon: const Icon(Icons.language, color: redcolor),
+                labelText: 'التعليم',
+                prefixIcon: const Icon(Icons.school, color: redcolor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
@@ -231,9 +261,15 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               ),
               onChanged: (String? newValue) {
                 setState(() {
-                  selectedType = newValue;
+                  selectedEducationId = newValue;
+                  selectedEducationName = educations
+                      .firstWhere(
+                          (education) => education.id.toString() == newValue)
+                      .name;
                 });
               },
+              validator: (value) =>
+                  value == null ? 'Please select an education' : null,
             ),
             const SizedBox(height: 30),
             Center(
@@ -251,36 +287,13 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                   ),
                 ),
                 child: const Text(
-                  'ارسال',
+                  'التالي',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
             const SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon:
-                      const FaIcon(FontAwesomeIcons.facebook, color: redcolor),
-                  iconSize: 30,
-                  onPressed: () {},
-                ),
-                const SizedBox(width: 20),
-                IconButton(
-                  icon:
-                      const FaIcon(FontAwesomeIcons.instagram, color: redcolor),
-                  iconSize: 30,
-                  onPressed: () {},
-                ),
-                const SizedBox(width: 20),
-                IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.twitter, color: redcolor),
-                  iconSize: 30,
-                  onPressed: () {},
-                ),
-              ],
-            ),
+            const Divider(color: Colors.grey),
             const SizedBox(height: 30),
             Center(
               child: TextButton(
@@ -289,7 +302,10 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 },
                 child: const Text(
                   'لديك حساب؟ تسجيل الدخول',
-                  style: TextStyle(fontSize: 18, color: redcolor),
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: redcolor,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
