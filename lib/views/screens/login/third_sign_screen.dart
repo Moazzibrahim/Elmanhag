@@ -34,6 +34,7 @@ class ThirdSignUp extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _ThirdSignUpState createState() => _ThirdSignUpState();
 }
 
@@ -83,7 +84,7 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProgressCircles(currentScreen: 3),
+            const ProgressCircles(currentScreen: 3),
             const SizedBox(height: 15),
             const Text(
               'أهلا بك معنا',

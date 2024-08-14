@@ -4,8 +4,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 class ProgressCircles extends StatelessWidget {
   final int currentScreen;
 
-  const ProgressCircles({Key? key, required this.currentScreen})
-      : super(key: key);
+  const ProgressCircles({super.key, required this.currentScreen});
 
   @override
   Widget build(BuildContext context) {

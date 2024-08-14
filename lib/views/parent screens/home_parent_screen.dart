@@ -3,10 +3,6 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/views/parent%20screens/notfications_parent_screen.dart';
 import 'package:flutter_application_1/views/parent%20widgets/home_parent_grid.dart';
-import 'package:flutter_application_1/controller/Auth/login_provider.dart';
-import 'package:flutter_application_1/views/screens/login/login_screen.dart';
-import 'package:http/http.dart' as http;
-import 'dart:developer';
 import 'package:provider/provider.dart'; // Import Provider
 
 class HomeParentScreen extends StatelessWidget {

@@ -7,7 +7,6 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/country_provider.dart';
 import 'package:flutter_application_1/models/sign_up_model.dart';
 import 'package:flutter_application_1/views/screens/login/third_sign_screen.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SecondSignScreen extends StatefulWidget {
   final String name;
@@ -26,6 +25,7 @@ class SecondSignScreen extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _SecondSignScreenState createState() => _SecondSignScreenState();
 }
 
@@ -90,8 +90,8 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('يجب ملء جميع البيانات '),
+        const SnackBar(
+          content: Text('يجب ملء جميع البيانات '),
           backgroundColor: redcolor,
         ),
       );
@@ -119,7 +119,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProgressCircles(currentScreen: 2),
+            const ProgressCircles(currentScreen: 2),
             const SizedBox(height: 15),
             const Text(
               'أهلا بك معنا',
