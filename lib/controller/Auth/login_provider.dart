@@ -21,6 +21,13 @@ class TokenModel with ChangeNotifier {
 class LoginModel with ChangeNotifier {
   String? _role;
   String? get role => _role;
+  late int _id;
+  int get id => _id;
+
+  void setId(int id) {
+    _id = id;
+    notifyListeners();
+  }
 
   void setRole(String role) {
     _role = role;
@@ -57,8 +64,8 @@ class LoginModel with ChangeNotifier {
         if (responseData.containsKey('faield')) {
           final errorMessage = responseData['faield'];
           log("Login Failed: $errorMessage");
-          _showSnackbar(context, errorMessage);
-          return 'Login failed: $errorMessage';
+          _showSnackbar(context,"خطأ في التسجيل");
+          return 'Login failed: خطأ في التسجيل';
         }
 
         if (responseData.containsKey('_token')) {
@@ -66,14 +73,17 @@ class LoginModel with ChangeNotifier {
           Provider.of<TokenModel>(context, listen: false).setToken(token);
 
           final userDetails = responseData['user'] as Map<String, dynamic>;
+          int id = userDetails['id'];
+          Provider.of<LoginModel>(context, listen: false).setId(id);
           _handleUserDetails(context, userDetails);
 
           log("Response Data: $responseData");
           log("Status Code: ${response.statusCode}");
           log("Token: $token");
           log("Role: $_role");
+          log("id: $id");
 
-          return "";
+          return "دخول ناجح";
         } else {
           return "Token not found in response";
         }

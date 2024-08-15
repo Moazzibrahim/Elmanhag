@@ -33,13 +33,14 @@
     "edit": "Edit",
     "logout": "Logout",
     "student_name": "Ahmed Ibrahim",
-    "grade": "Fourth Grade",
+    "grade": "Grade",
     "language": "Languages",
-    "country": "Egypt",
-    "city": "Alexandria",
-    "phone": "01558744425",
-    "parent_name": "Ibrahim Mohammed",
-    "parent_phone": "0121111125",
+    "country": "country",
+    "city": "city",
+    "phone": "phone",
+    "parent_name": "parent Name",
+    "parent_phone": "parent phone",
+    "parent_email":"parent email",
     "edit_profile": "Edit Profile",
     "save": "Save",
     "upcoming_classes": "Upcoming Classes",
@@ -69,6 +70,10 @@
   "home": "Home",
   "switch to arabic": "Switch to Arabic",
   "profile": "Profile",
-  "change_language": "Switch to Arabic"
+  "change_language": "Switch to Arabic",
+  "Name":"Name",
+  "education":"education",
+  "successful_login":"successful_login"
+  
 
 }

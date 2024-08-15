@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/profile/edit_profile.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
   Widget build(BuildContext context) {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final isLoading = userProfileProvider.isLoading;
+    final localizations = AppLocalizations.of(context);
 
     return DefaultTabController(
       animationDuration: const Duration(seconds: 1),
@@ -61,7 +63,7 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Welcome ${userProfileProvider.name ?? 'User'}',
+                            '${localizations.translate('welcome')} ${userProfileProvider.name ?? localizations.translate('Name')}',
                             style: TextStyle(
                                 color: redcolor,
                                 fontSize: 16.sp,
@@ -105,12 +107,12 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
                 unselectedLabelColor: redcolor,
                 labelStyle: TextStyle(fontSize: 18.sp),
                 unselectedLabelStyle: TextStyle(fontSize: 14.sp),
-                tabs: const [
+                tabs: [
                   Tab(
-                    text: 'Student',
+                    text: localizations.translate('student'),
                   ),
                   Tab(
-                    text: 'Parent',
+                    text: localizations.translate('parent'),
                   ),
                 ],
               ),
@@ -135,6 +137,7 @@ class StudentTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final isLoading = userProfileProvider.isLoading;
+    final localizations = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -143,33 +146,31 @@ class StudentTabContent extends StatelessWidget {
           : Column(
               children: [
                 InfoCard(
-                  text: 'Name: ${userProfileProvider.name ?? 'N/A'}',
+                  text: '${localizations.translate('Name')}: ${userProfileProvider.name ?? 'N/A'}',
                   icon: Icons.person,
                 ),
                 InfoCard(
-                  text: 'Email: ${userProfileProvider.email ?? 'N/A'}',
-                  icon: Icons.person,
+                  text: '${localizations.translate('email')}: ${userProfileProvider.email ?? 'N/A'}',
+                  icon: Icons.email,
                 ),
                 InfoCard(
-                  text:
-                      'Grade: ${userProfileProvider.category ?? 'N/A'}', // Modify as needed
+                  text: '${localizations.translate('grade')}: ${userProfileProvider.category ?? 'N/A'}',
                   icon: Icons.grade,
                 ),
                 InfoCard(
-                  text:
-                      'education: ${userProfileProvider.education ?? 'N/A'}', // Modify according to actual data
+                  text: '${localizations.translate('education')}: ${userProfileProvider.education ?? 'N/A'}',
                   icon: Icons.language,
                 ),
                 InfoCard(
-                  text: 'Country: ${userProfileProvider.countryName ?? 'N/A'}',
+                  text: '${localizations.translate('country')}: ${userProfileProvider.countryName ?? 'N/A'}',
                   icon: Icons.flag,
                 ),
                 InfoCard(
-                  text: 'City: ${userProfileProvider.cityName ?? 'N/A'}',
+                  text: '${localizations.translate('city')}: ${userProfileProvider.cityName ?? 'N/A'}',
                   icon: Icons.location_city,
                 ),
                 InfoCard(
-                  text: 'Phone: ${userProfileProvider.phone ?? 'N/A'}',
+                  text: '${localizations.translate('phone')}: ${userProfileProvider.phone ?? 'N/A'}',
                   icon: Icons.phone,
                 ),
               ],
@@ -185,6 +186,7 @@ class ParentTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final isLoading = userProfileProvider.isLoading;
+    final localizations = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -194,18 +196,15 @@ class ParentTabContent extends StatelessWidget {
               child: Column(
                 children: [
                   InfoCard(
-                    text:
-                        'Parent Name: ${userProfileProvider.parentName ?? 'N/A'}',
+                    text: '${localizations.translate('parent_name')}: ${userProfileProvider.parentName ?? 'N/A'}',
                     icon: Icons.person,
                   ),
                   InfoCard(
-                    text:
-                        'Parent Phone: ${userProfileProvider.parentPhone ?? 'N/A'}',
+                    text: '${localizations.translate('parent_phone')}: ${userProfileProvider.parentPhone ?? 'N/A'}',
                     icon: Icons.phone,
                   ),
                   InfoCard(
-                    text:
-                        'Parent Email: ${userProfileProvider.parentEmail ?? 'N/A'}',
+                    text: '${localizations.translate('parent_email')}: ${userProfileProvider.parentEmail ?? 'N/A'}',
                     icon: Icons.email,
                   ),
                 ],
