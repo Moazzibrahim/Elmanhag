@@ -41,6 +41,7 @@
     "parent_name": "parent Name",
     "parent_phone": "parent phone",
     "parent_email":"parent email",
+    "education":"education",
     "edit_profile": "Edit Profile",
     "save": "Save",
     "upcoming_classes": "Upcoming Classes",
@@ -70,6 +71,7 @@
   "home": "Home",
   "switch to arabic": "Switch to Arabic",
   "profile": "Profile",
-  "change_language": "Switch to Arabic"
+  "change_language": "Switch to Arabic",
+  "logOut":"logout"
 
 }
