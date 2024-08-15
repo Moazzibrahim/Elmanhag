@@ -71,7 +71,9 @@ class HomeScreen extends StatelessWidget {
               builder: (context, logoutModel, child) {
                 return ListTile(
                   leading: const Icon(Icons.logout),
-                  title: const Text('Log Out'),
+                  title: Text(
+                    localizations.translate('logOut'),
+                  ),
                   onTap: () async {
                     await logoutModel.logout(context);
                   },

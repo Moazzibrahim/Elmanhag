@@ -25,7 +25,6 @@ class SecondSignScreen extends StatefulWidget {
   });
 
   @override
-  // ignore: library_private_types_in_public_api
   _SecondSignScreenState createState() => _SecondSignScreenState();
 }
 
@@ -61,17 +60,18 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
     });
   }
 
+  String truncateString(String text, int length) {
+    return text.length > length ? '${text.substring(0, length)}...' : text;
+  }
+
   void signUp() {
     if (selectedCountryId != null &&
         selectedCityId != null &&
         selectedCategoryId != null &&
         selectedEducationId != null) {
-      // Ensure the phone number is assigned correctly
       String phoneToPass = _studentPhoneController.text.isNotEmpty
           ? _studentPhoneController.text
           : widget.phone;
-
-      log('Phone number in second: $phoneToPass');
 
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -80,7 +80,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
             email: widget.email,
             password: widget.password,
             confpassword: widget.confpassword,
-            phone: phoneToPass, // Check this value
+            phone: phoneToPass,
             countryId: selectedCountryId!,
             cityId: selectedCityId!,
             categoryId: selectedCategoryId!,
@@ -134,7 +134,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               items: countries.map((Country country) {
                 return DropdownMenuItem<String>(
                   value: country.id.toString(),
-                  child: Text(country.name),
+                  child: Text(truncateString(country.name, 20)),
                 );
               }).toList(),
               decoration: InputDecoration(
@@ -170,7 +170,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               items: cities.map((City city) {
                 return DropdownMenuItem<String>(
                   value: city.id.toString(),
-                  child: Text(city.name),
+                  child: Text(truncateString(city.name, 20)),
                 );
               }).toList(),
               decoration: InputDecoration(
@@ -205,7 +205,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               items: categories.map((Category category) {
                 return DropdownMenuItem<String>(
                   value: category.id.toString(),
-                  child: Text(category.name),
+                  child: Text(truncateString(category.name, 20)),
                 );
               }).toList(),
               decoration: InputDecoration(
@@ -241,7 +241,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               items: educations.map((Education education) {
                 return DropdownMenuItem<String>(
                   value: education.id.toString(),
-                  child: Text(education.name),
+                  child: Text(truncateString(education.name, 20)),
                 );
               }).toList(),
               decoration: InputDecoration(
@@ -273,40 +273,42 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
             ),
             const SizedBox(height: 30),
             Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  signUp();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: redcolor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  textStyle: const TextStyle(fontSize: 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 15),
+                      textStyle: const TextStyle(fontSize: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text('رجوع',
+                        style: TextStyle(color: Colors.white)),
                   ),
-                ),
-                child: const Text(
-                  'التالي',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-            const Divider(color: Colors.grey),
-            const SizedBox(height: 30),
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  'لديك حساب؟ تسجيل الدخول',
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: redcolor,
-                      fontWeight: FontWeight.bold),
-                ),
+                  ElevatedButton(
+                    onPressed: signUp,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 15),
+                      textStyle: const TextStyle(fontSize: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'التالي',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
