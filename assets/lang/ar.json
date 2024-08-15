@@ -73,5 +73,7 @@
     "profile": "الملف الشخصي",
     "Name":"الاسم",
     "education":"نوع التعليم",
-    "successful_login":"دخول ناجح"
+    "successful_login":"دخول ناجح",
+    "logOut": "تسجيل خروج"
+
 }

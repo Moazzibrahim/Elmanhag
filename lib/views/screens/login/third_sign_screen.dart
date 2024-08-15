@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/sign_up_provider.dart';
@@ -53,8 +52,6 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
   @override
   void initState() {
     super.initState();
-    log('Phone number in ThirdSignUp initState: ${widget.phone}');
-
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
     dataProvider.fetchData(context).then((_) {
       setState(() {
@@ -153,52 +150,74 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
             ),
             const SizedBox(height: 30),
             Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (_parentPasswordController.text !=
-                      _parentConfirmPasswordController.text) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('كلمتا السر غير متطابقتين'),
-                        backgroundColor: redcolor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pop(); // Go back to the previous screen
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          redcolor, // Set a different color for the back button
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 15),
+                      textStyle: const TextStyle(fontSize: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    );
-                  } else {
-                    log('Phone number in ThirdSignUp: ${widget.phone}');
-
-                    // Send data to API
-                    await ApiService.signUp(
-                      name: widget.name,
-                      email: widget.email,
-                      password: widget.password,
-                      confpassword: widget.confpassword,
-                      phone: widget.phone,
-                      selectedCountryId: widget.countryId,
-                      selectedCityId: widget.cityId,
-                      selectedCategoryId: widget.categoryId,
-                      selectedEducationId: widget.educationId,
-                      parentname: _parentNameController.text,
-                      parentemail: _parentEmailController.text,
-                      parentpassword: _parentPasswordController.text,
-                      parentphone: _parentPhoneController.text,
-                      selectedparentrealtionId: selectedParentRelation,
-                      context: context,
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: redcolor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  textStyle: const TextStyle(fontSize: 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      'رجوع',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'تسجيل',
-                  style: TextStyle(color: Colors.white),
-                ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_parentPasswordController.text !=
+                          _parentConfirmPasswordController.text) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('كلمتا السر غير متطابقتين'),
+                            backgroundColor: redcolor,
+                          ),
+                        );
+                      } else {
+                        await ApiService.signUp(
+                          name: widget.name,
+                          email: widget.email,
+                          password: widget.password,
+                          confpassword: widget.confpassword,
+                          phone: widget.phone,
+                          selectedCountryId: widget.countryId,
+                          selectedCityId: widget.cityId,
+                          selectedCategoryId: widget.categoryId,
+                          selectedEducationId: widget.educationId,
+                          parentname: _parentNameController.text,
+                          parentemail: _parentEmailController.text,
+                          parentpassword: _parentPasswordController.text,
+                          parentphone: _parentPhoneController.text,
+                          selectedparentrealtionId: selectedParentRelation,
+                          context: context,
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 15),
+                      textStyle: const TextStyle(fontSize: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'تسجيل',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 30),

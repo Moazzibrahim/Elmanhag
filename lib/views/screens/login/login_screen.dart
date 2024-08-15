@@ -1,12 +1,10 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, unused_field
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/forget_password/forget_password.dart';
 import 'package:flutter_application_1/views/screens/login/sign_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 // Define RotatingImageIndicator widget
@@ -55,7 +53,6 @@ class _RotatingImageIndicatorState extends State<RotatingImageIndicator>
   }
 }
 
-// LoginScreen class
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -85,13 +82,10 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 50),
               const SizedBox(height: 20),
               Center(
-                child: Text(
-                  localizations.translate('title'), // Localized title
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 32,
-                    color: redcolor,
-                  ),
+                child: Image.asset(
+                  'assets/images/amin2.png', // Replace title text with image
+                  height: 100,
+                  width: 150,
                 ),
               ),
               const SizedBox(height: 20),
@@ -194,9 +188,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _errorMessage =
                                     response; // Show the error under the text fields
                               });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(response)),
-                              );
                             }
                           }
                         },
@@ -245,59 +236,37 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    icon: const FaIcon(
-                      FontAwesomeIcons.facebook,
-                      color: redcolor,
-                    ),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: const FaIcon(
-                      FontAwesomeIcons.instagram,
-                      color: redcolor,
-                    ),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: const FaIcon(
-                      FontAwesomeIcons.xTwitter,
-                      color: redcolor,
-                    ),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
               Center(
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: localizations.translate('no_account'),
-                        style: const TextStyle(color: greycolor, fontSize: 18),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignScreen(),
                       ),
-                      TextSpan(
-                        text: localizations.translate('create_account'),
-                        style: const TextStyle(
-                          color: redcolor,
-                          decoration: TextDecoration.underline,
-                          fontSize: 18,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SignScreen(),
-                              ),
-                            );
-                          },
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 100,
+                      vertical: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: const BorderSide(
+                        color: redcolor, // Set the border color here
+                        width: 2.0, // Set the width of the border here
                       ),
-                    ],
+                    ),
+                  ),
+                  child: Text(
+                    localizations.translate('create_account'),
+                    style: const TextStyle(
+                      color: redcolor,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
