@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
-
 class UserProfileProvider with ChangeNotifier {
   String? _name;
   String? _email;
@@ -29,11 +28,11 @@ class UserProfileProvider with ChangeNotifier {
   String? get cityName => _cityName;
   String? get education => _education;
   String? get category => _category;
-
   bool get isLoading => _isLoading;
   String? get parentName => _parentName;
   String? get parentPhone => _parentPhone;
   String? get parentEmail => _parentEmail;
+
   Future<void> fetchUserProfile(BuildContext context) async {
     final url = Uri.parse('https://bdev.elmanhag.shop/student/profile/view');
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -57,10 +56,10 @@ class UserProfileProvider with ChangeNotifier {
         _name = user['name'];
         _email = user['email'];
         _phone = user['phone'];
-        _image = user['image'];
+        _image = user['image']['url'];
         _role = user['role'];
-        _countryName = user['country']['name'];
-        _cityName = user['city']['name'];
+        _countryName = user['country_name'];
+        _cityName = user['city_name'];
         _education = user['education'];
         _category = user['category']['name'];
 
@@ -78,7 +77,9 @@ class UserProfileProvider with ChangeNotifier {
         }
       } else {
         // Handle non-200 responses
-        throw Exception('Failed to load user profile: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load user profile: ${response.statusCode}')),
+        );
       }
     } catch (error) {
       print('Error fetching user profile: $error');

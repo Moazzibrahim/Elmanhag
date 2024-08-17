@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -48,7 +49,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: redcolor),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(
+                context,
+              );
             },
           ),
           title: Row(
@@ -144,35 +147,53 @@ class _StudentTabContentState extends State<StudentTabContent> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-
     Future<void> saveProfile() async {
-      int id = Provider.of<LoginModel>(context, listen: false).id;
-      final url = 'https://bdev.elmanhag.shop/student/profile/modify/$id';
+      // API endpoint
+      const url = 'https://bdev.elmanhag.shop/student/profile/modify';
+
+      // Retrieve the token from your provider
       final token = Provider.of<TokenModel>(context, listen: false).token;
 
+      // Create a multipart request
       final request = http.MultipartRequest('POST', Uri.parse(url));
-      request.headers['Authorization'] = 'Bearer $token';
-      request.fields['name'] = _nameController.text;
-      request.fields['email'] = _emailController.text;
-      request.fields['phone'] = _phoneController.text;
-      request.fields['password'] = _passwordController.text;
-      request.fields['conf_password'] = _confirmpasswordController.text;
-      request.fields['country_id'] = selectedCountryId ?? '';
-      request.fields['city_id'] = selectedCityId ?? '';
-      request.fields['category_id'] = selectedCategoryId ?? '';
-      request.fields['education_id'] = selectedEducationId ?? '';
 
+      // Set the authorization header
+      request.headers['Content-Type'] = 'application/json';
+      request.headers['Accept'] = 'application/json';
+      request.headers['Authorization'] = 'Bearer $token';
+
+      // Create a map with all the fields
+      final Map<String, String> fieldsMap = {
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'phone': _phoneController.text,
+        'password': _passwordController.text,
+        'conf_password': _confirmpasswordController.text,
+        'country_id': selectedCountryId ?? '',
+        'city_id': selectedCityId ?? '',
+        'category_id': selectedCategoryId ?? '',
+        'education_id': selectedEducationId ?? '',
+      };
+
+      // Add the map to the request fields
+      request.fields.addAll(fieldsMap);
+
+      // Add the image file if it's not null
       if (widget.image != null) {
         request.files.add(
             await http.MultipartFile.fromPath('image', widget.image!.path));
       }
 
+      // Send the request
       final response = await request.send();
 
+      // Handle the response
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile updated successfully')),
         );
+        Navigator.pop(context, true); // Pass true to indicate an update
+        log("name: ${_nameController.text}");
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to update profile')),
@@ -396,63 +417,26 @@ class _StudentTabContentState extends State<StudentTabContent> {
   }
 }
 
-// class ParentTabContent extends StatelessWidget {
-//   const ParentTabContent({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final localizations = AppLocalizations.of(context);
-
-//     return Column(
-//       children: [
-//         Expanded(
-//           child: SingleChildScrollView(
-//             child: Padding(
-//               padding: const EdgeInsets.all(16.0),
-//               child: Column(
-//                 children: [
-//                   CustomTextField(
-//                     hintText: localizations.translate('parent_name'),
-//                     textInputType: TextInputType.name,
-//                     icon: Icons.person,
-//                   ),
-//                   CustomTextField(
-//                     hintText: localizations.translate('parent_phone'),
-//                     textInputType: TextInputType.phone,
-//                     icon: Icons.phone,
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//         const Padding(
-//           padding: EdgeInsets.all(16.0),
-//           child: SaveButton(),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
 class CustomTextField extends StatelessWidget {
   final String hintText;
   final IconData icon;
   final TextInputType textInputType;
   final TextEditingController controller;
 
-  const CustomTextField(
-      {super.key,
-      required this.hintText,
-      required this.icon,
-      required this.textInputType,
-      required this.controller});
+  const CustomTextField({
+    super.key,
+    required this.hintText,
+    required this.icon,
+    required this.textInputType,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h),
       child: TextField(
+        controller: controller, // Ensure the controller is set here
         keyboardType: textInputType,
         decoration: InputDecoration(
           hintText: hintText,

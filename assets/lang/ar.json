@@ -74,6 +74,7 @@
     "Name":"الاسم",
     "education":"نوع التعليم",
     "successful_login":"دخول ناجح",
-    "logOut": "تسجيل خروج"
+    "logOut": "تسجيل خروج",
+    "change_theme":"تغيير وضع الشاشة"
 
 }

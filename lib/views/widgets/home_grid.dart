@@ -14,6 +14,7 @@ class HomeGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     List<String> texts = [
       localizations.translate('tasks'),
@@ -57,11 +58,11 @@ class HomeGrid extends StatelessWidget {
             }
             if (texts[index] == localizations.translate('live_classes')) {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) =>  const LiveScreen()));
+                  MaterialPageRoute(builder: (ctx) => const LiveScreen()));
             }
           },
           child: Card(
-            color: Colors.white,
+            color: theme.scaffoldBackgroundColor,
             elevation: 3,
             shadowColor: redcolor,
             child: Column(
@@ -69,7 +70,8 @@ class HomeGrid extends StatelessWidget {
               children: [
                 Text(
                   texts[index],
-                  style: const TextStyle(color: redcolor, fontSize: 20),
+                  style: TextStyle(
+                      color: theme.textTheme.bodyLarge?.color, fontSize: 20),
                 ),
                 const SizedBox(height: 7),
                 Image.asset(images[index]),

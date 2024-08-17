@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
@@ -27,6 +29,18 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
         _isInitialized = true;
       }
     });
+  }
+
+  Future<void> _navigateAndRefresh() async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (ctx) => const EditProfileScreen()),
+    );
+
+    // Check if the result indicates that an update occurred
+    if (result == true) {
+      Provider.of<UserProfileProvider>(context, listen: false)
+          .fetchUserProfile(context);
+    }
   }
 
   @override
@@ -79,10 +93,8 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.edit, color: redcolor),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => const EditProfileScreen()));
-                      },
+                      onPressed:
+                          _navigateAndRefresh, // Update navigation method
                     ),
                     IconButton(
                       icon: const Icon(Icons.logout, color: redcolor),
@@ -146,31 +158,38 @@ class StudentTabContent extends StatelessWidget {
           : Column(
               children: [
                 InfoCard(
-                  text: '${localizations.translate('Name')}: ${userProfileProvider.name ?? 'N/A'}',
+                  text:
+                      '${localizations.translate('Name')}: ${userProfileProvider.name ?? 'N/A'}',
                   icon: Icons.person,
                 ),
                 InfoCard(
-                  text: '${localizations.translate('email')}: ${userProfileProvider.email ?? 'N/A'}',
+                  text:
+                      '${localizations.translate('email')}: ${userProfileProvider.email ?? 'N/A'}',
                   icon: Icons.email,
                 ),
                 InfoCard(
-                  text: '${localizations.translate('grade')}: ${userProfileProvider.category ?? 'N/A'}',
+                  text:
+                      '${localizations.translate('grade')}: ${userProfileProvider.category ?? 'N/A'}',
                   icon: Icons.grade,
                 ),
                 InfoCard(
-                  text: '${localizations.translate('education')}: ${userProfileProvider.education ?? 'N/A'}',
+                  text:
+                      '${localizations.translate('education')}: ${userProfileProvider.education ?? 'N/A'}',
                   icon: Icons.language,
                 ),
                 InfoCard(
-                  text: '${localizations.translate('country')}: ${userProfileProvider.countryName ?? 'N/A'}',
+                  text:
+                      '${localizations.translate('country')}: ${userProfileProvider.countryName ?? 'N/A'}',
                   icon: Icons.flag,
                 ),
                 InfoCard(
-                  text: '${localizations.translate('city')}: ${userProfileProvider.cityName ?? 'N/A'}',
+                  text:
+                      '${localizations.translate('city')}: ${userProfileProvider.cityName ?? 'N/A'}',
                   icon: Icons.location_city,
                 ),
                 InfoCard(
-                  text: '${localizations.translate('phone')}: ${userProfileProvider.phone ?? 'N/A'}',
+                  text:
+                      '${localizations.translate('phone')}: ${userProfileProvider.phone ?? 'N/A'}',
                   icon: Icons.phone,
                 ),
               ],
@@ -196,15 +215,18 @@ class ParentTabContent extends StatelessWidget {
               child: Column(
                 children: [
                   InfoCard(
-                    text: '${localizations.translate('parent_name')}: ${userProfileProvider.parentName ?? 'N/A'}',
+                    text:
+                        '${localizations.translate('parent_name')}: ${userProfileProvider.parentName ?? 'N/A'}',
                     icon: Icons.person,
                   ),
                   InfoCard(
-                    text: '${localizations.translate('parent_phone')}: ${userProfileProvider.parentPhone ?? 'N/A'}',
+                    text:
+                        '${localizations.translate('parent_phone')}: ${userProfileProvider.parentPhone ?? 'N/A'}',
                     icon: Icons.phone,
                   ),
                   InfoCard(
-                    text: '${localizations.translate('parent_email')}: ${userProfileProvider.parentEmail ?? 'N/A'}',
+                    text:
+                        '${localizations.translate('parent_email')}: ${userProfileProvider.parentEmail ?? 'N/A'}',
                     icon: Icons.email,
                   ),
                 ],
