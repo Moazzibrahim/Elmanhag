@@ -50,8 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/tefl.png'),
+                  CircleAvatar(
+                    backgroundImage:
+                        NetworkImage('${userProfileProvider.image}'),
                     radius: 40,
                   ),
                   const SizedBox(height: 10),
@@ -142,9 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             child: Row(
                               children: [
-                                const CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage('assets/images/tefl.png'),
+                                CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      '${userProfileProvider.image}'),
                                   radius: 20,
                                 ),
                                 const SizedBox(width: 10),
@@ -190,14 +191,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                           child: Row(
                             children: [
-                              const CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/images/tefl.png'),
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    '${userProfileProvider.image}'),
                                 radius: 20,
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                localizations.translate('welcome Yousef'),
+                                "${localizations.translate('welcome')} ${userProfileProvider.name}",
                                 style: const TextStyle(
                                   color: redcolor,
                                   fontSize: 20,
