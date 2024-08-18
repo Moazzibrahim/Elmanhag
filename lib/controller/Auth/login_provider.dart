@@ -7,17 +7,37 @@ import 'package:flutter_application_1/views/parent%20screens/home_parent_screen.
 import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+// TokenModel with token persistence
 class TokenModel with ChangeNotifier {
   String? _token;
   String? get token => _token;
 
-  void setToken(String token) {
+  Future<void> setToken(String token) async {
     _token = token;
+    notifyListeners();
+
+    // Save token in SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
+  }
+
+  Future<void> loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    _token = prefs.getString('auth_token');
+    notifyListeners();
+  }
+
+  Future<void> clearToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+    _token = null;
     notifyListeners();
   }
 }
 
+// LoginModel with role handling and token saving
 class LoginModel with ChangeNotifier {
   String? _role;
   String? get role => _role;
@@ -40,9 +60,7 @@ class LoginModel with ChangeNotifier {
     'Accept': 'application/json',
   };
 
-  Future<String> loginUser(
-      BuildContext context, String email, String password) async {
-    // Validate empty fields
+  Future<String> loginUser(BuildContext context, String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
       String message = 'Invalid: ';
       if (email.isEmpty) message += 'Email is empty. ';
@@ -64,7 +82,7 @@ class LoginModel with ChangeNotifier {
         if (responseData.containsKey('faield')) {
           final errorMessage = responseData['faield'];
           log("Login Failed: $errorMessage");
-          _showSnackbar(context,"خطأ في التسجيل");
+          _showSnackbar(context, "خطأ في التسجيل");
           return 'Login failed: خطأ في التسجيل';
         }
 
@@ -97,8 +115,7 @@ class LoginModel with ChangeNotifier {
     }
   }
 
-  void _handleUserDetails(
-      BuildContext context, Map<String, dynamic> userDetails) {
+  void _handleUserDetails(BuildContext context, Map<String, dynamic> userDetails) {
     if (userDetails.containsKey('role')) {
       final String role = userDetails['role'];
       setRole(role);

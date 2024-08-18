@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/country_provider.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
+import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/models/sign_up_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
@@ -23,6 +24,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   File? _image;
 
   final picker = ImagePicker();
+  bool _isInitialized = false;
 
   Future<void> pickImage() async {
     final pickedFile = await picker.pickImage(
@@ -37,8 +39,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_isInitialized) {
+        Provider.of<UserProfileProvider>(context, listen: false)
+            .fetchUserProfile(context);
+        _isInitialized = true;
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final userProfileProvider = Provider.of<UserProfileProvider>(context);
 
     return DefaultTabController(
       length: 2,
@@ -59,7 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               CircleAvatar(
                 backgroundImage: _image != null
                     ? FileImage(_image!)
-                    : const AssetImage('assets/images/tefl.png'),
+                    : NetworkImage("${userProfileProvider.image}"),
                 radius: 20,
               ),
               IconButton(
