@@ -5,6 +5,7 @@ import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
+import 'package:flutter_application_1/views/screens/subscriptions/my_subscriptions.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final localeProvider = Provider.of<LocaleProvider>(context);
     final localizations = AppLocalizations.of(context);
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       drawer: Drawer(
@@ -92,8 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, themeProvider, child) {
                 return ListTile(
                   leading: Icon(themeProvider.isDarkMode
-                      ? Icons.dark_mode
-                      : Icons.light_mode),
+                      ? Icons.light_mode
+                      : Icons.dark_mode),
                   title: Text(localizations.translate("change_theme")),
                   onTap: () {
                     themeProvider.toggleTheme();
@@ -173,6 +175,38 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 10),
                       const Expanded(child: HomeGrid()),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.scaffoldBackgroundColor,
+                            shadowColor: redcolor,
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SubscriptionScreen()));
+                          },
+                          child: Center(
+                            child: Text(
+                              localizations.translate('my_subscriptions'),
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  color: redcolor,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -221,6 +255,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 10),
                     const Expanded(child: HomeGrid()),
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.scaffoldBackgroundColor,
+                          shadowColor: redcolor,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SubscriptionScreen()));
+                        },
+                        child: Center(
+                          child: Text(
+                            localizations.translate('my_subscriptions'),
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: redcolor,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               );

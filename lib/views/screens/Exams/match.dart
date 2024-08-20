@@ -1,101 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/views/screens/Exams/complete.dart';
 
 class ExamScreenMatch extends StatelessWidget {
   const ExamScreenMatch({super.key});
-
-  void showResultDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          content: Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/images/starts.png",
-                      width: 65,
-                      height: 65,
-                    ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    const Expanded(
-                      child: Center(
-                        child: Text(
-                          'النتيجة',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Align(
-                        alignment: Alignment.topRight,
-                        child: Icon(
-                          Icons.close,
-                          color: redcolor,
-                          size: 25,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  '20/15',
-                  style: TextStyle(
-                    color: redcolor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Row(
-                  children: [
-                    Text(
-                      "لقد اجتزت الامتحان",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      'تهانينا لك ',
-                      style: TextStyle(
-                        color: redcolor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,25 +97,39 @@ class ExamScreenMatch extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: redcolor),
-                  onPressed: () {
-                    // Handle previous button press
-                  },
-                  child: const Text(
-                    'السابق',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: redcolor),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                     onPressed: () {
-                      showResultDialog(context);
+                      // showResultDialog(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Complete()));
                       // Handle next button press
                     },
                     child: const Text(
                       'التالي',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
+                TextButton(
+                  onPressed: () {
+                    // Handle previous button press
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'السابق',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

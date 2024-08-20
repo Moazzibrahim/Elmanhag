@@ -73,6 +73,7 @@
   "profile": "Profile",
   "change_language": "Switch to Arabic",
   "logOut":"logout",
-  "change_theme":"change theme"
+  "change_theme":"change theme",
+  "my_subscriptions":"my subscriptions"
 
 }

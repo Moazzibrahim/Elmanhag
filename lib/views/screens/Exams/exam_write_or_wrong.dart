@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/Exams/match.dart';
 
@@ -16,6 +17,7 @@ class _ExamScreenState extends State<ExamScreenWriteOrWrong> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -37,7 +39,7 @@ class _ExamScreenState extends State<ExamScreenWriteOrWrong> {
             ),
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
       ),
       body: Padding(
@@ -115,23 +117,14 @@ class _ExamScreenState extends State<ExamScreenWriteOrWrong> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  onPressed: () {
-                    // Handle previous button press
-                  },
-                  child: const Text(
-                    'السابق',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: redcolor,
-                    ),
-                  ),
-                ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 16),
                     backgroundColor: redcolor,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -142,6 +135,19 @@ class _ExamScreenState extends State<ExamScreenWriteOrWrong> {
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Handle previous button press
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'السابق',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: redcolor,
                     ),
                   ),
                 ),
