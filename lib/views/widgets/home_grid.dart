@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/subjects_services.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
-import 'package:flutter_application_1/views/screens/curriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/home_work_screen.dart';
 import 'package:flutter_application_1/views/screens/live/live_screen.dart';
 import 'package:flutter_application_1/views/screens/Exams/levels_screen.dart';

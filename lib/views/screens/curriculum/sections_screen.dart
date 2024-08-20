@@ -72,6 +72,7 @@ class _ChapterTileState extends State<ChapterTile> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    // ignore: unused_local_variable
     final themeData = themeProvider.currentTheme;
 
     return Card(
