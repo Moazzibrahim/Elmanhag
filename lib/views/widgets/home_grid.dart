@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/views/screens/curriculum/curriculums_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/subjects_services.dart';
@@ -46,7 +47,7 @@ class HomeGrid extends StatelessWidget {
               Provider.of<SubjectProvider>(context, listen: false)
                   .getSubjects(context);
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => const MyCurriculumScreen()));
+                  builder: (ctx) =>  CurriculumsScreen()));
             }
             if (texts[index] == localizations.translate('tasks')) {
               Navigator.of(context).push(
