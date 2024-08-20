@@ -8,6 +8,7 @@ class MySubscriptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -21,7 +22,7 @@ class MySubscriptions extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
       ),
       body: const Padding(
