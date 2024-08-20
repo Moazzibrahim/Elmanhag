@@ -127,11 +127,16 @@ class SubscriptionCard extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                if (!isPrimary) {
+                  // Do nothing if this is the "انت على الباقه المدفوعه" button
+                } else {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const SubscriptionScreen()));
-                // Handle button press
+                      builder: (context) => const SubscriptionScreen(),
+                    ),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: isPrimary ? redcolor : Colors.grey[200],

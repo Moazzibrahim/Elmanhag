@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/widgets/progress_widget.dart';
 import 'package:provider/provider.dart';
@@ -40,11 +39,23 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
   String? selectedCityName;
   String? selectedCategoryName;
   String? selectedEducationName;
+  String? selectedGender;
+  String? selectedCareer;
 
   List<Country> countries = [];
   List<City> cities = [];
   List<Category> categories = [];
   List<Education> educations = [];
+
+  final List<String> genderOptions = ['ذكر', 'أنثى'];
+  final List<String> careerOptions = [
+    'مستشار',
+    'طيار',
+    'ظابط',
+    'مدرس',
+    'دكتور',
+    'مهندس'
+  ];
 
   @override
   void initState() {
@@ -271,7 +282,76 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               validator: (value) =>
                   value == null ? 'Please select an education' : null,
             ),
-            const SizedBox(height: 30),
+
+            const SizedBox(height: 15),
+            // New gender dropdown
+            DropdownButtonFormField<String>(
+              value: selectedGender,
+              items: genderOptions.map((String gender) {
+                return DropdownMenuItem<String>(
+                  value: gender,
+                  child: Text(gender),
+                );
+              }).toList(),
+              decoration: InputDecoration(
+                labelText: 'الجنس',
+                prefixIcon: const Icon(Icons.person, color: redcolor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: redcolor),
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: redcolor),
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+              ),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedGender = newValue;
+                });
+              },
+              validator: (value) =>
+                  value == null ? 'Please select a gender' : null,
+            ),
+            const SizedBox(height: 15),
+            // New career dropdown
+            DropdownButtonFormField<String>(
+              value: selectedCareer,
+              items: careerOptions.map((String career) {
+                return DropdownMenuItem<String>(
+                  value: career,
+                  child: Text(career),
+                );
+              }).toList(),
+              decoration: InputDecoration(
+                labelText: 'نفسك تبقي ايه لما تكبر',
+                prefixIcon: const Icon(Icons.work, color: redcolor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: redcolor),
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: redcolor),
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+              ),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedCareer = newValue;
+                });
+              },
+              validator: (value) =>
+                  value == null ? 'Please select a career' : null,
+            ),
+            const SizedBox(
+              height: 30,
+            ),
             Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
