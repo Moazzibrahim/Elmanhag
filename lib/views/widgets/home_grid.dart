@@ -17,16 +17,16 @@ class HomeGrid extends StatelessWidget {
     final theme = Theme.of(context);
 
     List<String> texts = [
-      localizations.translate('tasks'),
       localizations.translate('curriculum'),
+      localizations.translate('tasks'),
       localizations.translate('live_classes'),
       localizations.translate('monthly_reviews'),
       localizations.translate('exam_solutions'),
       localizations.translate('final_review'),
     ];
     List<String> images = [
-      'assets/images/Frame.png',
       'assets/images/Frame (1).png',
+      'assets/images/Frame.png',
       'assets/images/ICON.png',
       'assets/images/Frame (2).png',
       'assets/images/Layer_1.png',

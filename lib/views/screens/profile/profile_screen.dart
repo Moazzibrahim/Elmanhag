@@ -1,9 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
+import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/profile/edit_profile.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,7 +35,6 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
       MaterialPageRoute(builder: (ctx) => const EditProfileScreen()),
     );
 
-    // Check if the result indicates that an update occurred
     if (result == true) {
       Provider.of<UserProfileProvider>(context, listen: false)
           .fetchUserProfile(context);
@@ -48,13 +46,14 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final isLoading = userProfileProvider.isLoading;
     final localizations = AppLocalizations.of(context);
+    final isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return DefaultTabController(
       animationDuration: const Duration(seconds: 1),
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: isDarkMode ? Colors.black : Colors.white,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: redcolor),
@@ -84,7 +83,7 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '${userProfileProvider.category}', // Modify according to your actual requirement
+                            '${userProfileProvider.category}',
                             style:
                                 TextStyle(color: Colors.grey, fontSize: 14.sp),
                           ),
@@ -93,8 +92,7 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.edit, color: redcolor),
-                      onPressed:
-                          _navigateAndRefresh, // Update navigation method
+                      onPressed: _navigateAndRefresh,
                     ),
                     IconButton(
                       icon: const Icon(Icons.logout, color: redcolor),
@@ -116,7 +114,9 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 labelColor: Colors.white,
-                unselectedLabelColor: redcolor,
+                unselectedLabelColor: isDarkMode
+                    ? Colors.white
+                    : redcolor, // Adjust for dark mode
                 labelStyle: TextStyle(fontSize: 18.sp),
                 unselectedLabelStyle: TextStyle(fontSize: 14.sp),
                 tabs: [
@@ -150,6 +150,7 @@ class StudentTabContent extends StatelessWidget {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final isLoading = userProfileProvider.isLoading;
     final localizations = AppLocalizations.of(context);
+    final isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -161,36 +162,42 @@ class StudentTabContent extends StatelessWidget {
                   text:
                       '${localizations.translate('Name')}: ${userProfileProvider.name ?? 'N/A'}',
                   icon: Icons.person,
-                ),
-                InfoCard(
-                  text:
-                      '${localizations.translate('email')}: ${userProfileProvider.email ?? 'N/A'}',
-                  icon: Icons.email,
-                ),
-                InfoCard(
-                  text:
-                      '${localizations.translate('grade')}: ${userProfileProvider.category ?? 'N/A'}',
-                  icon: Icons.grade,
-                ),
-                InfoCard(
-                  text:
-                      '${localizations.translate('education')}: ${userProfileProvider.education ?? 'N/A'}',
-                  icon: Icons.language,
-                ),
-                InfoCard(
-                  text:
-                      '${localizations.translate('country')}: ${userProfileProvider.countryName ?? 'N/A'}',
-                  icon: Icons.flag,
-                ),
-                InfoCard(
-                  text:
-                      '${localizations.translate('city')}: ${userProfileProvider.cityName ?? 'N/A'}',
-                  icon: Icons.location_city,
+                  isDarkMode: isDarkMode,
                 ),
                 InfoCard(
                   text:
                       '${localizations.translate('phone')}: ${userProfileProvider.phone ?? 'N/A'}',
                   icon: Icons.phone,
+                  isDarkMode: isDarkMode,
+                ),
+                InfoCard(
+                  text: '${userProfileProvider.email ?? 'N/A'}',
+                  icon: Icons.email,
+                  isDarkMode: isDarkMode,
+                ),
+                InfoCard(
+                  text:
+                      '${localizations.translate('grade')}: ${userProfileProvider.category ?? 'N/A'}',
+                  icon: Icons.grade,
+                  isDarkMode: isDarkMode,
+                ),
+                InfoCard(
+                  text:
+                      '${localizations.translate('education')}: ${userProfileProvider.education ?? 'N/A'}',
+                  icon: Icons.language,
+                  isDarkMode: isDarkMode,
+                ),
+                InfoCard(
+                  text:
+                      '${localizations.translate('country')}: ${userProfileProvider.countryName ?? 'N/A'}',
+                  icon: Icons.flag,
+                  isDarkMode: isDarkMode,
+                ),
+                InfoCard(
+                  text:
+                      '${localizations.translate('city')}: ${userProfileProvider.cityName ?? 'N/A'}',
+                  icon: Icons.location_city,
+                  isDarkMode: isDarkMode,
                 ),
               ],
             ),
@@ -206,6 +213,7 @@ class ParentTabContent extends StatelessWidget {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final isLoading = userProfileProvider.isLoading;
     final localizations = AppLocalizations.of(context);
+    final isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -218,16 +226,19 @@ class ParentTabContent extends StatelessWidget {
                     text:
                         '${localizations.translate('parent_name')}: ${userProfileProvider.parentName ?? 'N/A'}',
                     icon: Icons.person,
+                    isDarkMode: isDarkMode,
                   ),
                   InfoCard(
                     text:
                         '${localizations.translate('parent_phone')}: ${userProfileProvider.parentPhone ?? 'N/A'}',
                     icon: Icons.phone,
+                    isDarkMode: isDarkMode,
                   ),
                   InfoCard(
                     text:
                         '${localizations.translate('parent_email')}: ${userProfileProvider.parentEmail ?? 'N/A'}',
                     icon: Icons.email,
+                    isDarkMode: isDarkMode,
                   ),
                 ],
               ),
@@ -239,27 +250,40 @@ class ParentTabContent extends StatelessWidget {
 class InfoCard extends StatelessWidget {
   final String text;
   final IconData icon;
+  final bool isDarkMode;
 
-  const InfoCard({super.key, required this.text, required this.icon});
+  const InfoCard({
+    super.key,
+    required this.text,
+    required this.icon,
+    required this.isDarkMode,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[200],
+      color: isDarkMode ? Colors.black : Colors.grey[200],
       margin: EdgeInsets.symmetric(vertical: 8.h),
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: redcolor, width: 2.0), // Add a red border
+        borderRadius: BorderRadius.circular(8.0), // Rounded corners
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
             Icon(
               icon,
-              color: redcolor,
+              color: isDarkMode ? Colors.grey : redcolor,
               size: 24.sp,
             ),
             SizedBox(width: 10.w),
             Text(
               text,
-              style: TextStyle(fontSize: 16.sp, color: Colors.black),
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: isDarkMode ? Colors.grey : Colors.black,
+              ),
             ),
           ],
         ),

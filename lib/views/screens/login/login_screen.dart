@@ -80,23 +80,14 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const SizedBox(height: 50),
-              const SizedBox(height: 20),
+              const SizedBox(height: 50),
               Center(
                 child: Image.asset(
                   'assets/images/amin2.png', // Replace title text with image
-                  height: 100,
-                  width: 150,
+                  height: 220,
+                  width: 250,
                 ),
               ),
-              const SizedBox(height: 20),
-              Text(
-                localizations.translate('welcome'),
-                style: const TextStyle(
-                  fontSize: 32,
-                  color: greycolor,
-                ),
-              ),
-              const SizedBox(height: 10),
               TextField(
                 controller: _emailController,
                 textAlign: TextAlign.right,

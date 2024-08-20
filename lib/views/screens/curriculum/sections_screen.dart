@@ -1,89 +1,152 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/controller/sections_services.dart';
-import 'package:flutter_application_1/views/screens/curriculum/video_screen.dart';
-import 'package:flutter_application_1/views/widgets/leading_icon.dart';
+import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart'; // Ensure you import Provider
 
-class SectionsScreen extends StatelessWidget {
-  const SectionsScreen({super.key, required this.id});
-  final int id;
+class SectionsScreen extends StatefulWidget {
+  const SectionsScreen({super.key, required this.chapters});
+  final List<dynamic> chapters;
+
+  @override
+  _SectionsScreenState createState() => _SectionsScreenState();
+}
+
+class _SectionsScreenState extends State<SectionsScreen> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeData = themeProvider.currentTheme;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('الوحدات'),
-        centerTitle: true,
-        leading: const LeadingIcon(),
-      ),
+      appBar: customAppBar(context, themeData),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Consumer<SectionsProvider>(
-          builder: (context,sectionProvider, _) {
-            final sections = sectionProvider.allSections;
-            if(sections.isEmpty){
-              return const Center(child: CircularProgressIndicator(color: redcolor,),);
-            }else{
-              return ListView.builder(
-                itemCount: sections.length,
-                itemBuilder: (context, index) {
-                  final lessons = sectionProvider.allLessons.where((element) => element.sectionId == sections[index].id,).toList();
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 10.h),
-                    child: ExpansionTile(
-                      childrenPadding: const EdgeInsets.all(5),
-                      tilePadding: const EdgeInsets.all(6),
-                      title: Row(
-            children: [
-              Icon(
-                Icons.video_collection_rounded,
-                color: redcolor,
-                size: 24.w,
-              ),
-              SizedBox(
-                width: 10.w,
-              ),
-              Expanded(
-                child: Text(
-                  sections[index].name,
-                  style: TextStyle(fontSize: 16.sp,color: redcolor),
-                ),
-              ),
-            ],
-          ),
-          shape: BeveledRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
-          ),
+        padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 10.0.h),
+        child: Column(
           children: [
-            Column(
-              children: [
-                for(var e in lessons)
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx)=> const LessonsVideos())
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        const Icon(Icons.circle,size: 10,color: redcolor,),
-                        const SizedBox(width: 5,),
-                        Text(e.name,style: const TextStyle(color: redcolor),),
-                      ],
-                    ),
-                  ),
-              ],
-            )
-          ],
+            Image.asset(
+              'assets/images/beaker.png',
+              width: 150.w,
+              height: 100.h,
+            ),
+            SizedBox(height: 20.h),
+            Expanded(
+              child: widget.chapters.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No chapters available',
+                        style: TextStyle(color: redcolor, fontSize: 18.sp),
                       ),
-                  );
-                },
-              );
-            }
-          },
+                    )
+                  : ListView.builder(
+                      itemCount: widget.chapters.length,
+                      itemBuilder: (context, index) {
+                        final chapter = widget.chapters[index];
+                        final lessons = chapter['lessons'];
+                        return ChapterTile(
+                          chapter: chapter,
+                          lessons: lessons,
+                        );
+                      },
+                    ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+class ChapterTile extends StatefulWidget {
+  const ChapterTile({super.key, required this.chapter, required this.lessons});
+  final dynamic chapter;
+  final List<dynamic> lessons;
+
+  @override
+  _ChapterTileState createState() => _ChapterTileState();
+}
+
+class _ChapterTileState extends State<ChapterTile> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeData = themeProvider.currentTheme;
+
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10.h),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      elevation: 5,
+      child: Theme(
+        data: ThemeData(
+          dividerColor: Colors.transparent,
+          hintColor: Colors.transparent,
+        ),
+        child: ExpansionTile(
+          title: Text(
+            widget.chapter['name'],
+            style: TextStyle(
+              fontSize: 18.sp,
+              color: redcolor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          trailing: Icon(
+            _isExpanded
+                ? Icons.keyboard_arrow_down_outlined
+                : Icons.keyboard_arrow_left_outlined,
+            color: redcolor,
+          ),
+          onExpansionChanged: (bool expanded) {
+            setState(() {
+              _isExpanded = expanded;
+            });
+          },
+          children: widget.lessons.map<Widget>((lesson) {
+            return ListTile(
+              leading: Icon(
+                Icons.circle,
+                size: 10.w,
+                color: redcolor,
+              ),
+              title: Text(
+                lesson['name'],
+                style: TextStyle(fontSize: 16.sp, color: redcolor),
+              ),
+              onTap: () {
+                // Handle tap action here
+              },
+              contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
+              visualDensity: VisualDensity.compact,
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
+
+AppBar customAppBar(BuildContext context, ThemeData themeData) {
+  return AppBar(
+    backgroundColor: themeData.appBarTheme.backgroundColor,
+    elevation: 0,
+    leading: IconButton(
+      icon: Icon(Icons.arrow_back_ios, color: redcolor),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    ),
+    title: Text(
+      'الوحدات',
+      style: TextStyle(
+        color: redcolor,
+        fontSize: 25.sp,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    centerTitle: true,
+  );
 }

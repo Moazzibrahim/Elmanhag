@@ -59,10 +59,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: redcolor),
+            icon: Icon(Icons.arrow_back,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? redcolor
+                    : redcolor),
             onPressed: () {
               Navigator.pop(
                 context,
@@ -78,7 +83,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 radius: 20,
               ),
               IconButton(
-                icon: const Icon(Icons.camera_alt, color: redcolor),
+                icon: Icon(Icons.camera_alt,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? redcolor
+                        : redcolor),
                 onPressed: pickImage,
               ),
               SizedBox(width: 10.w),
@@ -88,7 +96,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Text(
                     localizations.translate('welcome'),
                     style: TextStyle(
-                      color: redcolor,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? redcolor
+                          : redcolor,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                     ),
@@ -224,18 +234,18 @@ class _StudentTabContentState extends State<StudentTabContent> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  CustomTextField(
-                    hintText: localizations.translate('Name'),
-                    textInputType: TextInputType.name,
-                    icon: Icons.person,
-                    controller: _nameController,
-                  ),
-                  CustomTextField(
-                    hintText: localizations.translate('email'),
-                    textInputType: TextInputType.emailAddress,
-                    icon: Icons.person,
-                    controller: _emailController,
-                  ),
+                  // CustomTextField(
+                  //   hintText: localizations.translate('Name'),
+                  //   textInputType: TextInputType.name,
+                  //   icon: Icons.person,
+                  //   controller: _nameController,
+                  // ),
+                  // CustomTextField(
+                  //   hintText: localizations.translate('email'),
+                  //   textInputType: TextInputType.emailAddress,
+                  //   icon: Icons.person,
+                  //   controller: _emailController,
+                  // ),
                   const SizedBox(
                     height: 15,
                   ),
@@ -257,78 +267,7 @@ class _StudentTabContentState extends State<StudentTabContent> {
                   const SizedBox(
                     height: 15,
                   ),
-                  DropdownButtonFormField<String>(
-                    value: selectedCategoryId,
-                    items: categories.map((Category category) {
-                      return DropdownMenuItem<String>(
-                        value: category.id.toString(),
-                        child: Text(category.name),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      labelText: ' ${localizations.translate('grade')}',
-                      prefixIcon: const Icon(Icons.school, color: redcolor),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: redcolor),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: redcolor),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedCategoryId = newValue;
-                        selectedCategoryName = categories
-                            .firstWhere((category) =>
-                                category.id.toString() == newValue)
-                            .name;
-                      });
-                    },
-                    validator: (value) =>
-                        value == null ? 'Please select a category' : null,
-                  ),
-                  const SizedBox(height: 15),
-                  DropdownButtonFormField<String>(
-                    value: selectedEducationId,
-                    items: educations.map((Education education) {
-                      return DropdownMenuItem<String>(
-                        value: education.id.toString(),
-                        child: Text(education.name),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      labelText: localizations.translate('education'),
-                      prefixIcon: const Icon(Icons.school, color: redcolor),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: redcolor),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: redcolor),
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedEducationId = newValue;
-                        selectedEducationName = educations
-                            .firstWhere((education) =>
-                                education.id.toString() == newValue)
-                            .name;
-                      });
-                    },
-                    validator: (value) =>
-                        value == null ? 'Please select an education' : null,
-                  ),
-                  const SizedBox(height: 25),
+
                   DropdownButtonFormField<String>(
                     value: selectedCountryId,
                     items: countries.map((Country country) {
@@ -373,12 +312,14 @@ class _StudentTabContentState extends State<StudentTabContent> {
                   const SizedBox(height: 15),
                   DropdownButtonFormField<String>(
                     value: selectedCityId,
-                    items: cities.map((City city) {
-                      return DropdownMenuItem<String>(
-                        value: city.id.toString(),
-                        child: Text(city.name),
-                      );
-                    }).toList(),
+                    items: cities.map(
+                      (City city) {
+                        return DropdownMenuItem<String>(
+                          value: city.id.toString(),
+                          child: Text(city.name),
+                        );
+                      },
+                    ).toList(),
                     decoration: InputDecoration(
                       labelText: localizations.translate('city'),
                       prefixIcon:
