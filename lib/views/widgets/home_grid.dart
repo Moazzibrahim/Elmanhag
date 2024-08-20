@@ -46,8 +46,8 @@ class HomeGrid extends StatelessWidget {
             if (texts[index] == localizations.translate('curriculum')) {
               Provider.of<SubjectProvider>(context, listen: false)
                   .getSubjects(context);
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) =>  CurriculumsScreen()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => CurriculumsScreen()));
             }
             if (texts[index] == localizations.translate('tasks')) {
               Navigator.of(context).push(
@@ -71,8 +71,7 @@ class HomeGrid extends StatelessWidget {
               children: [
                 Text(
                   texts[index],
-                  style: TextStyle(
-                      color: theme.textTheme.bodyLarge?.color, fontSize: 20),
+                  style: const TextStyle(color: redcolor, fontSize: 20),
                 ),
                 const SizedBox(height: 7),
                 Image.asset(images[index]),
