@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const SubscriptionScreen()));
+                                        const MySubscriptions()));
                           },
                           child: Center(
                             child: Text(
@@ -271,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const SubscriptionScreen()));
+                                      const MySubscriptions()));
                         },
                         child: Center(
                           child: Text(

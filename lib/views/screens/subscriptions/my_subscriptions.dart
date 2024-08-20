@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
-class SubscriptionScreen extends StatelessWidget {
-  const SubscriptionScreen({super.key});
+import '../payment/subscription_screen.dart';
+
+class MySubscriptions extends StatelessWidget {
+  const MySubscriptions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +127,10 @@ class SubscriptionCard extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SubscriptionScreen()));
                 // Handle button press
               },
               style: ElevatedButton.styleFrom(
