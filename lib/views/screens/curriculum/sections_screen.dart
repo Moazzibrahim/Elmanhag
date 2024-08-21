@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart'; // Ensure you import Provider
+import 'package:provider/provider.dart';
 
 class SectionsScreen extends StatefulWidget {
   const SectionsScreen({super.key, required this.chapters});
   final List<dynamic> chapters;
 
   @override
-  // ignore: library_private_types_in_public_api
   _SectionsScreenState createState() => _SectionsScreenState();
 }
 
@@ -17,42 +16,85 @@ class _SectionsScreenState extends State<SectionsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final themeData = themeProvider.currentTheme;
+    final isDarkMode = themeProvider.isDarkMode;
 
     return Scaffold(
-      appBar: customAppBar(context, themeData),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 10.0.h),
-        child: Column(
-          children: [
-            Image.asset(
-              'assets/images/beaker.png',
-              width: 150.w,
-              height: 100.h,
-            ),
-            SizedBox(height: 20.h),
-            Expanded(
-              child: widget.chapters.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No chapters available',
-                        style: TextStyle(color: redcolor, fontSize: 18.sp),
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: widget.chapters.length,
-                      itemBuilder: (context, index) {
-                        final chapter = widget.chapters[index];
-                        final lessons = chapter['lessons'];
-                        return ChapterTile(
-                          chapter: chapter,
-                          lessons: lessons,
-                        );
+      body: Stack(
+        children: [
+          // Background
+          Positioned.fill(
+            child: isDarkMode
+                ? Image.asset(
+                    'assets/images/Ellipse 198.png',
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    color: Colors.white,
+                  ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 10.0.h),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios, color: redcolor),
+                      onPressed: () {
+                        Navigator.of(context).pop();
                       },
                     ),
+                    Spacer(
+                      flex: 2,
+                    ),
+                    Text(
+                      'الوحدات',
+                      style: TextStyle(
+                        color: redcolor,
+                        fontSize: 25.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(
+                      flex: 3,
+                    )
+                  ],
+                ),
+                SizedBox(height: 20.h),
+                Image.asset(
+                  'assets/images/beaker.png',
+                  width: 150.w,
+                  height: 100.h,
+                ),
+                SizedBox(height: 20.h),
+                Expanded(
+                  child: widget.chapters.isEmpty
+                      ? Center(
+                          child: Text(
+                            'No chapters available',
+                            style: TextStyle(color: redcolor, fontSize: 18.sp),
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: widget.chapters.length,
+                          itemBuilder: (context, index) {
+                            final chapter = widget.chapters[index];
+                            final lessons = chapter['lessons'];
+                            return ChapterTile(
+                              chapter: chapter,
+                              lessons: lessons,
+                            );
+                          },
+                        ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -64,7 +106,6 @@ class ChapterTile extends StatefulWidget {
   final List<dynamic> lessons;
 
   @override
-  // ignore: library_private_types_in_public_api
   _ChapterTileState createState() => _ChapterTileState();
 }
 
@@ -73,10 +114,6 @@ class _ChapterTileState extends State<ChapterTile> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    // ignore: unused_local_variable
-    final themeData = themeProvider.currentTheme;
-
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10.h),
       shape: RoundedRectangleBorder(
@@ -130,26 +167,4 @@ class _ChapterTileState extends State<ChapterTile> {
       ),
     );
   }
-}
-
-AppBar customAppBar(BuildContext context, ThemeData themeData) {
-  return AppBar(
-    backgroundColor: themeData.appBarTheme.backgroundColor,
-    elevation: 0,
-    leading: IconButton(
-      icon: const Icon(Icons.arrow_back_ios, color: redcolor),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    ),
-    title: Text(
-      'الوحدات',
-      style: TextStyle(
-        color: redcolor,
-        fontSize: 25.sp,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    centerTitle: true,
-  );
 }

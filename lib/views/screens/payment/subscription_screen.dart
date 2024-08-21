@@ -44,8 +44,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios,
-                            color: theme.iconTheme.color),
+                        icon: Icon(Icons.arrow_back_ios, color: redcolor),
                         onPressed: () {
                           Navigator.pop(context);
                         },

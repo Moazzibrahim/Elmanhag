@@ -10,15 +10,20 @@ class MyCurriculumScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/Ellipse 198.png',
-              fit: BoxFit.cover,
-            ),
+            child: isDarkMode
+                ? Image.asset(
+                    'assets/images/Ellipse 198.png',
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    color: Colors.white, // White background for default mode
+                  ),
           ),
           FutureBuilder(
             future: Provider.of<SubjectProvider>(context, listen: false)
@@ -42,9 +47,7 @@ class MyCurriculumScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
                     children: [
-                      const SizedBox(
-                        height: 25,
-                      ),
+                      const SizedBox(height: 25),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -62,6 +65,20 @@ class MyCurriculumScreen extends StatelessWidget {
                                   color: redcolor),
                             ),
                           ),
+                          const Spacer(
+                            flex: 2,
+                          ),
+                          const Text(
+                            'موادي',
+                            style: TextStyle(
+                              color: redcolor,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(
+                            flex: 3,
+                          )
                         ],
                       ),
                       Expanded(
@@ -108,7 +125,6 @@ class MyCurriculumScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           const SizedBox(height: 7),
-                                          // ignore: unnecessary_null_comparison
                                           subjects[index].coverPhotoUrl != null
                                               ? Image.network(
                                                   subjects[index].coverPhotoUrl,
