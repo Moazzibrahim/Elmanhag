@@ -125,6 +125,7 @@ class MyCurriculumScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           const SizedBox(height: 7),
+                                          // ignore: unnecessary_null_comparison
                                           subjects[index].coverPhotoUrl != null
                                               ? Image.network(
                                                   subjects[index].coverPhotoUrl,

@@ -13,7 +13,7 @@ class SecondOnboardingScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.all(2.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -25,7 +25,6 @@ class SecondOnboardingScreen extends StatelessWidget {
               _buildDescription(),
               const SizedBox(height: 20),
               _buildImageStack(context),
-              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -79,7 +78,7 @@ class SecondOnboardingScreen extends StatelessWidget {
           Positioned.fill(
             child: Image.asset(
               'assets/images/new2.png',
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
           ),
           Positioned(

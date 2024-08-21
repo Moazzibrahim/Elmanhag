@@ -10,10 +10,10 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Scaffold(
+        body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -25,7 +25,6 @@ class OnboardingScreen extends StatelessWidget {
               _buildDescription(),
               const SizedBox(height: 20),
               _buildImageStack(context),
-              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -79,7 +78,7 @@ class OnboardingScreen extends StatelessWidget {
           Positioned.fill(
             child: Image.asset(
               'assets/images/new1.png',
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
           ),
           Positioned(

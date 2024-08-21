@@ -9,6 +9,7 @@ class SectionsScreen extends StatefulWidget {
   final List<dynamic> chapters;
 
   @override
+  // ignore: library_private_types_in_public_api
   _SectionsScreenState createState() => _SectionsScreenState();
 }
 
@@ -36,7 +37,7 @@ class _SectionsScreenState extends State<SectionsScreen> {
             padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 10.0.h),
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 25,
                 ),
                 Row(
@@ -48,7 +49,7 @@ class _SectionsScreenState extends State<SectionsScreen> {
                         Navigator.of(context).pop();
                       },
                     ),
-                    Spacer(
+                    const Spacer(
                       flex: 2,
                     ),
                     Text(
@@ -59,7 +60,7 @@ class _SectionsScreenState extends State<SectionsScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Spacer(
+                    const Spacer(
                       flex: 3,
                     )
                   ],
@@ -106,6 +107,7 @@ class ChapterTile extends StatefulWidget {
   final List<dynamic> lessons;
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChapterTileState createState() => _ChapterTileState();
 }
 

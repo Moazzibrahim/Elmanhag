@@ -13,7 +13,7 @@ class ThirdOnboarding extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.all(2),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -25,7 +25,6 @@ class ThirdOnboarding extends StatelessWidget {
               _buildDescription(),
               const SizedBox(height: 20),
               _buildImageStack(context),
-              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -93,7 +92,7 @@ class ThirdOnboarding extends StatelessWidget {
 
   Widget _buildNextButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: ()async {
+      onPressed: () async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isNewUser', false);
         Navigator.of(context).push(MaterialPageRoute(
