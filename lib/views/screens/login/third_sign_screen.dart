@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/sign_up_provider.dart';
 import 'package:flutter_application_1/models/sign_up_model.dart';
@@ -45,6 +44,7 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
       TextEditingController();
   final TextEditingController _parentConfirmPasswordController =
       TextEditingController();
+  final TextEditingController _affilateController = TextEditingController();
 
   String? selectedParentRelation;
   List<ParentRelation> parentRelations = [];
@@ -147,6 +147,14 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
               },
               validator: (value) =>
                   value == null ? 'Please select a parent relation' : null,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            buildTextField(
+              controller: _affilateController,
+              labelText: ' كود التسويق التابع له',
+              prefixIcon: const Icon(Icons.code, color: redcolor),
             ),
             const SizedBox(height: 30),
             Center(

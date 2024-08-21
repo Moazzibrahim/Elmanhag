@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
-import 'package:flutter_application_1/views/screens/curriculum/video_screen.dart';
+import 'package:flutter_application_1/views/screens/homework/home_work_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-class SectionsScreen extends StatefulWidget {
-  const SectionsScreen({super.key, required this.chapters});
+class HomeworkSectionsScreen extends StatefulWidget {
+  const HomeworkSectionsScreen({super.key, required this.chapters});
   final List<dynamic> chapters;
 
   @override
@@ -14,7 +14,7 @@ class SectionsScreen extends StatefulWidget {
   _SectionsScreenState createState() => _SectionsScreenState();
 }
 
-class _SectionsScreenState extends State<SectionsScreen> {
+class _SectionsScreenState extends State<HomeworkSectionsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -160,10 +160,11 @@ class _ChapterTileState extends State<ChapterTile> {
                 style: TextStyle(fontSize: 16.sp, color: redcolor),
               ),
               onTap: () {
+                // Handle tap action here
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const LessonsVideos()));
+                        builder: (context) => const HomeWorkScreen()));
               },
               contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
               visualDensity: VisualDensity.compact,

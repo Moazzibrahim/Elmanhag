@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
 import 'package:flutter_application_1/views/screens/curriculum/curriculums_screen.dart';
+import 'package:flutter_application_1/views/screens/homework/hw_my_cirriculam.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/subjects_services.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
-import 'package:flutter_application_1/views/screens/homework/home_work_screen.dart';
 import 'package:flutter_application_1/views/screens/live/live_screen.dart';
 
 class HomeGrid extends StatelessWidget {
@@ -45,12 +45,12 @@ class HomeGrid extends StatelessWidget {
             if (texts[index] == localizations.translate('curriculum')) {
               Provider.of<SubjectProvider>(context, listen: false)
                   .getSubjects(context);
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const CurriculumsScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => const CurriculumsScreen()));
             }
             if (texts[index] == localizations.translate('tasks')) {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const HomeWorkScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => const HomeworkMyCirriculam()));
             }
             if (texts[index] == localizations.translate('exam_solutions')) {
               Navigator.of(context).push(

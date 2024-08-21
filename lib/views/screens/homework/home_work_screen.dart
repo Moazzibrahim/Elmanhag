@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
+import 'package:flutter_application_1/views/screens/homework/hw_mcq_screen.dart';
 
 class HomeWorkScreen extends StatefulWidget {
   const HomeWorkScreen({super.key});
@@ -65,7 +65,7 @@ class HomeWorkScreenState extends State<HomeWorkScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ExamScreen(),
+                              builder: (context) => const HomeworkMcqScreen(),
                             ),
                           );
                         },
@@ -106,8 +106,8 @@ class TaskCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDarkMode ? Colors.black : Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-              color: isDarkMode ? Colors.black : redcolor, width: 2),
+          border:
+              Border.all(color: isDarkMode ? Colors.black : redcolor, width: 2),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

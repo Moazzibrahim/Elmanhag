@@ -155,6 +155,10 @@ class _StudentTabContentState extends State<StudentTabContent> {
   List<Category> categories = [];
   List<Education> educations = [];
 
+  String truncateString(String str, int maxLength) {
+    return str.length > maxLength ? '${str.substring(0, maxLength)}...' : str;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -267,24 +271,29 @@ class _StudentTabContentState extends State<StudentTabContent> {
                   const SizedBox(
                     height: 15,
                   ),
-
                   DropdownButtonFormField<String>(
                     value: selectedCountryId,
                     items: countries.map((Country country) {
                       return DropdownMenuItem<String>(
                         value: country.id.toString(),
                         child: Text(
-                          country.name,
-                          style: const TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold),
+                          truncateString(
+                              country.name, 40), // Truncate the country name
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 12
+                                .sp, // Use ScreenUtil for responsive font size
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       );
                     }).toList(),
                     decoration: InputDecoration(
                       labelText: localizations.translate('country'),
                       prefixIcon: const Icon(Icons.public, color: redcolor),
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 12.h,
+                          horizontal: 16.w), // Responsive padding
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
@@ -300,15 +309,18 @@ class _StudentTabContentState extends State<StudentTabContent> {
                     onChanged: (String? newValue) {
                       setState(() {
                         selectedCountryId = newValue;
-                        selectedCountryName = countries
-                            .firstWhere(
-                                (country) => country.id.toString() == newValue)
-                            .name;
+                        selectedCountryName = truncateString(
+                            countries
+                                .firstWhere((country) =>
+                                    country.id.toString() == newValue)
+                                .name,
+                            40);
                       });
                     },
                     validator: (value) =>
                         value == null ? 'Please select a country' : null,
                   ),
+
                   const SizedBox(height: 15),
                   DropdownButtonFormField<String>(
                     value: selectedCityId,
