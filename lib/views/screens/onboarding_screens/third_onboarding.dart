@@ -78,7 +78,7 @@ class ThirdOnboarding extends StatelessWidget {
           ),
           Positioned.fill(
             child: Image.asset(
-              'assets/images/new.png',
+              'assets/images/tefl.png',
               fit: BoxFit.cover,
             ),
           ),

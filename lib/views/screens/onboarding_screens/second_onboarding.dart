@@ -78,7 +78,7 @@ class SecondOnboardingScreen extends StatelessWidget {
           ),
           Positioned.fill(
             child: Image.asset(
-              'assets/images/tefl.png',
+              'assets/images/new2.png',
               fit: BoxFit.cover,
             ),
           ),
