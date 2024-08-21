@@ -104,6 +104,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.subscriptions),
+              title: Text(localizations.translate('my_subscriptions')),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer first
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => const MySubscriptions()),
+                );
+              },
+            ),
             Consumer<LogoutModel>(
               builder: (context, logoutModel, child) {
                 return ListTile(
@@ -117,7 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            // Add more ListTiles for additional drawer items here
           ],
         ),
       ),
