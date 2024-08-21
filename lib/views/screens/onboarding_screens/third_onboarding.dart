@@ -13,7 +13,7 @@ class ThirdOnboarding extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(2),
+          padding: const EdgeInsets.all(2),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
