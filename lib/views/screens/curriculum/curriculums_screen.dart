@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
+import 'package:flutter_application_1/views/screens/curriculum/filter_curriclums_screen.dart';
 import 'package:flutter_application_1/views/screens/curriculum/my_curriculum_screen.dart';
 import 'package:provider/provider.dart'; // Import Provider package
 
@@ -65,7 +66,7 @@ class CurriculumsScreen extends StatelessWidget {
                       child: WidgtButton(
                         context,
                         'كل المواد',
-                        const MyCurriculumScreen(), // Replace with your screen
+                        FilterCurriculumsScreen(), // Replace with your screen
                         textColor: textColor, // Pass text color
                       ),
                     ),
