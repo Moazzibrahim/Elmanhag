@@ -9,6 +9,7 @@ class SectionsScreen extends StatefulWidget {
   final List<dynamic> chapters;
 
   @override
+  // ignore: library_private_types_in_public_api
   _SectionsScreenState createState() => _SectionsScreenState();
 }
 
@@ -63,6 +64,7 @@ class ChapterTile extends StatefulWidget {
   final List<dynamic> lessons;
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChapterTileState createState() => _ChapterTileState();
 }
 
@@ -135,7 +137,7 @@ AppBar customAppBar(BuildContext context, ThemeData themeData) {
     backgroundColor: themeData.appBarTheme.backgroundColor,
     elevation: 0,
     leading: IconButton(
-      icon: Icon(Icons.arrow_back_ios, color: redcolor),
+      icon: const Icon(Icons.arrow_back_ios, color: redcolor),
       onPressed: () {
         Navigator.of(context).pop();
       },

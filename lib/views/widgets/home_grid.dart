@@ -46,7 +46,7 @@ class HomeGrid extends StatelessWidget {
               Provider.of<SubjectProvider>(context, listen: false)
                   .getSubjects(context);
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => CurriculumsScreen()));
+                  MaterialPageRoute(builder: (ctx) => const CurriculumsScreen()));
             }
             if (texts[index] == localizations.translate('tasks')) {
               Navigator.of(context).push(

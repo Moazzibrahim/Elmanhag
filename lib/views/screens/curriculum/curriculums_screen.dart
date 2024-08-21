@@ -36,7 +36,7 @@ class CurriculumsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 25),
+                const SizedBox(height: 25),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -49,14 +49,14 @@ class CurriculumsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 280),
+                const SizedBox(height: 280),
                 Row(
                   children: [
                     Expanded(
                       child: WidgtButton(
                         context,
                         'موادي',
-                        MyCurriculumScreen(), // Replace with your screen
+                        const MyCurriculumScreen(), // Replace with your screen
                         textColor: textColor, // Pass text color
                       ),
                     ),
@@ -87,8 +87,7 @@ class WidgtButton extends StatelessWidget {
   final Color textColor; // Add textColor parameter
 
   const WidgtButton(this.context, this.text, this.screen,
-      {Key? key, required this.textColor})
-      : super(key: key);
+      {super.key, required this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -98,12 +97,12 @@ class WidgtButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             // color: Colors.grey,
             spreadRadius: 2,
             blurRadius: 5,
-            offset: const Offset(0, 3),
+            offset: Offset(0, 3),
           ),
         ],
       ),

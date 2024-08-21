@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
@@ -171,6 +173,7 @@ class StudentTabContent extends StatelessWidget {
                   isDarkMode: isDarkMode,
                 ),
                 InfoCard(
+                  // ignore: unnecessary_string_interpolations
                   text: '${userProfileProvider.email ?? 'N/A'}',
                   icon: Icons.email,
                   isDarkMode: isDarkMode,
@@ -265,7 +268,7 @@ class InfoCard extends StatelessWidget {
       color: isDarkMode ? Colors.black : Colors.grey[200],
       margin: EdgeInsets.symmetric(vertical: 8.h),
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: redcolor, width: 2.0), // Add a red border
+        side: const BorderSide(color: redcolor, width: 2.0), // Add a red border
         borderRadius: BorderRadius.circular(8.0), // Rounded corners
       ),
       child: Padding(

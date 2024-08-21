@@ -45,6 +45,7 @@ Future<void> postSubjectData(String subjectId, BuildContext context) async {
       if (responseData['chapter'] != null && responseData['chapter'].isNotEmpty) {
         // Navigate to SectionsScreen with the chapter data
         Navigator.push(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => SectionsScreen(chapters: responseData['chapter']),

@@ -16,71 +16,106 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Access the current theme
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(
-          'طرق الدفع',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'اختر طريقة الدفع',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+      body: Stack(
+        children: [
+          // Background image for dark mode
+          if (isDarkMode)
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/Ellipse 198.png',
+                fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(height: 16),
-            _buildPaymentOption(0, 'فيزا', 'assets/images/visa.png'),
-            _buildPaymentOption(1, 'فودافون كاش', 'assets/images/vod.png'),
-            _buildPaymentOption(2, 'فوري', 'assets/images/Fawry.png'),
-            const Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _selectedIndex != -1
-                        ? () {
-                            _navigateToSelectedScreen();
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: redcolor,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: isDarkMode ? redcolor : redcolor,
                       ),
-                      elevation: 5,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                    child: const Text(
-                      'التالي',
+                    const Spacer(
+                      flex: 2,
+                    ), // Push the text to the center
+                    const Text(
+                      'طرق الدفع',
                       style: TextStyle(
-                        fontSize: 18,
+                        color: redcolor,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                      ),
+                    ),
+                    const Spacer(
+                      flex: 3,
+                    ), // Push the text to the center
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'اختر طريقة الدفع',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildPaymentOption(0, 'فيزا', 'assets/images/visa.png'),
+                _buildPaymentOption(1, 'فودافون كاش', 'assets/images/vod.png'),
+                _buildPaymentOption(2, 'فوري', 'assets/images/Fawry.png'),
+                const Spacer(),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _selectedIndex != -1
+                            ? () {
+                                _navigateToSelectedScreen();
+                              }
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: redcolor,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 5,
+                        ),
+                        child: const Text(
+                          'التالي',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -89,17 +124,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
     switch (_selectedIndex) {
       case 0:
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (ctx) => VisaPaymentScreen()),
+          MaterialPageRoute(builder: (ctx) => const VisaPaymentScreen()),
         );
         break;
       case 1:
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (ctx) => VodafonePaymentScreen()),
+          MaterialPageRoute(builder: (ctx) => const VodafonePaymentScreen()),
         );
         break;
       case 2:
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (ctx) => FawryPaymentScreen()),
+          MaterialPageRoute(builder: (ctx) => const FawryPaymentScreen()),
         );
         break;
       default:
@@ -109,12 +144,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Widget _buildPaymentOption(int index, String text, String imagePath) {
+    final theme = Theme.of(context);
+    bool isSelected = _selectedIndex == index;
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      color: _selectedIndex == index ? Colors.red.shade200 : Colors.white,
-      elevation: _selectedIndex == index ? 5 : 2,
+      color: isSelected ? Colors.red.shade200 : theme.cardColor,
+      elevation: isSelected ? 5 : 2,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         leading: Image.asset(imagePath, width: 30, height: 30),
@@ -122,6 +160,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           text,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
+            color: redcolor,
           ),
         ),
         trailing: Radio<int>(
