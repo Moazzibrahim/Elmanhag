@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/views/widgets/leading_icon.dart';
-import 'task_screen.dart';
+import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
 
 class HomeWorkScreen extends StatefulWidget {
   const HomeWorkScreen({super.key});
@@ -11,43 +10,74 @@ class HomeWorkScreen extends StatefulWidget {
 }
 
 class HomeWorkScreenState extends State<HomeWorkScreen> {
-  List<int> taskStars = List.generate(30, (index) => 0);
-  int unlockedTasks = 1; // Only one task initially unlocked
+  // List for 3 tasks, each initialized with 0 stars
+  List<int> taskStars = List.generate(3, (index) => 0);
+  int unlockedTasks = 1; // Only the first task is initially unlocked
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    bool isDarkMode = theme.brightness == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(
-        leading: const LeadingIcon(),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 1,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemCount: taskStars.length,
-          itemBuilder: (context, index) {
-            if (index < unlockedTasks) {
-              return TaskCard(
-                index: index + 1,
-                stars: taskStars[index],
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TaskScreen(taskIndex: index + 1),
+      body: Container(
+        decoration: isDarkMode
+            ? const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/Ellipse 198.png'),
+                  fit: BoxFit.cover,
+                ),
+              )
+            : null,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: redcolor,
                     ),
-                  );
-                },
-              );
-            } else {
-              return const LockedCard();
-            }
-          },
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 1,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemCount: taskStars.length,
+                  itemBuilder: (context, index) {
+                    if (index < unlockedTasks) {
+                      return TaskCard(
+                        index: index + 1,
+                        stars: taskStars[index],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ExamScreen(),
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return const LockedCard();
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -68,13 +98,16 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    bool isDarkMode = theme.brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDarkMode ? Colors.black : Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: redcolor, width: 2),
+          border: Border.all(
+              color: isDarkMode ? Colors.black : redcolor, width: 2),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -111,9 +144,11 @@ class LockedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    bool isDarkMode = theme.brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: isDarkMode ? Colors.black : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
       ),
       child: const Center(

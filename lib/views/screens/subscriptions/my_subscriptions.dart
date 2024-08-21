@@ -9,55 +9,81 @@ class MySubscriptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    bool isDarkMode = theme.brightness == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'اشتراكاتي',
-          style: TextStyle(color: redcolor, fontSize: 24),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: redcolor),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-      ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: SubscriptionCard(
-                    title: 'باقه حصص اللايف',
-                    description:
-                        'انت الان على الباقه المجانيه تمتع بمزايا الباقه المدفوعه الآن',
-                    buttonText: 'انت على الباقه المدفوعه',
-                    imagePath: 'assets/images/live_sessions.png',
-                    isPrimary: false,
-                  ),
+      body: Container(
+        decoration: isDarkMode
+            ? const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/Ellipse 198.png'),
+                  fit: BoxFit.cover,
                 ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: SubscriptionCard(
-                    title: 'باقه المواد',
-                    description:
-                        'انت الان على الباقه المجانيه انتقل الى الباقه المدفوعه للحصول على المواد المتقدمه بسعر 1500 جنيه لكل المواد بدلا من 2600 جنيه',
-                    buttonText: 'اشترك الان',
-                    imagePath: 'assets/images/materials.png',
-                    isPrimary: true,
+              )
+            : null,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 25,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: redcolor,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                ),
-              ],
-            ),
-          ],
+                  const Spacer(
+                    flex: 2,
+                  ),
+                  const Text(
+                    "اشتراكاتي",
+                    style: TextStyle(
+                      color: redcolor,
+                      fontSize: 28,
+                    ),
+                  ),
+                  const Spacer(
+                    flex: 3,
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              const Row(
+                children: [
+                  Expanded(
+                    child: SubscriptionCard(
+                      title: 'باقه حصص اللايف',
+                      description:
+                          'انت الان على الباقه المجانيه تمتع بمزايا الباقه المدفوعه الآن',
+                      buttonText: 'انت على الباقه المدفوعه',
+                      imagePath: 'assets/images/live_sessions.png',
+                      isPrimary: false,
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: SubscriptionCard(
+                      title: 'باقه المواد',
+                      description:
+                          'انت الان على الباقه المجانيه انتقل الى الباقه المدفوعه للحصول على المواد المتقدمه بسعر 1500 جنيه لكل المواد بدلا من 2600 جنيه',
+                      buttonText: 'اشترك الان',
+                      imagePath: 'assets/images/materials.png',
+                      isPrimary: true,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -82,11 +108,15 @@ class SubscriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    bool isDarkMode = theme.brightness == Brightness.dark;
     return Container(
       height: 430,
       padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 12),
       decoration: BoxDecoration(
-        color: const Color.fromRGBO(235, 235, 235, 1),
+        color: isDarkMode
+            ? const Color.fromRGBO(49, 49, 49, 1)
+            : const Color.fromRGBO(235, 235, 235, 1),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -117,9 +147,9 @@ class SubscriptionCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             description,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: Colors.black,
+              color: isDarkMode ? Colors.white : Colors.black,
             ),
           ),
           const SizedBox(height: 16),

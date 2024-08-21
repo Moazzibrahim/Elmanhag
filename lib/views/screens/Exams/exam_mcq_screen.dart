@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/Exams/exam_write_or_wrong.dart';
 
 class ExamScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class _ExamScreenState extends State<ExamScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     bool isDarkMode = theme.brightness == Brightness.dark;
+    final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       body: Container(
@@ -32,7 +34,7 @@ class _ExamScreenState extends State<ExamScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 25,
               ),
               Row(
@@ -47,17 +49,17 @@ class _ExamScreenState extends State<ExamScreen> {
                       Navigator.pop(context);
                     },
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 2,
                   ),
-                  const Text(
-                    'الامتحان',
-                    style: TextStyle(
+                  Text(
+                    localizations.translate('exam'),
+                    style: const TextStyle(
                       color: redcolor,
                       fontSize: 28,
                     ),
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 3,
                   )
                 ],
@@ -119,6 +121,8 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   Widget _buildRadioOption(String text, String value) {
+    final theme = Theme.of(context);
+    bool isDarkMode = theme.brightness == Brightness.dark;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -141,7 +145,8 @@ class _ExamScreenState extends State<ExamScreen> {
           const SizedBox(width: 8),
           Text(
             text,
-            style: const TextStyle(fontSize: 16),
+            style: TextStyle(
+                fontSize: 16, color: isDarkMode ? Colors.white : Colors.black),
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 
 class Complete extends StatelessWidget {
   const Complete({super.key});
@@ -12,52 +13,12 @@ class Complete extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          content: Container(
+          content: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/images/starts.png",
-                      width: 65,
-                      height: 65,
-                    ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    const Expanded(
-                      child: Center(
-                        child: Text(
-                          'النتيجة',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Align(
-                        alignment: Alignment.topRight,
-                        child: Icon(
-                          Icons.close,
-                          color: redcolor,
-                          size: 25,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                _buildDialogHeader(context),
                 const SizedBox(height: 20),
                 const Text(
                   '20/15',
@@ -68,27 +29,7 @@ class Complete extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Row(
-                  children: [
-                    Text(
-                      "لقد اجتزت الامتحان",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      'تهانينا لك ',
-                      style: TextStyle(
-                        color: redcolor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+                const _ResultMessage(),
               ],
             ),
           ),
@@ -97,10 +38,50 @@ class Complete extends StatelessWidget {
     );
   }
 
+  Widget _buildDialogHeader(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Image.asset(
+          "assets/images/starts.png",
+          width: 65,
+          height: 65,
+        ),
+        const SizedBox(width: 6),
+        const Expanded(
+          child: Center(
+            child: Text(
+              'النتيجة',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: const Align(
+            alignment: Alignment.topRight,
+            child: Icon(
+              Icons.close,
+              color: redcolor,
+              size: 25,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    bool isDarkMode = theme.brightness == Brightness.dark;
+    final bool isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       body: Container(
@@ -118,113 +99,168 @@ class Complete extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, color: redcolor),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  const Spacer(
-                    flex: 2,
-                  ),
-                  const Text(
-                    'الامتحان',
-                    style: TextStyle(
-                      color: redcolor,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Spacer(
-                    flex: 3,
-                  )
-                ],
-              ),
+              _buildHeader(context),
               const SizedBox(height: 20),
-              const Text(
-                'اختر الاجابه الصحيحه من بين',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const Text(
-                'الكلمات التاليه',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                '(الارنــــب _ الفيــــل _ الفأر_ السلحفاء)',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
+              const _ExamInstructions(),
               const SizedBox(height: 30),
-              const Text(
-                'حيوان الـــــــ _________ اسرع من _______',
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'يخاف حيوان _______ من حيوان _______',
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-                textAlign: TextAlign.center,
-              ),
+              const _ExamQuestions(),
               const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      showResultDialog(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: redcolor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'التالي',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'السابق',
-                      style: TextStyle(
-                        color: redcolor,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              _buildNavigationButtons(context),
               const SizedBox(height: 20),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: redcolor),
+          onPressed: () => Navigator.pop(context),
+        ),
+        const Spacer(flex: 2),
+        Text(
+          localizations.translate('exam'),
+          style: const TextStyle(
+            color: redcolor,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const Spacer(flex: 3),
+      ],
+    );
+  }
+
+  Widget _buildNavigationButtons(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ElevatedButton(
+          onPressed: () => showResultDialog(context),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: redcolor,
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: const Text(
+            'تسليم',
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text(
+            'السابق',
+            style: TextStyle(
+              color: redcolor,
+              fontSize: 18,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ResultMessage extends StatelessWidget {
+  const _ResultMessage();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Text(
+          "لقد اجتزت الامتحان",
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Text(
+          'تهانينا لك ',
+          style: TextStyle(
+            color: redcolor,
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+}
+
+class _ExamInstructions extends StatelessWidget {
+  const _ExamInstructions();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    bool isDarkMode = theme.brightness == Brightness.dark;
+    return Column(
+      children: [
+        Text(
+          'اختر الاجابه الصحيحه من بين',
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: isDarkMode ? Colors.white : Colors.black),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          ':الكلمات التاليه',
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: isDarkMode ? Colors.white : Colors.black),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 10),
+        Text(
+          '(الارنــــب _ الفيــــل _ الفأر_ السلحفاء)',
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: isDarkMode ? Colors.white : Colors.black),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+}
+
+class _ExamQuestions extends StatelessWidget {
+  const _ExamQuestions();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    bool isDarkMode = theme.brightness == Brightness.dark;
+    return Column(
+      children: [
+        Text(
+          'حيوان الـــــــ _________ اسرع من _______',
+          style: TextStyle(
+              fontSize: 18, color: isDarkMode ? Colors.white : Colors.black),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 20),
+        Text(
+          'يخاف حيوان _______ من حيوان _______',
+          style: TextStyle(
+              fontSize: 18, color: isDarkMode ? Colors.white : Colors.black),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }
