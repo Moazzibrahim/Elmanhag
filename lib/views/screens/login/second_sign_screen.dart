@@ -145,7 +145,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               items: countries.map((Country country) {
                 return DropdownMenuItem<String>(
                   value: country.id.toString(),
-                  child: Text(truncateString(country.name, 20)),
+                  child: Text(truncateString(country.name, 30)),
                 );
               }).toList(),
               decoration: InputDecoration(
@@ -170,6 +170,15 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                       .firstWhere(
                           (country) => country.id.toString() == newValue)
                       .name;
+                  // Access the provider here
+                  final dataProvider = context.read<DataProvider>();
+                  // Filter cities based on selected country
+                  cities = dataProvider.dataModel?.cities
+                          .where((city) =>
+                              city.countryId.toString() == selectedCountryId)
+                          .toList() ??
+                      [];
+                  selectedCityId = null; // Reset selected city
                 });
               },
               validator: (value) =>
