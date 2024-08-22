@@ -12,33 +12,35 @@ class BockletScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 24),
-            _buildDownloadButton('Pdf 1'),
-            _buildDownloadButton('Pdf 2'),
-            _buildDownloadButton('Pdf 3'),
-            _buildDownloadButton('Pdf 4'),
+            _buildDownloadButton('Pdf 1', context),
+            _buildDownloadButton('Pdf 2', context),
+            _buildDownloadButton('Pdf 3', context),
+            _buildDownloadButton('Pdf 4', context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDownloadButton(String title) {
+  Widget _buildDownloadButton(String title, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         children: [
-          const Icon(Icons.download, color: Colors.black),
-          const SizedBox(width: 8),
           Expanded(
-            child: ElevatedButton(
+            child: FloatingActionButton.extended(
               onPressed: () {
-                // Add download logic here
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("pdf downloaded")),
+                );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: redcolor,
-                padding: const EdgeInsets.symmetric(vertical: 12),
+              backgroundColor: redcolor,
+              icon: const Icon(
+                Icons.download,
+                size: 24,
+                color: Colors.white,
               ),
-              child: Text(
+              label: Text(
                 title,
                 style: const TextStyle(fontSize: 16, color: Colors.white),
                 textAlign: TextAlign.right,

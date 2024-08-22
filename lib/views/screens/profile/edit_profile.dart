@@ -1,5 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
-import 'dart:developer';
+// ignore_for_file: use_build_context_synchronously, avoid_print
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -177,21 +176,23 @@ class _StudentTabContentState extends State<StudentTabContent> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     Future<void> saveProfile() async {
-      // API endpoint
       const url = 'https://bdev.elmanhag.shop/student/profile/modify';
-
-      // Retrieve the token from your provider
       final token = Provider.of<TokenModel>(context, listen: false).token;
 
-      // Create a multipart request
-      final request = http.MultipartRequest('POST', Uri.parse(url));
+      // Print selected IDs and image path
+      print('Selected Country ID: $selectedCountryId');
+      print('Selected City ID: $selectedCityId');
+      if (widget.image != null) {
+        print('Selected Image Path: ${widget.image!.path}');
+      } else {
+        print('No image selected');
+      }
 
-      // Set the authorization header
+      final request = http.MultipartRequest('POST', Uri.parse(url));
       request.headers['Content-Type'] = 'application/json';
       request.headers['Accept'] = 'application/json';
       request.headers['Authorization'] = 'Bearer $token';
 
-      // Create a map with all the fields
       final Map<String, String> fieldsMap = {
         'name': _nameController.text,
         'email': _emailController.text,
@@ -204,25 +205,25 @@ class _StudentTabContentState extends State<StudentTabContent> {
         'education_id': selectedEducationId ?? '',
       };
 
-      // Add the map to the request fields
       request.fields.addAll(fieldsMap);
 
-      // Add the image file if it's not null
       if (widget.image != null) {
         request.files.add(
-            await http.MultipartFile.fromPath('image', widget.image!.path));
+          await http.MultipartFile.fromPath('image', widget.image!.path),
+        );
       }
 
-      // Send the request
       final response = await request.send();
 
-      // Handle the response
       if (response.statusCode == 200) {
+        // Fetch updated profile data
+        await Provider.of<UserProfileProvider>(context, listen: false)
+            .fetchUserProfile(context);
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile updated successfully')),
         );
-        Navigator.pop(context, true); // Pass true to indicate an update
-        log("name: ${_nameController.text}");
+        Navigator.pop(context, true); // Indicate the update was successful
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to update profile')),
@@ -278,7 +279,7 @@ class _StudentTabContentState extends State<StudentTabContent> {
                         value: country.id.toString(),
                         child: Text(
                           truncateString(
-                              country.name, 40), // Truncate the country name
+                              country.name, 30), // Truncate the country name
                           style: TextStyle(
                             overflow: TextOverflow.ellipsis,
                             fontSize: 12
@@ -309,12 +310,20 @@ class _StudentTabContentState extends State<StudentTabContent> {
                     onChanged: (String? newValue) {
                       setState(() {
                         selectedCountryId = newValue;
-                        selectedCountryName = truncateString(
-                            countries
-                                .firstWhere((country) =>
-                                    country.id.toString() == newValue)
-                                .name,
-                            40);
+                        selectedCountryName = countries
+                            .firstWhere(
+                                (country) => country.id.toString() == newValue)
+                            .name;
+                        // Access the provider here
+                        final dataProvider = context.read<DataProvider>();
+                        // Filter cities based on selected country
+                        cities = dataProvider.dataModel?.cities
+                                .where((city) =>
+                                    city.countryId.toString() ==
+                                    selectedCountryId)
+                                .toList() ??
+                            [];
+                        selectedCityId = null; // Reset selected city
                       });
                     },
                     validator: (value) =>

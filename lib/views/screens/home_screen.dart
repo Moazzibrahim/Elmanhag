@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isInitialized = false;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    '${localizations.translate('welcome')} ${userProfileProvider.name} ',
+                    '${localizations.translate('welcome')} ${userProfileProvider.name}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -130,63 +131,169 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
-        return themeProvider.isDarkMode
-            ? Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/Ellipse 198.png'),
-                    fit: BoxFit.cover,
+      body: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return themeProvider.isDarkMode
+              ? Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/Ellipse 198.png'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                child: Padding(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 25),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (ctx) =>
+                                          const CustomProfileScreen()));
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              '${userProfileProvider.image}'),
+                                          radius: 20,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          '${localizations.translate('welcome')} ${userProfileProvider.name}',
+                                          style: const TextStyle(
+                                            color: redcolor,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 15),
+                                      child: Text(
+                                        '${userProfileProvider.category}', // Add this line
+                                        style: const TextStyle(
+                                          color: redcolor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.menu),
+                              onPressed: () {
+                                Scaffold.of(context).openDrawer();
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        const Expanded(child: HomeGrid()),
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: theme.scaffoldBackgroundColor,
+                              shadowColor: redcolor,
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MySubscriptions()));
+                            },
+                            child: Center(
+                              child: Text(
+                                localizations.translate('my_subscriptions'),
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    color: redcolor,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
                     children: [
                       const SizedBox(height: 25),
                       Row(
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (ctx) =>
-                                      const CustomProfileScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      '${userProfileProvider.image}'),
-                                  radius: 20,
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  '${localizations.translate('welcome')} ${userProfileProvider.name} ',
-                                  style: const TextStyle(
-                                    color: redcolor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (ctx) =>
+                                        const CustomProfileScreen()));
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            '${userProfileProvider.image}'),
+                                        radius: 20,
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        '${localizations.translate('welcome')} ${userProfileProvider.name}',
+                                        style: const TextStyle(
+                                          color: redcolor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 15),
+                                    child: Text(
+                                      '${userProfileProvider.category}', // Add this line
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          const Spacer(),
-                          Builder(
-                            builder: (context) => IconButton(
-                              icon: const Icon(Icons.menu),
-                              onPressed: () {
-                                Scaffold.of(context).openDrawer();
-                              },
-                            ),
+                          IconButton(
+                            icon: const Icon(Icons.menu),
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
                           ),
                         ],
                       ),
                       const SizedBox(height: 10),
                       const Expanded(child: HomeGrid()),
-                      const SizedBox(
-                        height: 10,
-                      ),
                       Container(
                         padding: const EdgeInsets.all(6),
                         child: ElevatedButton(
@@ -218,85 +325,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                ),
-              )
-            : Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 25),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (ctx) => const CustomProfileScreen()));
-                          },
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    '${userProfileProvider.image}'),
-                                radius: 20,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                "${localizations.translate('welcome')} ${userProfileProvider.name}",
-                                style: const TextStyle(
-                                  color: redcolor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Spacer(),
-                        Builder(
-                          builder: (context) => IconButton(
-                            icon: const Icon(Icons.menu),
-                            onPressed: () {
-                              Scaffold.of(context).openDrawer();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    const Expanded(child: HomeGrid()),
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.scaffoldBackgroundColor,
-                          shadowColor: redcolor,
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MySubscriptions()));
-                        },
-                        child: Center(
-                          child: Text(
-                            localizations.translate('my_subscriptions'),
-                            style: const TextStyle(
-                                fontSize: 20,
-                                color: redcolor,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-      }),
+                );
+        },
+      ),
     );
   }
 }
