@@ -17,6 +17,7 @@ class SectionsScreen extends StatefulWidget {
   final String subjectId;
 
   @override
+  // ignore: library_private_types_in_public_api
   _SectionsScreenState createState() => _SectionsScreenState();
 }
 
@@ -144,12 +145,6 @@ class _ChapterTileState extends State<ChapterTile> {
       'subject_id': subjectId,
       'lesson_id': lessonId,
     };
-
-    log('Posting lesson data to API:');
-    log('URL: $url');
-    log('Headers: $headers');
-    log('Body: $body');
-
     try {
       final response = await http.post(
         url,
