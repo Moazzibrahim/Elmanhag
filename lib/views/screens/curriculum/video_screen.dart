@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
@@ -26,85 +28,88 @@ class _LessonsVideosState extends State<LessonsVideos> {
       length: 3,
       initialIndex: 0,
       child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: EdgeInsets.only(left: 10.w), // Adjust title padding
-            child: Text(
-              widget.lessonData['name'],
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: redcolor,
-              ),
-            ),
-          ),
-          leading: Container(
-            margin: EdgeInsets.all(6.w),
-            decoration: BoxDecoration(
-              color: isDarkMode
-                  ? Colors.black54
-                  : const Color.fromRGBO(250, 226, 229, 1),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: redcolor,
-              ),
-            ),
-          ),
-          elevation: 4,
-          backgroundColor: theme.appBarTheme.backgroundColor,
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(8.0.w),
-          child: Column(
-            children: [
-              Container(
-                height: 50.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
+        body: Container(
+          decoration: isDarkMode
+              ? const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/Ellipse 198.png'),
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : null,
+          child: Padding(
+            padding: EdgeInsets.all(8.0.w),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: redcolor,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    const SizedBox(
+                      width: 50,
+                    ),
+                    Text(
+                      widget.lessonData['name'],
+                      style: const TextStyle(fontSize: 20),
                     ),
                   ],
                 ),
-                child: TabBar(
-                  labelPadding: EdgeInsets.symmetric(horizontal: 10.w),
-                  indicator: BoxDecoration(
-                    color: redcolor,
+                const SizedBox(height: 12),
+                Container(
+                  height: 50.h,
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.r),
+                    boxShadow: const [
+                      BoxShadow(
+                        //color: Colors.grey.withOpacity(0.2),
+                        color: Colors.transparent,
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  labelColor: Colors.white,
-                  unselectedLabelColor: isDarkMode ? Colors.white54 : redcolor,
-                  tabs: const [
-                    _CustomTab(text: 'فيديوهات'),
-                    _CustomTab(text: 'واجبات'),
-                    _CustomTab(text: 'مذكرات'),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10.h), // Add spacing between TabBar and content
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                  child: TabBarView(
-                    children: [
-                      IdeasContent(resources: widget.lessonData['resources']),
-                      const HomeWorkWidget(),
-                      BockletScreen(resources: widget.lessonData['resources']),
+                  child: TabBar(
+                    labelPadding: EdgeInsets.symmetric(horizontal: 10.w),
+                    indicator: BoxDecoration(
+                      color: redcolor,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    labelColor: Colors.white,
+                    unselectedLabelColor:
+                        isDarkMode ? Colors.white54 : redcolor,
+                    tabs: const [
+                      _CustomTab(text: 'فيديوهات'),
+                      _CustomTab(text: 'واجبات'),
+                      _CustomTab(text: 'مذكرات'),
                     ],
                   ),
                 ),
-              ),
-            ],
+                SizedBox(
+                    height: 10.h), // Add spacing between TabBar and content
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0.w),
+                    child: TabBarView(
+                      children: [
+                        IdeasContent(resources: widget.lessonData['resources']),
+                        const HomeWorkWidget(),
+                        BockletScreen(
+                            resources: widget.lessonData['resources']),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
