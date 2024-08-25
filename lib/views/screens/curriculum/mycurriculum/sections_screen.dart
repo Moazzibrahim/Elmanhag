@@ -17,7 +17,6 @@ class SectionsScreen extends StatefulWidget {
   final String subjectId;
 
   @override
-  // ignore: library_private_types_in_public_api
   _SectionsScreenState createState() => _SectionsScreenState();
 }
 
@@ -161,8 +160,6 @@ class _ChapterTileState extends State<ChapterTile> {
       if (response.statusCode == 200) {
         var responseData = json.decode(response.body);
         log('Response data: $responseData');
-
-        // Navigate to LessonsVideos screen with the lesson data
         // ignore: use_build_context_synchronously
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -173,7 +170,6 @@ class _ChapterTileState extends State<ChapterTile> {
       } else if (response.statusCode == 404) {
         var responseData = json.decode(response.body);
         if (responseData['faield'] == 'This Lesson Is Un paid') {
-          // Show a custom-designed dialog to inform the user that the lesson is unpaid
           showDialog(
             // ignore: use_build_context_synchronously
             context: context,
@@ -184,24 +180,10 @@ class _ChapterTileState extends State<ChapterTile> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                title: const Row(
-                  children: [
-                    Icon(Icons.warning_amber_rounded,
-                        color: Colors.red, size: 24),
-                    SizedBox(width: 8),
-                    Text(
-                      'Payment Required',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
                 content: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: Text(
-                    'This lesson is unpaid. Please purchase the lesson to proceed.',
+                    'يجب عليك الاشتراك لتكملة تعلم هذا الدرس',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -211,7 +193,7 @@ class _ChapterTileState extends State<ChapterTile> {
                 actions: [
                   TextButton(
                     child: Text(
-                      'Cancel',
+                      ' لاحقا',
                       style: TextStyle(color: Colors.grey[700]),
                     ),
                     onPressed: () {
@@ -220,8 +202,6 @@ class _ChapterTileState extends State<ChapterTile> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigator.of(context).pop(); // Close the dialog
-                      // Navigate to the purchase page
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const SubscriptionScreen(),
@@ -230,15 +210,16 @@ class _ChapterTileState extends State<ChapterTile> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green, // Button color
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                     child: const Text(
-                      'Buy Now',
-                      style: TextStyle(color: Colors.white),
+                      'اشترك الان',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

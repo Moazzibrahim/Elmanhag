@@ -4,10 +4,9 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:webview_flutter_x5/webview_flutter.dart';
 
 class IdeasContent extends StatefulWidget {
-  final List<dynamic> resources; // Add this line
+  final List<dynamic> resources;
 
-  const IdeasContent(
-      {super.key, required this.resources}); // Update constructor
+  const IdeasContent({super.key, required this.resources});
 
   @override
   State<IdeasContent> createState() => _IdeasContentState();
@@ -52,19 +51,40 @@ class _IdeasContentState extends State<IdeasContent> {
         child: Column(
           children: [
             AspectRatio(
-              aspectRatio: 1 / 1,
-              child: WebView(
-                initialUrl: videoResources[viewedVideoIndex]['link'],
-                javascriptMode: JavascriptMode.unrestricted,
-                initialMediaPlaybackPolicy:
-                    AutoMediaPlaybackPolicy.always_allow,
+              aspectRatio: isLandscape ? 16 / 9 : 1 / 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: WebView(
+                    initialUrl: videoResources[viewedVideoIndex]['link'],
+                    javascriptMode: JavascriptMode.unrestricted,
+                    initialMediaPlaybackPolicy:
+                        AutoMediaPlaybackPolicy.always_allow,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 10),
             const Row(
               children: [
                 SizedBox(width: 20),
-                Text('الوحده الاولى الدرس الثانى'),
+                Text(
+                  'الوحده الاولى الدرس الثانى',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
                 SizedBox(width: 10),
               ],
             ),
@@ -76,20 +96,22 @@ class _IdeasContentState extends State<IdeasContent> {
                   backgroundImage: AssetImage('assets/images/logo.png'),
                 ),
                 SizedBox(width: 10),
-                Text('مستر احمد الباشا'),
+                Text('المنهج', style: TextStyle(fontSize: 16)),
               ],
             ),
+            const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 for (int i = 0; i < 5; i++)
                   GestureDetector(
                     onTap: () {
-                      updateRating(i);
+                      updateRating(i + 1);
                     },
                     child: Icon(
-                      i <= rating ? Icons.star : Icons.star_border_outlined,
+                      i < rating ? Icons.star : Icons.star_border_outlined,
                       color: Colors.redAccent[700],
+                      size: 28,
                     ),
                   ),
                 const SizedBox(width: 5),
@@ -107,6 +129,7 @@ class _IdeasContentState extends State<IdeasContent> {
                 ),
               ],
             ),
+            const SizedBox(height: 15),
             Row(
               children: [
                 IconButton(
@@ -124,6 +147,7 @@ class _IdeasContentState extends State<IdeasContent> {
                 )
               ],
             ),
+            const SizedBox(height: 15),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -131,6 +155,7 @@ class _IdeasContentState extends State<IdeasContent> {
               itemBuilder: (context, i) {
                 int index = i + 1;
                 return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -139,8 +164,8 @@ class _IdeasContentState extends State<IdeasContent> {
                         });
                       },
                       child: Container(
-                        height: 150,
-                        width: 200,
+                        height: 100,
+                        width: 150,
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -150,6 +175,12 @@ class _IdeasContentState extends State<IdeasContent> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            Image.network(
+                              videoResources[index]['thumbnail'],
+                              fit: BoxFit.cover,
+                              height: 80,
+                            ),
+                            const SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -160,7 +191,10 @@ class _IdeasContentState extends State<IdeasContent> {
                                     color: const Color.fromARGB(
                                         255, 195, 194, 194),
                                   ),
-                                  child: const Text('2:30'),
+                                  child: Text(
+                                    videoResources[index]['duration'],
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
                                 ),
                               ],
                             )
@@ -169,21 +203,24 @@ class _IdeasContentState extends State<IdeasContent> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const Expanded(
+                    Expanded(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text('مستر احمد الباشا'),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Text('الوحده الاولى الدرس الثالث'),
-                          SizedBox(height: 10),
                           Text(
-                            "هذا فديو رائع لهذه الوحده يوجد بها",
-                            style: TextStyle(color: greycolor),
+                            videoResources[index]['title'],
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'مستر احمد الباشا',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            videoResources[index]['description'],
+                            style: const TextStyle(color: greycolor),
                           ),
                         ],
                       ),

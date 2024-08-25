@@ -22,7 +22,7 @@ class MyCurriculumScreen extends StatelessWidget {
                     fit: BoxFit.cover,
                   )
                 : Container(
-                    color: Colors.white, // White background for default mode
+                    color: Colors.white, 
                   ),
           ),
           FutureBuilder(
