@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_application_1/views/screens/bocklet/bocklet_screen.dart';
-import 'package:flutter_application_1/views/screens/homework/hw_mcq_screen.dart';
+import 'package:flutter_application_1/views/widgets/hw_levels_widget.dart';
 import 'package:flutter_application_1/views/widgets/lesson_content.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class LessonsVideos extends StatefulWidget {
   final dynamic lessonData;
@@ -17,6 +19,9 @@ class LessonsVideos extends StatefulWidget {
 class _LessonsVideosState extends State<LessonsVideos> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
+
     return DefaultTabController(
       length: 3,
       initialIndex: 0,
@@ -29,13 +34,16 @@ class _LessonsVideosState extends State<LessonsVideos> {
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
+                color: redcolor,
               ),
             ),
           ),
           leading: Container(
             margin: EdgeInsets.all(6.w),
             decoration: BoxDecoration(
-              color: const Color.fromRGBO(250, 226, 229, 1),
+              color: isDarkMode
+                  ? Colors.black54
+                  : const Color.fromRGBO(250, 226, 229, 1),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: IconButton(
@@ -43,13 +51,13 @@ class _LessonsVideosState extends State<LessonsVideos> {
                 Navigator.of(context).pop();
               },
               icon: const Icon(
-                Icons.arrow_back,
+                Icons.arrow_back_ios,
                 color: redcolor,
               ),
             ),
           ),
-          elevation: 4, // Add shadow to AppBar
-          backgroundColor: Colors.white,
+          elevation: 4,
+          backgroundColor: theme.appBarTheme.backgroundColor,
         ),
         body: Padding(
           padding: EdgeInsets.all(8.0.w),
@@ -75,7 +83,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   labelColor: Colors.white,
-                  unselectedLabelColor: redcolor,
+                  unselectedLabelColor: isDarkMode ? Colors.white54 : redcolor,
                   tabs: const [
                     _CustomTab(text: 'فيديوهات'),
                     _CustomTab(text: 'واجبات'),
@@ -90,7 +98,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                   child: TabBarView(
                     children: [
                       IdeasContent(resources: widget.lessonData['resources']),
-                      const HomeworkMcqScreen(),
+                      const HomeWorkWidget(),
                       BockletScreen(resources: widget.lessonData['resources']),
                     ],
                   ),
