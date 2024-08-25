@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
 class BockletScreen extends StatelessWidget {
-  const BockletScreen({super.key});
+  final List<dynamic> resources;
+
+  const BockletScreen({super.key, required this.resources});
 
   @override
   Widget build(BuildContext context) {
@@ -10,13 +12,12 @@ class BockletScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          children: [
-            const SizedBox(height: 24),
-            _buildDownloadButton('Pdf 1', context),
-            _buildDownloadButton('Pdf 2', context),
-            _buildDownloadButton('Pdf 3', context),
-            _buildDownloadButton('Pdf 4', context),
-          ],
+          children: resources.map((resource) {
+            if (resource['type'] == 'pdf') {
+              return _buildDownloadButton(resource['file'], context);
+            }
+            return Container(); // or other widget if needed
+          }).toList(),
         ),
       ),
     );

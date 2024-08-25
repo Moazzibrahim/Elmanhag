@@ -105,7 +105,7 @@ class HomeworkMyCirriculam extends StatelessWidget {
                                   return GestureDetector(
                                     onTap: () async {
                                       // Send the selected subject's ID to postSubjectData
-                                      await ppostSubjectData(
+                                      await postSubjectData(
                                           subjects[index].id.toString(),
                                           context);
                                     },

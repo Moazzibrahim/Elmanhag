@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
-import 'package:flutter_application_1/views/screens/curriculum/video_screen.dart';
+import 'package:flutter_application_1/models/lessons_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-class SectionsScreen extends StatefulWidget {
-  const SectionsScreen({super.key, required this.chapters});
-  final List<dynamic> chapters;
+class ChaptersScreen extends StatelessWidget {
+  final List<Chapter> chapters;
 
-  @override
-  // ignore: library_private_types_in_public_api
-  _SectionsScreenState createState() => _SectionsScreenState();
-}
+  const ChaptersScreen({super.key, required this.chapters});
 
-class _SectionsScreenState extends State<SectionsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -38,9 +33,7 @@ class _SectionsScreenState extends State<SectionsScreen> {
             padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 10.0.h),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 25,
-                ),
+                const SizedBox(height: 25),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -50,20 +43,16 @@ class _SectionsScreenState extends State<SectionsScreen> {
                         Navigator.of(context).pop();
                       },
                     ),
-                    const Spacer(
-                      flex: 2,
-                    ),
+                    const Spacer(flex: 2),
                     Text(
-                      'الوحدات',
+                      'Chapters',
                       style: TextStyle(
                         color: redcolor,
                         fontSize: 25.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Spacer(
-                      flex: 3,
-                    )
+                    const Spacer(flex: 3),
                   ],
                 ),
                 SizedBox(height: 20.h),
@@ -74,7 +63,7 @@ class _SectionsScreenState extends State<SectionsScreen> {
                 ),
                 SizedBox(height: 20.h),
                 Expanded(
-                  child: widget.chapters.isEmpty
+                  child: chapters.isEmpty
                       ? Center(
                           child: Text(
                             'No chapters available',
@@ -82,13 +71,12 @@ class _SectionsScreenState extends State<SectionsScreen> {
                           ),
                         )
                       : ListView.builder(
-                          itemCount: widget.chapters.length,
+                          itemCount: chapters.length,
                           itemBuilder: (context, index) {
-                            final chapter = widget.chapters[index];
-                            final lessons = chapter['lessons'];
+                            final chapter = chapters[index];
                             return ChapterTile(
                               chapter: chapter,
-                              lessons: lessons,
+                              lessons: chapter.lessons,
                             );
                           },
                         ),
@@ -104,8 +92,8 @@ class _SectionsScreenState extends State<SectionsScreen> {
 
 class ChapterTile extends StatefulWidget {
   const ChapterTile({super.key, required this.chapter, required this.lessons});
-  final dynamic chapter;
-  final List<dynamic> lessons;
+  final Chapter chapter;
+  final List<Lesson> lessons;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -130,7 +118,7 @@ class _ChapterTileState extends State<ChapterTile> {
         ),
         child: ExpansionTile(
           title: Text(
-            widget.chapter['name'],
+            widget.chapter.name,
             style: TextStyle(
               fontSize: 18.sp,
               color: redcolor,
@@ -156,14 +144,11 @@ class _ChapterTileState extends State<ChapterTile> {
                 color: redcolor,
               ),
               title: Text(
-                lesson['name'],
+                lesson.name,
                 style: TextStyle(fontSize: 16.sp, color: redcolor),
               ),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LessonsVideos()));
+                // Handle tap action here
               },
               contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
               visualDensity: VisualDensity.compact,

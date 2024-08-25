@@ -1,8 +1,45 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/views/screens/home_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class VodafonePaymentScreen extends StatelessWidget {
+class VodafonePaymentScreen extends StatefulWidget {
   const VodafonePaymentScreen({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _VodafonePaymentScreenState createState() => _VodafonePaymentScreenState();
+}
+
+class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
+  File? _image;
+
+  Future<void> _uploadFromGallery() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+        print('Image selected from gallery: ${_image!.path}');
+      });
+    }
+  }
+
+  Future<void> _takePhoto() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+        print('Image taken from camera: ${_image!.path}');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +50,6 @@ class VodafonePaymentScreen extends StatelessWidget {
       backgroundColor: isDarkMode ? Colors.transparent : Colors.white,
       body: Stack(
         children: [
-          // Background image for dark mode
           if (isDarkMode)
             Positioned.fill(
               child: Image.asset(
@@ -36,13 +72,11 @@ class VodafonePaymentScreen extends StatelessWidget {
                         Navigator.pop(context);
                       },
                     ),
-                    // Centered image
                     Image.asset(
-                      'assets/images/vod.png', // Replace with your image path
-                      height: 50, // Adjust size as needed
+                      'assets/images/vod.png',
+                      height: 50,
                     ),
-                    // Empty container to align image to center
-                    Container(width: 50), // Adjust size to match image width
+                    Container(width: 50),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -59,35 +93,71 @@ class VodafonePaymentScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 30),
-                TextField(
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: redcolor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: redcolor),
-                    ),
-                    labelText: 'رقم التليفون',
-                    labelStyle: const TextStyle(color: redcolor),
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: redcolor),
+                  elevation: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'رقم التليفون: 01200010002',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'البريد الإلكتروني: wego@gmail.com',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            _image != null
+                                ? Image.file(
+                                    _image!,
+                                    width: 200,
+                                    height: 200,
+                                  )
+                                : const Text(
+                                    'Upload receipt',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: redcolor,
+                                    ),
+                                  ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: _uploadFromGallery,
+                                  child: const Text(
+                                    'Upload from Gallery',
+                                    style: TextStyle(color: redcolor),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: _takePhoto,
+                                  child: const Text(
+                                    'Take Photo',
+                                    style: TextStyle(color: redcolor),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: redcolor),
-                    ),
-                    labelText: 'البريد الإلكتروني',
-                    labelStyle: const TextStyle(color: redcolor),
                   ),
                 ),
                 const Spacer(),
@@ -138,8 +208,11 @@ class VodafonePaymentScreen extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
-                Navigator.pushReplacementNamed(context, '/home'); // Navigate to home screen
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    ));
               },
               child: const Text('OK'),
             ),

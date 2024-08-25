@@ -1,25 +1,9 @@
-class SubjectResponse {
-  final String success;
-  final List<Subject> subjects;
-
-  SubjectResponse({required this.success, required this.subjects});
-
-  factory SubjectResponse.fromJson(Map<String, dynamic> json) {
-    return SubjectResponse(
-      success: json['success'],
-      subjects: (json['subject'] as List)
-          .map((i) => Subject.fromJson(i))
-          .toList(),
-    );
-  }
-}
-
 class Subject {
   final int id;
   final String name;
   final int price;
   final int categoryId;
-  final int educationId;
+  final int? educationId; // Make this field nullable
   final String demoVideo;
   final String coverPhoto;
   final String thumbnail;
@@ -39,7 +23,7 @@ class Subject {
     required this.name,
     required this.price,
     required this.categoryId,
-    required this.educationId,
+    this.educationId, // Make this field nullable
     required this.demoVideo,
     required this.coverPhoto,
     required this.thumbnail,
@@ -61,7 +45,7 @@ class Subject {
       name: json['name'],
       price: json['price'],
       categoryId: json['category_id'],
-      educationId: json['education_id'],
+      educationId: json['education_id'], // Adjusted for nullable type
       demoVideo: json['demo_video'],
       coverPhoto: json['cover_photo'],
       thumbnail: json['thumbnail'],
@@ -75,6 +59,21 @@ class Subject {
       demoVideoUrl: json['demo_video_url'],
       coverPhotoUrl: json['cover_photo_url'],
       thumbnailUrl: json['thumbnail_url'],
+    );
+  }
+}
+
+class SubjectResponse {
+  final String success;
+  final List<Subject> subjects;
+
+  SubjectResponse({required this.success, required this.subjects});
+
+  factory SubjectResponse.fromJson(Map<String, dynamic> json) {
+    return SubjectResponse(
+      success: json['success'],
+      subjects:
+          (json['subject'] as List).map((i) => Subject.fromJson(i)).toList(),
     );
   }
 }

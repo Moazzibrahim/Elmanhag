@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -5,12 +7,15 @@ import 'package:flutter_application_1/controller/Auth/country_provider.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/models/curriculums_model.dart';
 import 'package:flutter_application_1/models/sign_up_model.dart';
-import 'package:flutter_application_1/views/screens/curriculum/all_curricilms_screen.dart';
+import 'package:flutter_application_1/views/screens/curriculum/allcurriculum/all_curricilms_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class FilterCurriculumsScreen extends StatefulWidget {
+  const FilterCurriculumsScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _FilterCurriculumsScreenState createState() =>
       _FilterCurriculumsScreenState();
 }
@@ -101,7 +106,8 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please select both category and education')),
+          const SnackBar(
+              content: Text('Please select both category and education')),
         );
       }
     } catch (e) {
@@ -129,20 +135,20 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 25,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.arrow_back_ios, color: redcolor),
+                      icon: const Icon(Icons.arrow_back_ios, color: redcolor),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
-                    Spacer(
+                    const Spacer(
                       flex: 2,
                     ),
-                    Text(
+                    const Text(
                       'كل المواد',
                       style: TextStyle(
                         color: redcolor,
@@ -150,19 +156,19 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Spacer(
+                    const Spacer(
                       flex: 3,
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator())
                     : Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Spacer(),
+                            const Spacer(),
                             DropdownButtonFormField<String>(
                               value: selectedCategoryId,
                               items: categories.map((Category category) {
@@ -243,7 +249,8 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
                             const SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: _filterData,
-                              child: Text(
+                              // ignore: sort_child_properties_last
+                              child: const Text(
                                 'اختيار',
                                 style: TextStyle(fontSize: 20),
                               ),
@@ -253,10 +260,11 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0),
                                 ),
-                                padding: EdgeInsets.symmetric(vertical: 16),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
                               ),
                             ),
-                            Spacer()
+                            const Spacer()
                           ],
                         ),
                       ),
@@ -270,5 +278,5 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
 }
 
 String truncateString(String text, int length) {
-  return text.length > length ? text.substring(0, length) + '...' : text;
+  return text.length > length ? '${text.substring(0, length)}...' : text;
 }

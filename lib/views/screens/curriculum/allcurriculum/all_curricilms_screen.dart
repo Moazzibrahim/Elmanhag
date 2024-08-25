@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -5,7 +7,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/models/curriculums_model.dart';
 import 'package:flutter_application_1/models/lessons_model.dart';
-import 'package:flutter_application_1/views/screens/curriculum/all_chapters_screen.dart';
+import 'package:flutter_application_1/views/screens/curriculum/allcurriculum/all_chapters_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -13,8 +15,7 @@ import 'dart:convert';
 class AllCurriculumsScreen extends StatelessWidget {
   final List<Subject> subjects;
 
-  const AllCurriculumsScreen({Key? key, required this.subjects})
-      : super(key: key);
+  const AllCurriculumsScreen({super.key, required this.subjects});
 
   Future<void> fetchAndNavigate(BuildContext context, int subjectId) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -45,6 +46,7 @@ class AllCurriculumsScreen extends StatelessWidget {
             .toList();
 
         Navigator.push(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => ChaptersScreen(chapters: chapters),
@@ -140,9 +142,10 @@ class AllCurriculumsScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 7),
+                              // ignore: unnecessary_null_comparison
                               subjects[index].coverPhotoUrl != null
                                   ? Image.network(
-                                      subjects[index].coverPhotoUrl!,
+                                      subjects[index].coverPhotoUrl,
                                       height: 50,
                                       width: 50,
                                     )

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
-import 'package:flutter_application_1/views/screens/curriculum/curriculums_screen.dart';
+import 'package:flutter_application_1/views/screens/curriculum/mycurriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/hw_my_cirriculam.dart';
+import 'package:flutter_application_1/views/screens/ww.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/subjects_services.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
-import 'package:flutter_application_1/views/screens/live/live_screen.dart';
 
 class HomeGrid extends StatelessWidget {
   const HomeGrid({super.key});
@@ -46,7 +46,7 @@ class HomeGrid extends StatelessWidget {
               Provider.of<SubjectProvider>(context, listen: false)
                   .getSubjects(context);
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => const CurriculumsScreen()));
+                  builder: (ctx) => const MyCurriculumScreen()));
             }
             if (texts[index] == localizations.translate('tasks')) {
               Navigator.of(context).push(MaterialPageRoute(
@@ -57,8 +57,15 @@ class HomeGrid extends StatelessWidget {
                   MaterialPageRoute(builder: (ctx) => const ExamScreen()));
             }
             if (texts[index] == localizations.translate('live_classes')) {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const LiveScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const VideoPlayerScreen(
+                    videoUrl:
+                        'https://drive.elmanhag.com/ld/الصف_4_دراسات_الوحدة_1_الدرس_5_رموز_بلدي.mp4',
+                  ),
+                ),
+              );
             }
           },
           child: Card(

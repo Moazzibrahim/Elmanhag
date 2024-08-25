@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Import for SystemChrome and DeviceOrientation
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:webview_flutter_x5/webview_flutter.dart';
 
 class IdeasContent extends StatefulWidget {
-  const IdeasContent({
-    super.key,
-  });
+  final List<dynamic> resources; // Add this line
+
+  const IdeasContent(
+      {super.key, required this.resources}); // Update constructor
 
   @override
   State<IdeasContent> createState() => _IdeasContentState();
@@ -42,48 +43,39 @@ class _IdeasContentState extends State<IdeasContent> {
 
   @override
   Widget build(BuildContext context) {
+    final videoResources =
+        widget.resources.where((res) => res['type'] == 'video').toList();
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const AspectRatio(
+            AspectRatio(
               aspectRatio: 1 / 1,
               child: WebView(
-                initialUrl:
-                    "https://ucloud.mfscripts.com/video/embed/4g/640x320/Iron_Sky_Trailer.mp4", //widget.lesson.videos[viewedVideoIndex].videoLink,
+                initialUrl: videoResources[viewedVideoIndex]['link'],
                 javascriptMode: JavascriptMode.unrestricted,
-                initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
+                initialMediaPlaybackPolicy:
+                    AutoMediaPlaybackPolicy.always_allow,
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             const Row(
               children: [
-                SizedBox(
-                  width: 20,
-                ),
-                Text(' الوحده الاولى الدرس الثانى '),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 20),
+                Text('الوحده الاولى الدرس الثانى'),
+                SizedBox(width: 10),
               ],
             ),
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
             const Row(
               children: [
-                SizedBox(
-                  width: 20,
-                ),
+                SizedBox(width: 20),
                 CircleAvatar(
                   backgroundImage: AssetImage('assets/images/logo.png'),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 Text('مستر احمد الباشا'),
               ],
             ),
@@ -100,9 +92,7 @@ class _IdeasContentState extends State<IdeasContent> {
                       color: Colors.redAccent[700],
                     ),
                   ),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 5),
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -120,16 +110,24 @@ class _IdeasContentState extends State<IdeasContent> {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(isLandscape ? Icons.screen_lock_rotation : Icons.screen_rotation,color: redcolor,),
+                  icon: Icon(
+                    isLandscape
+                        ? Icons.screen_lock_rotation
+                        : Icons.screen_rotation,
+                    color: redcolor,
+                  ),
                   onPressed: toggleRotation,
                 ),
-                const Text('اقلب الشاشة لمشاهدة الفيديو كامل', style: TextStyle(fontSize: 16),)
+                const Text(
+                  'اقلب الشاشة لمشاهدة الفيديو كامل',
+                  style: TextStyle(fontSize: 16),
+                )
               ],
             ),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: 2, //widget.lesson.videos.length -1,
+              itemCount: videoResources.length - 1,
               itemBuilder: (context, i) {
                 int index = i + 1;
                 return Row(
@@ -159,7 +157,8 @@ class _IdeasContentState extends State<IdeasContent> {
                                   padding: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    color: const Color.fromARGB(255, 195, 194, 194),
+                                    color: const Color.fromARGB(
+                                        255, 195, 194, 194),
                                   ),
                                   child: const Text('2:30'),
                                 ),
@@ -169,26 +168,19 @@ class _IdeasContentState extends State<IdeasContent> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                     const Expanded(
                       child: Column(
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text(//widget.lesson.videos[index].videoName ??
-                                  'مستر احمد الباشا'),
+                              Text('مستر احمد الباشا'),
                             ],
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          SizedBox(height: 10),
                           Text('الوحده الاولى الدرس الثالث'),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          SizedBox(height: 10),
                           Text(
                             "هذا فديو رائع لهذه الوحده يوجد بها",
                             style: TextStyle(color: greycolor),
