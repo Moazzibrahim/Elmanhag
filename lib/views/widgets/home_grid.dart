@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
 import 'package:flutter_application_1/views/screens/curriculum/mycurriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/hw_my_cirriculam.dart';
-import 'package:flutter_application_1/views/screens/ww.dart';
+import 'package:flutter_application_1/views/screens/live/live_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/subjects_services.dart';
@@ -60,10 +60,7 @@ class HomeGrid extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const VideoPlayerScreen(
-                    videoUrl:
-                        'https://drive.elmanhag.com/ld/الصف_4_دراسات_الوحدة_1_الدرس_5_رموز_بلدي.mp4',
-                  ),
+                  builder: (context) => const LiveScreen(),
                 ),
               );
             }
