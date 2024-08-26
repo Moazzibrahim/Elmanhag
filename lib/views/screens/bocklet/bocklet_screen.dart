@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/views/screens/bocklet/hh';
+import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/views/screens/bocklet/pdf.dart';
 import 'package:path_provider/path_provider.dart';
 
 class BockletScreen extends StatelessWidget {
@@ -39,22 +42,24 @@ class BockletScreen extends StatelessWidget {
               color: Colors.grey.withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              pdfName,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+            Center(
+              child: Text(
+                pdfName,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: redcolor,
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
@@ -97,14 +102,14 @@ class BockletScreen extends StatelessWidget {
                         );
                       }
                     },
-                    icon: Icon(Icons.download, color: Colors.white),
+                    icon: const Icon(Icons.download, color: Colors.white),
                     label: const Text(
                       "Download",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: EdgeInsets.symmetric(vertical: 12),
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -157,14 +162,14 @@ class BockletScreen extends StatelessWidget {
                         );
                       }
                     },
-                    icon: Icon(Icons.visibility, color: Colors.white),
+                    icon: const Icon(Icons.visibility, color: Colors.white),
                     label: const Text(
                       "View",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: EdgeInsets.symmetric(vertical: 12),
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
