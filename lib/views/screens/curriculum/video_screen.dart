@@ -56,9 +56,11 @@ class _LessonsVideosState extends State<LessonsVideos> {
                     const SizedBox(
                       width: 50,
                     ),
-                    Text(
-                      widget.lessonData['name'],
-                      style: const TextStyle(fontSize: 20),
+                    Center(
+                      child: Text(
+                        widget.lessonData['name'],
+                        style: const TextStyle(fontSize: 20,color: redcolor),
+                      ),
                     ),
                   ],
                 ),
