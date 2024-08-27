@@ -3,7 +3,9 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/homework/hw_mcq_screen.dart';
 
 class HomeWorkWidget extends StatefulWidget {
-  const HomeWorkWidget({super.key});
+  final List<dynamic> homework;
+
+  const HomeWorkWidget({super.key, required this.homework});
 
   @override
   HomeWorkWidgetState createState() => HomeWorkWidgetState();

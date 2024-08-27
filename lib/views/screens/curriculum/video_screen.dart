@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_application_1/views/screens/bocklet/bocklet_screen.dart';
@@ -103,7 +104,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                     child: TabBarView(
                       children: [
                         IdeasContent(resources: widget.lessonData['resources']),
-                        const HomeWorkWidget(),
+                         HomeWorkWidget(homework: widget.lessonData['homework']),
                         BockletScreen(
                             resources: widget.lessonData['resources']),
                       ],
