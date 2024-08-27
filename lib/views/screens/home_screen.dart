@@ -261,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       const SizedBox(width: 10),
                                       Text(
-                                        '${localizations.translate('welcome')} ${userProfileProvider.name}',
+                                        '${localizations.translate('welcome')} ${localizations.translate('doctor')} ${userProfileProvider.name}',
                                         style: const TextStyle(
                                           color: redcolor,
                                           fontSize: 20,
