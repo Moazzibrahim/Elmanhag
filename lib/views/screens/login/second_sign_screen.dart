@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/widgets/progress_widget.dart';
 import 'package:provider/provider.dart';
@@ -40,22 +42,16 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
   String? selectedCategoryName;
   String? selectedEducationName;
   String? selectedGender;
-  String? selectedCareer;
+  String? selectedJobId;
+  String? selectedJobName;
 
   List<Country> countries = [];
   List<City> cities = [];
   List<Category> categories = [];
   List<Education> educations = [];
+  List<StudentJob> studentJobs = [];
 
   final List<String> genderOptions = ['ذكر', 'أنثى'];
-  final List<String> careerOptions = [
-    'مستشار',
-    'طيار',
-    'ظابط',
-    'مدرس',
-    'دكتور',
-    'مهندس'
-  ];
 
   @override
   void initState() {
@@ -67,6 +63,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
         cities = dataProvider.dataModel?.cities ?? [];
         categories = dataProvider.dataModel?.categories ?? [];
         educations = dataProvider.dataModel?.educations ?? [];
+        studentJobs = dataProvider.dataModel?.studentJobs ?? [];
       });
     });
   }
@@ -76,10 +73,16 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
   }
 
   void signUp() {
+    log(selectedGender.toString());
+    log(selectedJobId.toString());
+
     if (selectedCountryId != null &&
         selectedCityId != null &&
         selectedCategoryId != null &&
-        selectedEducationId != null) {
+        selectedEducationId != null &&
+        selectedJobId != null &&
+        selectedGender != null) {
+      // Add this condition
       String phoneToPass = _studentPhoneController.text.isNotEmpty
           ? _studentPhoneController.text
           : widget.phone;
@@ -96,6 +99,8 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
             cityId: selectedCityId!,
             categoryId: selectedCategoryId!,
             educationId: selectedEducationId!,
+            jobId: selectedJobId!, // Pass the selected job ID
+            gender: selectedGender!, // Pass the selected gender
           ),
         ),
       );
@@ -326,17 +331,16 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                   value == null ? 'Please select a gender' : null,
             ),
             const SizedBox(height: 15),
-            // New career dropdown
             DropdownButtonFormField<String>(
-              value: selectedCareer,
-              items: careerOptions.map((String career) {
+              value: selectedJobId,
+              items: studentJobs.map((StudentJob job) {
                 return DropdownMenuItem<String>(
-                  value: career,
-                  child: Text(career),
+                  value: job.id.toString(),
+                  child: Text(truncateString(job.job, 30)),
                 );
               }).toList(),
               decoration: InputDecoration(
-                labelText: 'نفسك تبقي ايه لما تكبر',
+                labelText: 'الوظيفة',
                 prefixIcon: const Icon(Icons.work, color: redcolor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
@@ -352,12 +356,16 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               ),
               onChanged: (String? newValue) {
                 setState(() {
-                  selectedCareer = newValue;
+                  selectedJobId = newValue;
+                  selectedJobName = studentJobs
+                      .firstWhere((job) => job.id.toString() == newValue)
+                      .job;
                 });
               },
               validator: (value) =>
-                  value == null ? 'Please select a career' : null,
+                  value == null ? 'Please select a job' : null,
             ),
+
             const SizedBox(
               height: 30,
             ),
