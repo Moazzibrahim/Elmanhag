@@ -53,6 +53,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
+    final user = userProfileProvider.user;
 
     return DefaultTabController(
       length: 2,
@@ -78,7 +79,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               CircleAvatar(
                 backgroundImage: _image != null
                     ? FileImage(_image!)
-                    : NetworkImage("${userProfileProvider.image}"),
+                    : NetworkImage(user!.image!),
                 radius: 20,
               ),
               IconButton(

@@ -47,6 +47,7 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
   Widget build(BuildContext context) {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final isLoading = userProfileProvider.isLoading;
+    final user = userProfileProvider.user;
     final localizations = AppLocalizations.of(context);
     final isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
@@ -68,8 +69,8 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
               : Row(
                   children: [
                     CircleAvatar(
-                      backgroundImage: NetworkImage(userProfileProvider.image ??
-                          'https://example.com/default.png'),
+                      backgroundImage: NetworkImage(
+                          user!.imageLink ?? 'https://example.com/default.png'),
                       radius: 20,
                     ),
                     SizedBox(width: 10.w),
@@ -78,14 +79,14 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${localizations.translate('welcome')} ${userProfileProvider.name ?? localizations.translate('Name')}',
+                            '${localizations.translate('welcome')} ${user.name ?? localizations.translate('Name')}',
                             style: TextStyle(
                                 color: redcolor,
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '${userProfileProvider.category}',
+                            user.category!.name ?? '',
                             style:
                                 TextStyle(color: Colors.grey, fontSize: 14.sp),
                           ),
@@ -151,6 +152,7 @@ class StudentTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final isLoading = userProfileProvider.isLoading;
+    final user = userProfileProvider.user;
     final localizations = AppLocalizations.of(context);
     final isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
@@ -162,43 +164,42 @@ class StudentTabContent extends StatelessWidget {
               children: [
                 InfoCard(
                   text:
-                      '${localizations.translate('Name')}: ${userProfileProvider.name ?? 'N/A'}',
+                      '${localizations.translate('Name')}: ${user?.name ?? 'N/A'}',
                   icon: Icons.person,
                   isDarkMode: isDarkMode,
                 ),
                 InfoCard(
                   text:
-                      '${localizations.translate('phone')}: ${userProfileProvider.phone ?? 'N/A'}',
+                      '${localizations.translate('phone')}: ${user?.phone ?? 'N/A'}',
                   icon: Icons.phone,
                   isDarkMode: isDarkMode,
                 ),
                 InfoCard(
-                  // ignore: unnecessary_string_interpolations
-                  text: '${userProfileProvider.email ?? 'N/A'}',
+                  text: user?.email ?? 'N/A',
                   icon: Icons.email,
                   isDarkMode: isDarkMode,
                 ),
                 InfoCard(
                   text:
-                      '${localizations.translate('grade')}: ${userProfileProvider.category ?? 'N/A'}',
+                      '${localizations.translate('grade')}: ${user?.category!.name ?? 'N/A'}',
                   icon: Icons.grade,
                   isDarkMode: isDarkMode,
                 ),
                 InfoCard(
                   text:
-                      '${localizations.translate('education')}: ${userProfileProvider.education ?? 'N/A'}',
+                      '${localizations.translate('education')}: ${user?.education ?? 'N/A'}',
                   icon: Icons.language,
                   isDarkMode: isDarkMode,
                 ),
                 InfoCard(
                   text:
-                      '${localizations.translate('country')}: ${userProfileProvider.countryName ?? 'N/A'}',
+                      '${localizations.translate('country')}: ${user?.countryName ?? 'N/A'}',
                   icon: Icons.flag,
                   isDarkMode: isDarkMode,
                 ),
                 InfoCard(
                   text:
-                      '${localizations.translate('city')}: ${userProfileProvider.cityName ?? 'N/A'}',
+                      '${localizations.translate('city')}: ${user?.cityName ?? 'N/A'}',
                   icon: Icons.location_city,
                   isDarkMode: isDarkMode,
                 ),
@@ -215,36 +216,35 @@ class ParentTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final isLoading = userProfileProvider.isLoading;
+    final user = userProfileProvider.user;
     final localizations = AppLocalizations.of(context);
     final isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(16.0),
       child: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Center(
-              child: Column(
-                children: [
-                  InfoCard(
-                    text:
-                        '${localizations.translate('parent_name')}: ${userProfileProvider.parentName ?? 'N/A'}',
-                    icon: Icons.person,
-                    isDarkMode: isDarkMode,
-                  ),
-                  InfoCard(
-                    text:
-                        '${localizations.translate('parent_phone')}: ${userProfileProvider.parentPhone ?? 'N/A'}',
-                    icon: Icons.phone,
-                    isDarkMode: isDarkMode,
-                  ),
-                  InfoCard(
-                    text:
-                        '${localizations.translate('parent_email')}: ${userProfileProvider.parentEmail ?? 'N/A'}',
-                    icon: Icons.email,
-                    isDarkMode: isDarkMode,
-                  ),
-                ],
-              ),
+          : Column(
+              children: [
+                InfoCard(
+                  text:
+                      '${localizations.translate('parent_name')}: ${user?.parent?.name ?? 'N/A'}',
+                  icon: Icons.person,
+                  isDarkMode: isDarkMode,
+                ),
+                InfoCard(
+                  text:
+                      '${localizations.translate('parent_phone')}: ${user?.parent!.phone ?? 'N/A'}',
+                  icon: Icons.phone,
+                  isDarkMode: isDarkMode,
+                ),
+                InfoCard(
+                  text:
+                      '${localizations.translate('parent_email')}: ${user?.parent!.email ?? 'N/A'}',
+                  icon: Icons.email,
+                  isDarkMode: isDarkMode,
+                ),
+              ],
             ),
     );
   }
@@ -256,39 +256,22 @@ class InfoCard extends StatelessWidget {
   final bool isDarkMode;
 
   const InfoCard({
-    super.key,
     required this.text,
     required this.icon,
     required this.isDarkMode,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: isDarkMode ? Colors.black : Colors.grey[200],
-      margin: EdgeInsets.symmetric(vertical: 8.h),
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(color: redcolor, width: 2.0), // Add a red border
-        borderRadius: BorderRadius.circular(8.0), // Rounded corners
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isDarkMode ? Colors.grey : redcolor,
-              size: 24.sp,
-            ),
-            SizedBox(width: 10.w),
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: isDarkMode ? Colors.grey : Colors.black,
-              ),
-            ),
-          ],
+      color: isDarkMode ? Colors.black : Colors.white,
+      margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+      child: ListTile(
+        leading: Icon(icon, color: redcolor),
+        title: Text(
+          text,
+          style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
     );

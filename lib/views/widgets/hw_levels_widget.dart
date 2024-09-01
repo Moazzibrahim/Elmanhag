@@ -1,6 +1,14 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
+import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
+import 'package:flutter_application_1/models/hw_questions_model.dart';
 import 'package:flutter_application_1/views/screens/homework/hw_mcq_screen.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class HomeWorkWidget extends StatefulWidget {
   final List<dynamic> homework;
@@ -12,9 +20,48 @@ class HomeWorkWidget extends StatefulWidget {
 }
 
 class HomeWorkWidgetState extends State<HomeWorkWidget> {
-  // List for 3 tasks, each initialized with 0 stars
   List<int> taskStars = List.generate(3, (index) => 0);
-  int unlockedTasks = 1; // Only the first task is initially unlocked
+  int unlockedTasks = 1;
+
+  Future<void> sendHomeworkId(int homeworkId) async {
+    final url = Uri.parse(
+        'https://bdev.elmanhag.shop/student/chapter/lesson/MyHmework');
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({'homework_id': homeworkId}),
+      );
+
+      if (response.statusCode == 200) {
+        print('Homework ID sent successfully');
+        log("response:${response.body}");
+        final responseData = json.decode(response.body);
+
+        // Parse the response using the HomeworkResponse model
+        final homeworkResponse = HomeworkResponse.fromJson(responseData);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeworkMcqScreen(
+              homeworkResponse: homeworkResponse,
+            ),
+          ),
+        );
+      } else {
+        print('Failed to send Homework ID: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +96,7 @@ class HomeWorkWidgetState extends State<HomeWorkWidget> {
                       index: index + 1,
                       stars: taskStars[index],
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomeworkMcqScreen(),
-                          ),
-                        );
+                        sendHomeworkId(widget.homework[index]['id']);
                       },
                     );
                   } else {
@@ -99,7 +141,7 @@ class TaskCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Task $index', // Displaying the task number
+              'Task $index',
               style: const TextStyle(
                 fontSize: 24,
                 color: redcolor,

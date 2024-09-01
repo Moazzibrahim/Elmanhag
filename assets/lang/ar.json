@@ -79,6 +79,10 @@
     "my_subscriptions":"اشتراكاتي",
     "exam":"الامتحان",
     "homework":"الواجب",
-    "doctor":"دكتور"
+    "doctor":"دكتور",
+    "next":"التالي",
+    "past":"السابق",
+    "job_title":"الوظيفة"
+    
 
 }

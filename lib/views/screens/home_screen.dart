@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_string_interpolations
+
 import 'package:flutter/material.dart';
 // ignore: unnecessary_import
 import 'package:flutter/services.dart';
@@ -39,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final localeProvider = Provider.of<LocaleProvider>(context);
     final localizations = AppLocalizations.of(context);
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
+    final user = userProfileProvider.user;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -50,25 +53,28 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: const BoxDecoration(
                 color: redcolor,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    backgroundImage:
-                        NetworkImage('${userProfileProvider.image}'),
-                    radius: 40,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '${localizations.translate('welcome')} ${userProfileProvider.name}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+              child: user == null
+                  ? const CircularProgressIndicator()
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: user.image != null
+                              ? NetworkImage(user.image!)
+                              : null,
+                          radius: 40,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          '${localizations.translate('welcome')} ${user.name ?? ''}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
             ListTile(
               leading: const Icon(Icons.person),
@@ -161,13 +167,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Row(
                                       children: [
                                         CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              '${userProfileProvider.image}'),
+                                          backgroundImage: user?.image != null
+                                              ? NetworkImage(user!.image!)
+                                              : null,
                                           radius: 20,
                                         ),
                                         const SizedBox(width: 10),
                                         Text(
-                                          '${localizations.translate('welcome')} ${userProfileProvider.name}',
+                                          '${localizations.translate('welcome')} ${user?.name ?? ''}',
                                           style: const TextStyle(
                                             color: redcolor,
                                             fontSize: 20,
@@ -180,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Padding(
                                       padding: const EdgeInsets.only(right: 15),
                                       child: Text(
-                                        '${userProfileProvider.category}', // Add this line
+                                        '${user?.category?.name ?? ''}', // Safe access with null checks
                                         style: const TextStyle(
                                           color: redcolor,
                                           fontSize: 16,
@@ -255,25 +262,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Row(
                                     children: [
                                       CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                            '${userProfileProvider.image}'),
+                                        backgroundImage: user?.image != null
+                                            ? NetworkImage(user!.imageLink!)
+                                            : null,
                                         radius: 20,
                                       ),
                                       const SizedBox(width: 10),
                                       Text(
-                                        '${localizations.translate('welcome')} ${localizations.translate('doctor')} ${userProfileProvider.name}',
+                                        '${localizations.translate('welcome')} ${user?.studentJob?.job ?? ''} ${user?.name ?? ''}',
                                         style: const TextStyle(
                                           color: redcolor,
-                                          fontSize: 20,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ],
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(right: 15),
+                                    padding: const EdgeInsets.only(
+                                      right: 15,
+                                    ),
                                     child: Text(
-                                      '${userProfileProvider.category}', // Add this line
+                                      '${user?.category?.name ?? ''}', // Safe access with null checks
                                       style: const TextStyle(
                                         color: Colors.grey,
                                         fontSize: 16,

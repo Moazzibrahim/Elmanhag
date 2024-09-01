@@ -77,6 +77,9 @@
   "my_subscriptions":"my subscriptions",
   "exam":"exam",
   "homework":"homework",
-  "doctor":"doctor"
+  "doctor":"doctor",
+  "next":"next",
+  "past":"back",
+  "job_title":"job_title"
 
 }
