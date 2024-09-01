@@ -23,6 +23,9 @@ class ApiService {
     required String parentpassword,
     required String parentphone,
     required String? selectedparentrealtionId,
+    required String gender, // Added gender
+    required String jobId, // Added student_job_id
+    required String affilateCode, // Added affilateCode
     required BuildContext context,
   }) async {
     const url = 'https://bdev.elmanhag.shop/student/auth/signup/create';
@@ -40,7 +43,10 @@ class ApiService {
       'parent_phone': parentphone,
       'parent_email': parentemail,
       'parent_password': parentpassword,
-      'parent_relation_id': selectedparentrealtionId
+      'parent_relation_id': selectedparentrealtionId,
+      'gender': gender, // Added gender
+      'student_job_id': jobId, // Added student_job_id
+      'affilate_id': affilateCode // Added affilateCode
     });
 
     // Log the data being sent to the API

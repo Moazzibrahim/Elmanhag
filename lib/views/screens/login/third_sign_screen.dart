@@ -17,6 +17,8 @@ class ThirdSignUp extends StatefulWidget {
   final String cityId;
   final String categoryId;
   final String educationId;
+  final String jobId; // Add this
+  final String gender; // Add this parameter
 
   const ThirdSignUp({
     super.key,
@@ -29,10 +31,11 @@ class ThirdSignUp extends StatefulWidget {
     required this.cityId,
     required this.categoryId,
     required this.educationId,
+    required this.jobId, // Add this
+    required this.gender, // Add this parameter
   });
 
   @override
-  // ignore: library_private_types_in_public_api
   _ThirdSignUpState createState() => _ThirdSignUpState();
 }
 
@@ -207,6 +210,10 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
                           parentpassword: _parentPasswordController.text,
                           parentphone: _parentPhoneController.text,
                           selectedparentrealtionId: selectedParentRelation,
+                          gender: widget.gender, // Pass gender
+                          jobId: widget.jobId, // Pass jobId
+                          affilateCode:
+                              _affilateController.text, // Pass affilateCode
                           context: context,
                         );
                       }

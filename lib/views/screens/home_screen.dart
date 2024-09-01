@@ -5,6 +5,7 @@ import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
+import 'package:flutter_application_1/views/screens/aa.dart';
 import 'package:flutter_application_1/views/screens/subscriptions/my_subscriptions.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -112,6 +113,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.pop(context); // Close the drawer first
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (ctx) => const MySubscriptions()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.feedback),
+              title: Text('الشكاوي والاقتراحات'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer first
+                // Navigate to the Complaints and Suggestions screen
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (ctx) =>  ComplaintsSuggestionsScreen()),
                 );
               },
             ),
