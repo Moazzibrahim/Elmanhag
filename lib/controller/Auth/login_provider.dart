@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
 import 'package:flutter_application_1/views/parent%20screens/home_parent_screen.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:http/http.dart' as http;
@@ -60,7 +61,8 @@ class LoginModel with ChangeNotifier {
     'Accept': 'application/json',
   };
 
-  Future<String> loginUser(BuildContext context, String email, String password) async {
+  Future<String> loginUser(
+      BuildContext context, String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
       String message = 'Invalid: ';
       if (email.isEmpty) message += 'Email is empty. ';
@@ -115,7 +117,8 @@ class LoginModel with ChangeNotifier {
     }
   }
 
-  void _handleUserDetails(BuildContext context, Map<String, dynamic> userDetails) {
+  void _handleUserDetails(
+      BuildContext context, Map<String, dynamic> userDetails) {
     if (userDetails.containsKey('role')) {
       final String role = userDetails['role'];
       setRole(role);
@@ -136,6 +139,9 @@ class LoginModel with ChangeNotifier {
         context,
         MaterialPageRoute(builder: (context) => const HomeParentScreen()),
       );
+    } else if (role == 'affiliate') {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const AffiliateHomeScreen()));
     } else {
       log('Unknown user role: $role');
       _showSnackbar(context, 'Unknown user role');

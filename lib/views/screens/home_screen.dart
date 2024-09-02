@@ -124,13 +124,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.feedback),
-              title: Text('الشكاوي والاقتراحات'),
+              title: const Text('الشكاوي والاقتراحات'),
               onTap: () {
                 Navigator.pop(context); // Close the drawer first
                 // Navigate to the Complaints and Suggestions screen
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (ctx) =>  ComplaintsSuggestionsScreen()),
+                      builder: (ctx) =>  const ComplaintsSuggestionsScreen()),
                 );
               },
             ),

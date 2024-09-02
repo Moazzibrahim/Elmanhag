@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/affiliate/views/notifications.dart';
+import 'package:flutter_application_1/affiliate/views/profile_screen.dart';
+import 'package:flutter_application_1/affiliate/views/rewards_screen.dart';
+import 'package:flutter_application_1/affiliate/views/transactions.dart';
 import 'package:flutter_application_1/affiliate/views/withdrawal_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
@@ -44,18 +48,28 @@ class AffiliateHomeScreen extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                      icon:
-                          Icon(Icons.person_outline, size: 30, color: redcolor),
+                      icon: const Icon(Icons.person_outline,
+                          size: 30, color: redcolor),
                       onPressed: () {
                         // Handle avatar action
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ProfileScreen()));
                       },
                     ),
                     Stack(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.notifications_none,
+                          icon: const Icon(Icons.notifications_none,
                               size: 30, color: redcolor),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const NotificationsScreen()));
+                          },
                         ),
                         Positioned(
                           top: 10,
@@ -82,12 +96,12 @@ class AffiliateHomeScreen extends StatelessWidget {
               children: [
                 _buildInfoCard('1000 ج.م', 'الرصيد المتاح',
                     Icons.account_balance_wallet_outlined),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 _buildInfoCard(
                     '10', 'عدد التسجيلات', Icons.person_add_alt_1_outlined),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 _buildInfoCard('1000 ج.م', 'الإيرادات الكلية',
@@ -109,59 +123,67 @@ class AffiliateHomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'اكمل الهدف واحصل على ',
-                          style:
-                              TextStyle(fontSize: 16, color: Colors.grey[700]),
-                        ),
-                        TextSpan(
-                          text: '2000 جنيه',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: redcolor,
-                            fontWeight: FontWeight.bold,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RewardsScreen()));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'اكمل الهدف واحصل على ',
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.grey[700]),
                           ),
-                        ),
-                        TextSpan(
-                          text: ' هديه',
-                          style:
-                              TextStyle(fontSize: 16, color: Colors.grey[700]),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: LinearProgressIndicator(
-                          value: 0.55,
-                          backgroundColor: Colors.grey[300],
-                          color: redcolor,
-                          minHeight: 20,
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: Center(
-                          child: Text(
-                            '55%',
-                            style: const TextStyle(
-                              color: Colors.white,
+                          const TextSpan(
+                            text: '2000 جنيه',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: redcolor,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
+                          TextSpan(
+                            text: ' هديه',
+                            style: TextStyle(
+                                fontSize: 16, color: Colors.grey[700]),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 20),
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: LinearProgressIndicator(
+                            value: 0.55,
+                            backgroundColor: Colors.grey[300],
+                            color: redcolor,
+                            minHeight: 20,
+                          ),
+                        ),
+                        const Positioned.fill(
+                          child: Center(
+                            child: Text(
+                              '55%',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 5),
@@ -174,29 +196,31 @@ class AffiliateHomeScreen extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               childAspectRatio: 1,
               children: [
-                _buildGridOption('التاريخ', Icons.history_outlined, () {
+                _buildGridOption('المعاملات', Icons.history_outlined, () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ExamScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const TransactionsScreen()),
                   );
                 }),
                 _buildGridOption('السحب', Icons.money_off_outlined, () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => WithdrawalScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const WithdrawalScreen()),
                   );
                 }),
                 _buildGridOption('فيديوهات مساعده', Icons.play_circle_outline,
                     () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ExamScreen()),
+                    MaterialPageRoute(builder: (context) => const ExamScreen()),
                   );
                 }),
-                _buildGridOption('العمولات', Icons.bar_chart_outlined, () {
+                _buildGridOption('', Icons.no_encryption, () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ExamScreen()),
+                    MaterialPageRoute(builder: (context) => const ExamScreen()),
                   );
                 }),
               ],

@@ -1,7 +1,11 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
 class WithdrawalScreen extends StatefulWidget {
+  const WithdrawalScreen({super.key});
+
   @override
   _WithdrawalScreenState createState() => _WithdrawalScreenState();
 }
@@ -16,7 +20,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: redcolor),
           onPressed: () {
-            // handle back button press
+            Navigator.pop(context);
           },
         ),
         title: const Text(
@@ -34,11 +38,11 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Balance Cards
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 BalanceCard(amount: '1000 ج.م', label: 'العمولات المستحقه'),
-                const SizedBox(width: 16),
+                SizedBox(width: 16),
                 BalanceCard(amount: '1000 ج.م', label: 'العمولات المدفوعه'),
               ],
             ),
@@ -140,7 +144,7 @@ void _showProcessingDialog(BuildContext context) {
           children: [
             Icon(
               Icons.info_outline,
-              color:redcolor,
+              color: redcolor,
             ),
             SizedBox(width: 8),
             Text(
@@ -167,16 +171,10 @@ void _showProcessingDialog(BuildContext context) {
         actions: <Widget>[
           Center(
             child: TextButton(
-              child: const Text(
-                'حسناً',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
               style: TextButton.styleFrom(
-                backgroundColor:redcolor,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                backgroundColor: redcolor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -184,6 +182,13 @@ void _showProcessingDialog(BuildContext context) {
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: const Text(
+                'حسناً',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
         ],
@@ -197,7 +202,7 @@ class BalanceCard extends StatelessWidget {
   final String amount;
   final String label;
 
-  BalanceCard({required this.amount, required this.label});
+  const BalanceCard({super.key, required this.amount, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +248,8 @@ class PaymentMethodOption extends StatelessWidget {
   final String? groupValue;
   final ValueChanged<String?> onChanged;
 
-  PaymentMethodOption({
+  const PaymentMethodOption({
+    super.key,
     required this.label,
     required this.icon,
     required this.logo,
