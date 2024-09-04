@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
-import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
 import 'package:flutter_application_1/views/screens/curriculum/mycurriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/hw_my_cirriculam.dart';
 import 'package:flutter_application_1/views/screens/live/live_screen.dart';

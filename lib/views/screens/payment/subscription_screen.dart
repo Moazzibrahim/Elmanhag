@@ -1,29 +1,77 @@
+// ignore_for_file: unused_local_variable
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/bundle/get_bundle_data.dart';
+import 'package:flutter_application_1/controller/profile/profile_provider.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/payment/payment_screen.dart';
+import 'package:provider/provider.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SubscriptionScreenState createState() => _SubscriptionScreenState();
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   int selectedCardIndex = -1; // Track selected card index
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_isInitialized) {
+        Provider.of<UserProfileProvider>(context, listen: false)
+            .fetchUserProfile(context);
+        _isInitialized = true;
+        Provider.of<GetBundleData>(context, listen: false)
+            .fetchMainModel(context);
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Access the current theme
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+    final userProfileProvider = Provider.of<UserProfileProvider>(context);
+    final user = userProfileProvider.user;
+    final localizations = AppLocalizations.of(context);
+    final bundleDataProvider = Provider.of<GetBundleData>(context);
+    final bundles = bundleDataProvider.getBundles() ?? [];
+    final subjects = bundleDataProvider.getSubjects() ?? [];
+
+    // Combine bundles and subjects into a single list
+    final combinedList = [
+      ...bundles.map((bundle) => BundleSubjectItem(
+            id: bundle.id,
+            name: bundle.name,
+            price: bundle.price.toString(),
+            description: bundle.description,
+            coverPhoto: bundle.coverPhoto,
+            expiredDate: bundle.expiredDate,
+            type: 'bundle',
+          )),
+      ...subjects.map((subject) => BundleSubjectItem(
+            id: subject.id,
+            name: subject.name,
+            price: subject.price.toString(),
+            description: subject.description,
+            coverPhoto: subject.coverPhotoUrl,
+            expiredDate: subject.expiredDate,
+            type: 'subject',
+          )),
+    ];
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
-          // Background Image
           if (isDarkMode)
             Positioned.fill(
               child: Image.asset(
@@ -31,16 +79,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-          // Main Content
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 35,
-                  ),
+                  const SizedBox(height: 35),
                   Row(
                     children: [
                       IconButton(
@@ -54,16 +99,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'اهلا بك محمد',
-                              style: TextStyle(
+                            Text(
+                              ' ${localizations.translate('welcome')} ${user!.name}',
+                              style: const TextStyle(
                                 color: redcolor,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
-                              'الصف الرابع لغات',
+                              ' ${user.category!.name} ',
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.textTheme.bodyMedium?.color
                                     ?.withOpacity(0.6),
@@ -73,13 +118,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           ],
                         ),
                       ),
-                      const CircleAvatar(
-                        radius: 20, // Adjust the radius as needed
-                        backgroundImage: AssetImage('assets/images/tefl.png'),
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage('${user.image}'),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 30),
                   Text(
                     'اشتراك واحد يفتح لك باباً واسعاً من المعرفة',
                     textAlign: TextAlign.center,
@@ -88,30 +133,35 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       fontSize: 20,
                     ),
                   ),
-                  const SizedBox(height: 32),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildSubscriptionCard(
-                        context,
-                        index: 0,
-                        title: 'ماده العلوم',
-                        price: '300',
-                        oldPrice: '350',
-                        color: theme.primaryColor,
+                  const SizedBox(height: 30),
+                  if (combinedList.isNotEmpty)
+                    SizedBox(
+                      height: 350, // Adjust the height as needed
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: combinedList.length,
+                        itemBuilder: (context, index) {
+                          final item = combinedList[index];
+                          return Container(
+                            width: 250, // Fixed width for horizontal scrolling
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: buildSubscriptionCard(
+                              context,
+                              index: index,
+                              title: item.name ?? 'No Name',
+                              price: item.price ?? '0',
+                              description: item.description ?? 'No Description',
+                              coverPhoto: item.coverPhoto ?? '',
+                              expiredDate: item.expiredDate ?? 'No Expiry Date',
+                              color: theme.primaryColor,
+                              isHighlighted: index == selectedCardIndex,
+                            ),
+                          );
+                        },
                       ),
-                      buildSubscriptionCard(
-                        context,
-                        index: 1,
-                        title: 'كل المواد',
-                        price: '1000',
-                        oldPrice: '1500',
-                        color: theme.primaryColor,
-                        isHighlighted: true,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 80),
+                    ),
+                  const SizedBox(height: 57),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
@@ -136,14 +186,20 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const PaymentScreen(),
-                      ),
-                    );
-                  },
+                  onPressed: selectedCardIndex != -1
+                      ? () {
+                          log('bundle id: ${combinedList[selectedCardIndex].id!}');
+                          // Ensure selectedCardIndex is not -1 before passing to PaymentScreen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PaymentScreen(
+                                itemid: combinedList[selectedCardIndex].id!,
+                              ),
+                            ),
+                          );
+                        }
+                      : null, // Disable button if no card is selected
                   style: ElevatedButton.styleFrom(
                     backgroundColor: redcolor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -151,9 +207,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'التالي',
-                    style: TextStyle(
+                  child: Text(
+                    localizations.translate('next'),
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -173,12 +229,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     required int index,
     required String title,
     required String price,
-    required String oldPrice,
+    required String description,
+    required String coverPhoto,
+    required String expiredDate,
     required Color color,
     bool isHighlighted = false,
   }) {
     final theme = Theme.of(context);
     bool isSelected = index == selectedCardIndex;
+    final localizations = AppLocalizations.of(context);
 
     return GestureDetector(
       onTap: () {
@@ -194,10 +253,20 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           side: BorderSide(color: isSelected ? color : Colors.red.shade700),
         ),
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.42,
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(coverPhoto),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              const SizedBox(height: 16),
               Text(
                 title,
                 style: theme.textTheme.bodyLarge?.copyWith(
@@ -206,49 +275,30 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   fontSize: 18,
                 ),
               ),
+              const SizedBox(height: 8),
+              Text(
+                'Expires on: $expiredDate',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
+                  fontSize: 14,
+                ),
+              ),
               const SizedBox(height: 16),
               Text(
-                '$price جنيه',
+                '$price EGP',
                 style: theme.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: color,
+                  color: theme.primaryColor,
                   fontSize: 22,
                 ),
               ),
+              const SizedBox(height: 8),
               Text(
-                'بدلاً من',
+                description,
+                textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
                   fontSize: 14,
-                ),
-              ),
-              Text(
-                '$oldPrice جنيه',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  decoration: TextDecoration.lineThrough,
-                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isSelected ? color : color.withOpacity(0.8),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  shadowColor: Colors.black.withOpacity(0.2),
-                  elevation: 6,
-                ),
-                child: Text(
-                  'اشترك الان',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
                 ),
               ),
             ],
@@ -257,4 +307,24 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       ),
     );
   }
+}
+
+class BundleSubjectItem {
+  final int? id;
+  final String? name;
+  final String? price;
+  final String? description;
+  final String? coverPhoto;
+  final String? expiredDate;
+  final String type;
+
+  BundleSubjectItem({
+    this.id,
+    this.name,
+    this.price,
+    this.description,
+    this.coverPhoto,
+    this.expiredDate,
+    required this.type,
+  });
 }

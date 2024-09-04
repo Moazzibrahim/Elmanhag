@@ -2,12 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/bundle/get_bundle_data.dart';
+import 'package:flutter_application_1/controller/profile/profile_provider.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:provider/provider.dart';
+
 class VodafonePaymentScreen extends StatefulWidget {
-  const VodafonePaymentScreen({super.key});
+  final int itemids;
+  const VodafonePaymentScreen({super.key, required this.itemids});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -16,6 +22,21 @@ class VodafonePaymentScreen extends StatefulWidget {
 
 class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
   File? _image;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_isInitialized) {
+        Provider.of<UserProfileProvider>(context, listen: false)
+            .fetchUserProfile(context);
+        _isInitialized = true;
+        Provider.of<GetBundleData>(context, listen: false)
+            .fetchMainModel(context);
+      }
+    });
+    super.initState();
+  }
 
   Future<void> _uploadFromGallery() async {
     final picker = ImagePicker();
@@ -45,6 +66,9 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+    final userProfileProvider = Provider.of<UserProfileProvider>(context);
+    final user = userProfileProvider.user;
+    final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.transparent : Colors.white,
@@ -102,17 +126,17 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
-                        const Text(
-                          'رقم التليفون: 01200010002',
-                          style: TextStyle(
+                        Text(
+                          'رقم التليفون: ${user!.phone}',
+                          style: const TextStyle(
                             fontSize: 18,
                             color: Colors.black,
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const Text(
-                          'البريد الإلكتروني: wego@gmail.com',
-                          style: TextStyle(
+                        Text(
+                          'البريد الإلكتروني: ${user.email}',
+                          style: const TextStyle(
                             fontSize: 18,
                             color: Colors.black,
                           ),
@@ -127,9 +151,9 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                                     width: 200,
                                     height: 200,
                                   )
-                                : const Text(
-                                    'Upload receipt',
-                                    style: TextStyle(
+                                : Text(
+                                    localizations.translate('Upload_receipt'),
+                                    style: const TextStyle(
                                       fontSize: 20,
                                       color: redcolor,
                                     ),
@@ -140,16 +164,17 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                               children: [
                                 ElevatedButton(
                                   onPressed: _uploadFromGallery,
-                                  child: const Text(
-                                    'Upload from Gallery',
-                                    style: TextStyle(color: redcolor),
+                                  child: Text(
+                                    localizations
+                                        .translate('Upload from Gallery'),
+                                    style: const TextStyle(color: redcolor),
                                   ),
                                 ),
                                 ElevatedButton(
                                   onPressed: _takePhoto,
-                                  child: const Text(
-                                    'Take Photo',
-                                    style: TextStyle(color: redcolor),
+                                  child: Text(
+                                    localizations.translate('Take_Photo'),
+                                    style: const TextStyle(color: redcolor),
                                   ),
                                 ),
                               ],
@@ -174,9 +199,9 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                     onPressed: () {
                       _showSuccessDialog(context);
                     },
-                    child: const Text(
-                      'اشترك',
-                      style: TextStyle(
+                    child: Text(
+                      localizations.translate('subscripe'),
+                      style: const TextStyle(
                           fontSize: 20,
                           color: Colors.white,
                           fontWeight: FontWeight.bold),
@@ -196,9 +221,9 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Icon(Icons.check_circle, color: Colors.green, size: 60),
+          title: const Icon(Icons.warning, color: Colors.grey, size: 60),
           content: const Text(
-            'تمت عملية الدفع بنجاح!',
+            ' عملية الدفع قيد المراجعة!',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,

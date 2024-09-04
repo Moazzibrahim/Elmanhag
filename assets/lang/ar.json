@@ -82,7 +82,12 @@
     "doctor":"دكتور",
     "next":"التالي",
     "past":"السابق",
-    "job_title":"الوظيفة"
+    "job_title":"الوظيفة",
+    "pay_now":"اشترك الان",
+    "Upload_receipt":"ارفع البون",
+    "Upload from Gallery":"ارفع من الصور",
+    "Take_Photo":"التقط صورة",
+    "subscripe":"اشترك"
     
 
 }

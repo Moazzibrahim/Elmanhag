@@ -80,6 +80,11 @@
   "doctor":"doctor",
   "next":"next",
   "past":"back",
-  "job_title":"job_title"
+  "job_title":"job_title",
+  "pay_now":"pay now",
+  "Upload_receipt":"Upload receipt",
+  "Upload from Gallery":"Upload from Gallery",
+  "Take_Photo":"Take Photo",
+  "subscripe":"subscripe"
 
 }

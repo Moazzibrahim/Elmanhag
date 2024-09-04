@@ -141,9 +141,9 @@ class TaskCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Task $index',
+              'Homework $index',
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 16,
                 color: redcolor,
                 fontWeight: FontWeight.bold,
               ),

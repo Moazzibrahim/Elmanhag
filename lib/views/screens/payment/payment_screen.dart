@@ -1,3 +1,7 @@
+// ignore_for_file: must_be_immutable
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/payment/fawry_payment_screen.dart';
@@ -5,7 +9,8 @@ import 'package:flutter_application_1/views/screens/payment/visa_payment_screen.
 import 'package:flutter_application_1/views/screens/payment/vodafone_payment_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final int itemid;
+  const PaymentScreen({super.key, required this.itemid});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -130,8 +135,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
         break;
       case 1:
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (ctx) => const VodafonePaymentScreen()),
+          MaterialPageRoute(
+              builder: (ctx) => VodafonePaymentScreen(
+                    itemids: widget.itemid,
+                  )),
         );
+        log("${widget.itemid}");
         break;
       case 2:
         Navigator.of(context).push(

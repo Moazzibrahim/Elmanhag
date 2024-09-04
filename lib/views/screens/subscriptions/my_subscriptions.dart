@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-
 import '../payment/subscription_screen.dart';
 
 class MySubscriptions extends StatelessWidget {
@@ -10,6 +9,7 @@ class MySubscriptions extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     bool isDarkMode = theme.brightness == Brightness.dark;
+
     return Scaffold(
       body: Container(
         decoration: isDarkMode
@@ -21,66 +21,52 @@ class MySubscriptions extends StatelessWidget {
               )
             : null,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 25.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 25,
+              IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: redcolor,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: redcolor,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+              const SizedBox(height: 10),
+              Center(
+                child: Text(
+                  "اشتراكاتي",
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: redcolor,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const Spacer(
-                    flex: 2,
-                  ),
-                  const Text(
-                    "اشتراكاتي",
-                    style: TextStyle(
-                      color: redcolor,
-                      fontSize: 28,
-                    ),
-                  ),
-                  const Spacer(
-                    flex: 3,
-                  )
-                ],
+                ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
-              const Row(
-                children: [
-                  Expanded(
-                    child: SubscriptionCard(
-                      title: 'باقه حصص اللايف',
-                      description:
-                          'انت الان على الباقه المجانيه تمتع بمزايا الباقه المدفوعه الآن',
-                      buttonText: 'انت على الباقه المدفوعه',
-                      imagePath: 'assets/images/live_sessions.png',
-                      isPrimary: false,
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: SubscriptionCard(
+              const SizedBox(height: 20),
+              Expanded(
+                child: ListView(
+                  children: const [
+                    SubscriptionCard(
                       title: 'باقه المواد',
                       description:
-                          'انت الان على الباقه المجانيه انتقل الى الباقه المدفوعه للحصول على المواد المتقدمه بسعر 1500 جنيه لكل المواد بدلا من 2600 جنيه',
-                      buttonText: 'اشترك الان',
+                          'انت الان على الباقه المجانيه. انتقل إلى الباقه المدفوعه للحصول على المواد المتقدمه بسعر 1500 جنيه لكل المواد بدلاً من 2600 جنيه.',
+                      buttonText: 'اشترك الآن',
                       imagePath: 'assets/images/materials.png',
                       isPrimary: true,
                     ),
-                  ),
-                ],
+                    //  SizedBox(height: 16),
+                    //  SubscriptionCard(
+                    //   title: 'باقه حصص اللايف',
+                    //   description:
+                    //       'انت الان على الباقه المجانيه. تمتع بمزايا الباقه المدفوعه الآن.',
+                    //   buttonText: 'انت على الباقه المدفوعه',
+                    //   imagePath: 'assets/images/live_sessions.png',
+                    //   isPrimary: false,
+                    // ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -110,57 +96,51 @@ class SubscriptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     bool isDarkMode = theme.brightness == Brightness.dark;
+
     return Container(
-      height: 430,
-      padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 12),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: isDarkMode
             ? const Color.fromRGBO(49, 49, 49, 1)
-            : const Color.fromRGBO(235, 235, 235, 1),
-        borderRadius: BorderRadius.circular(12),
+            : const Color.fromRGBO(245, 245, 245, 1),
+        borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.05),
             spreadRadius: 2,
             blurRadius: 5,
           ),
         ],
-        border: Border.all(color: Colors.transparent), // Border.none equivalent
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Image.asset(
             imagePath,
-            height: 110,
+            height: 100,
             fit: BoxFit.contain,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.titleMedium?.copyWith(
               color: redcolor,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             description,
-            style: TextStyle(
-              fontSize: 14,
-              color: isDarkMode ? Colors.white : Colors.black,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: isDarkMode ? Colors.white70 : Colors.black87,
             ),
           ),
           const SizedBox(height: 16),
-          const Spacer(),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                if (!isPrimary) {
-                  // Do nothing if this is the "انت على الباقه المدفوعه" button
-                } else {
+                if (isPrimary) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -170,8 +150,8 @@ class SubscriptionCard extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: isPrimary ? redcolor : Colors.grey[200],
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                backgroundColor: isPrimary ? redcolor : Colors.grey[300],
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -179,8 +159,9 @@ class SubscriptionCard extends StatelessWidget {
               child: Text(
                 buttonText,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 16,
                   color: isPrimary ? Colors.white : redcolor,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
