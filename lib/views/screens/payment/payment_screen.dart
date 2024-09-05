@@ -10,7 +10,13 @@ import 'package:flutter_application_1/views/screens/payment/vodafone_payment_scr
 
 class PaymentScreen extends StatefulWidget {
   final int itemid;
-  const PaymentScreen({super.key, required this.itemid});
+  final String itemprice;
+  final String itemservice;
+  const PaymentScreen(
+      {super.key,
+      required this.itemid,
+      required this.itemprice,
+      required this.itemservice});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -138,6 +144,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
           MaterialPageRoute(
               builder: (ctx) => VodafonePaymentScreen(
                     itemids: widget.itemid,
+                    itemsprice: widget.itemprice,
+                    services: widget.itemservice,
                   )),
         );
         log("${widget.itemid}");

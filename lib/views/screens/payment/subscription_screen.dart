@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, library_private_types_in_public_api
 
 import 'dart:developer';
 
@@ -20,6 +20,8 @@ class SubscriptionScreen extends StatefulWidget {
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   int selectedCardIndex = -1; // Track selected card index
   bool _isInitialized = false;
+  String selectedItemPrice = '0';
+  String service = '';
 
   @override
   void initState() {
@@ -188,13 +190,28 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 child: ElevatedButton(
                   onPressed: selectedCardIndex != -1
                       ? () {
-                          log('bundle id: ${combinedList[selectedCardIndex].id!}');
-                          // Ensure selectedCardIndex is not -1 before passing to PaymentScreen
+                          final selectedItem = combinedList[selectedCardIndex];
+
+                          // Set selected item price
+                          selectedItemPrice = selectedItem.price ?? '0';
+
+                          // Determine service type based on the selected item type (bundle or subject)
+                          service = selectedItem.type == 'bundle'
+                              ? 'Bundle'
+                              : 'Subject';
+
+                          log('bundle id: ${selectedItem.id!}');
+                          log('service: $service');
+                          log('price: $selectedItemPrice');
+
+                          // Navigate to PaymentScreen, passing itemid, price, and service
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => PaymentScreen(
-                                itemid: combinedList[selectedCardIndex].id!,
+                                itemid: selectedItem.id!,
+                                itemprice: selectedItemPrice, // Pass price
+                                itemservice: service, // Pass service type
                               ),
                             ),
                           );
@@ -238,6 +255,31 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final theme = Theme.of(context);
     bool isSelected = index == selectedCardIndex;
     final localizations = AppLocalizations.of(context);
+    final bundleDataProvider = Provider.of<GetBundleData>(context);
+    final bundles = bundleDataProvider.getBundles() ?? [];
+    final subjects = bundleDataProvider.getSubjects() ?? [];
+
+    // Combine bundles and subjects into a single list
+    final combinedList = [
+      ...bundles.map((bundle) => BundleSubjectItem(
+            id: bundle.id,
+            name: bundle.name,
+            price: bundle.price.toString(),
+            description: bundle.description,
+            coverPhoto: bundle.coverPhoto,
+            expiredDate: bundle.expiredDate,
+            type: 'bundle',
+          )),
+      ...subjects.map((subject) => BundleSubjectItem(
+            id: subject.id,
+            name: subject.name,
+            price: subject.price.toString(),
+            description: subject.description,
+            coverPhoto: subject.coverPhotoUrl,
+            expiredDate: subject.expiredDate,
+            type: 'subject',
+          )),
+    ];
 
     return GestureDetector(
       onTap: () {
@@ -266,39 +308,60 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
                 title,
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.textTheme.bodyLarge?.color,
-                  fontSize: 18,
-                ),
+                    fontWeight: FontWeight.bold,
+                    color: isSelected ? redcolor : theme.primaryColor,
+                    fontSize: 15),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
-                'Expires on: $expiredDate',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                '$price EGP',
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.primaryColor,
-                  fontSize: 22,
-                ),
+                'السعر: $price جنيه',
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.black, fontSize: 15),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
                 description,
-                textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
-                  fontSize: 14,
+                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                    fontSize: 13),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'تاريخ الانتهاء: $expiredDate',
+                style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                    fontSize: 15),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: redcolor),
+                onPressed: () {
+                  final selectedItem = combinedList[index];
+                  selectedItemPrice = selectedItem.price!;
+                  service =
+                      selectedItem.type == 'bundle' ? 'Bundle' : 'Subject';
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentScreen(
+                        itemid: selectedItem.id!,
+                        itemprice: selectedItemPrice,
+                        itemservice: service,
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  localizations.translate('subscripe_now'),
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ),
             ],

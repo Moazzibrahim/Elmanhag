@@ -1,19 +1,28 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/bundle/get_bundle_data.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class VodafonePaymentScreen extends StatefulWidget {
   final int itemids;
-  const VodafonePaymentScreen({super.key, required this.itemids});
+  final String itemsprice;
+  final String services;
+  const VodafonePaymentScreen(
+      {super.key,
+      required this.itemids,
+      required this.itemsprice,
+      required this.services});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -197,7 +206,9 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                       ),
                     ),
                     onPressed: () {
-                      _showSuccessDialog(context);
+                      submitPayment();
+                      log(widget.itemsprice);
+                      log(widget.services);
                     },
                     child: Text(
                       localizations.translate('subscripe'),
@@ -214,6 +225,53 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> submitPayment() async {
+    if (_image == null) {
+      print('Please upload a receipt');
+      return;
+    }
+
+    final url = Uri.parse(
+        'https://bdev.elmanhag.shop/student/order/place'); // Replace with your API URL
+    final token = Provider.of<TokenModel>(context, listen: false).token;
+
+    try {
+      final request = http.MultipartRequest('POST', url);
+      request.headers['Content-Type'] = 'application/json';
+      request.headers['Accept'] = 'application/json';
+      request.headers['Authorization'] = 'Bearer $token';
+
+      // Add fields
+      request.fields['amount'] =
+          widget.itemsprice.toString(); // Replace with the actual amount
+      request.fields['service'] =
+          widget.services.toString(); // Replace with the actual service
+      request.fields['payment_method_id'] =
+          1.toString(); // Replace with the actual payment method ID
+      request.fields['bundle_id'] =
+          widget.itemids.toString(); // Pass the bundle ID
+
+      // Add receipt (image file)
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'receipt', // API key for the file
+          _image!.path,
+        ),
+      );
+
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        print('Payment successful');
+        _showSuccessDialog(context);
+      } else {
+        print('Failed to submit payment: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error submitting payment: $e');
+    }
   }
 
   void _showSuccessDialog(BuildContext context) {

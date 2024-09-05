@@ -233,7 +233,7 @@ class _HomeworkMcqScreenState extends State<HomeworkMcqScreen> {
           incorrectQuestions.add(question);
           log('Incorrect essay answer');
         }
-            }
+      }
     }
 
     int correctAnswersCount = correctQuestions.length;
@@ -459,38 +459,37 @@ class _HomeworkMcqScreenState extends State<HomeworkMcqScreen> {
         children.add(
           SizedBox(
             width: 100,
-            child: DragTarget<String>(
-              onAccept: (receivedAnswer) {
+            child: TextField(
+              controller: _controllers[i],
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: ".......",
+              ),
+              onChanged: (value) {
                 setState(() {
-                  _controllers[i].text = receivedAnswer;
-                });
-              },
-              builder: (context, candidateData, rejectedData) {
-                return TextField(
-                  controller: _controllers[i],
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: ".......",
-                  ),
-                  onChanged: (value) {
-                    final trueAnswer = question.answers
-                        ?.firstWhere((answer) => answer.trueAnswer != null)
-                        .trueAnswer;
+                  // This logic assumes that answers are numbered 1, 2, 3, etc.
+                  int answerIndex = int.tryParse(value.trim()) ?? -1;
 
-                    if (trueAnswer != null &&
-                        value.trim() == trueAnswer.trim()) {
+                  if (answerIndex > 0 &&
+                      answerIndex <= question.answers!.length) {
+                    String selectedAnswer =
+                        question.answers![answerIndex - 1].answer ?? '';
+
+                    _controllers[i].text = selectedAnswer;
+                    if (_controllers[i].text.trim() ==
+                        question.answers![i].trueAnswer?.trim()) {
                       if (!correctQuestions.contains(question)) {
                         correctQuestions.add(question);
-                        log('Correct essay answer added');
+                        log('Correct answer added');
                       }
                     } else {
                       if (!incorrectQuestions.contains(question)) {
                         incorrectQuestions.add(question);
-                        log('Incorrect essay answer added');
+                        log('Incorrect answer added');
                       }
                     }
-                  },
-                );
+                  }
+                });
               },
             ),
           ),

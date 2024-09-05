@@ -1,8 +1,9 @@
-// ignore_for_file: unnecessary_string_interpolations
+// ignore_for_file: unnecessary_string_interpolations, use_build_context_synchronously, unused_element
 
 import 'package:flutter/material.dart';
 // ignore: unnecessary_import
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/profile/profile_screen.dart';
 import 'package:flutter_application_1/views/widgets/home_grid.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -44,6 +46,70 @@ class _HomeScreenState extends State<HomeScreen> {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final user = userProfileProvider.user;
     final theme = Theme.of(context);
+    Future<void> deleteAccount(BuildContext context) async {
+      final url =
+          Uri.parse('https://bdev.elmanhag.shop/student/profile/delete');
+      final token = Provider.of<TokenModel>(context, listen: false).token;
+
+      try {
+        final response = await http.post(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (mounted) {
+          // Check if the widget is still mounted
+          if (response.statusCode == 200) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Account deleted successfully')),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Failed to delete account')),
+            );
+          }
+        }
+      } catch (error) {
+        if (mounted) {
+          // Check if the widget is still mounted
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $error')),
+          );
+        }
+      }
+    }
+
+    Future<void> showDeleteConfirmationDialog(BuildContext context) {
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Delete Account'),
+            content:
+                const Text('Are you sure you want to delete your account?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+              TextButton(
+                child: const Text('Delete'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  deleteAccount(context); // Call delete account function
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
 
     return Scaffold(
       drawer: Drawer(
@@ -130,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Navigate to the Complaints and Suggestions screen
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (ctx) =>  const ComplaintsSuggestionsScreen()),
+                      builder: (ctx) => const ComplaintsSuggestionsScreen()),
                 );
               },
             ),
@@ -145,6 +211,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     await logoutModel.logout(context);
                   },
                 );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete),
+              title: const Text('Delete Account'),
+              onTap: () {
+                // Get token
+                showDeleteConfirmationDialog(context);
               },
             ),
           ],
