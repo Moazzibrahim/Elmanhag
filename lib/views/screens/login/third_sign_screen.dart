@@ -51,6 +51,7 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
 
   String? selectedParentRelation;
   List<ParentRelation> parentRelations = [];
+  final _formKey = GlobalKey<FormState>(); // Add a global key for the Form widget
 
   @override
   void initState() {
@@ -81,177 +82,227 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const ProgressCircles(currentScreen: 3),
-            const SizedBox(height: 15),
-            const Text(
-              'أهلا بك معنا',
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.grey,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ProgressCircles(currentScreen: 3),
+              const SizedBox(height: 15),
+              const Text(
+                'أهلا بك معنا',
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.grey,
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
-            buildTextField(
-              controller: _parentNameController,
-              labelText: 'اسم ولي الامر',
-              prefixIcon: const Icon(Icons.person, color: redcolor),
-            ),
-            const SizedBox(height: 15),
-            buildTextField(
-              controller: _parentPhoneController,
-              labelText: 'رقم هاتف ولي الامر',
-              prefixIcon: const Icon(Icons.phone, color: redcolor),
-            ),
-            const SizedBox(height: 15),
-            buildTextField(
-              controller: _parentEmailController,
-              labelText: 'ايميل ولي الامر',
-              prefixIcon: const Icon(Icons.email, color: redcolor),
-            ),
-            const SizedBox(height: 15),
-            PasswordField(
-                controller: _parentPasswordController,
-                labelText: "الرقم السري"),
-            const SizedBox(height: 15),
-            PasswordField(
-                controller: _parentConfirmPasswordController,
-                labelText: "تاكيد الرقم السري"),
-            const SizedBox(height: 15),
-            DropdownButtonFormField<String>(
-              value: selectedParentRelation,
-              items: parentRelations.map((ParentRelation relation) {
-                return DropdownMenuItem<String>(
-                  value: relation.id.toString(),
-                  child: Text(relation.name),
-                );
-              }).toList(),
-              decoration: InputDecoration(
-                labelText: 'قرابة ولي الامر',
+              const SizedBox(height: 30),
+              buildTextFormField(
+                controller: _parentNameController,
+                labelText: 'اسم ولي الامر',
                 prefixIcon: const Icon(Icons.person, color: redcolor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
               ),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedParentRelation = newValue;
-                });
-              },
-              validator: (value) =>
-                  value == null ? 'Please select a parent relation' : null,
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            buildTextField(
-              controller: _affilateController,
-              labelText: ' كود التسويق التابع له',
-              prefixIcon: const Icon(Icons.code, color: redcolor),
-            ),
-            const SizedBox(height: 30),
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pop(); // Go back to the previous screen
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          redcolor, // Set a different color for the back button
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 15),
-                      textStyle: const TextStyle(fontSize: 18),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'رجوع',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (_parentPasswordController.text !=
-                          _parentConfirmPasswordController.text) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('كلمتا السر غير متطابقتين'),
-                            backgroundColor: redcolor,
-                          ),
-                        );
-                      } else {
-                        await ApiService.signUp(
-                          name: widget.name,
-                          email: widget.email,
-                          password: widget.password,
-                          confpassword: widget.confpassword,
-                          phone: widget.phone,
-                          selectedCountryId: widget.countryId,
-                          selectedCityId: widget.cityId,
-                          selectedCategoryId: widget.categoryId,
-                          selectedEducationId: widget.educationId,
-                          parentname: _parentNameController.text,
-                          parentemail: _parentEmailController.text,
-                          parentpassword: _parentPasswordController.text,
-                          parentphone: _parentPhoneController.text,
-                          selectedparentrealtionId: selectedParentRelation,
-                          gender: widget.gender, // Pass gender
-                          jobId: widget.jobId, // Pass jobId
-                          affilateCode:
-                              _affilateController.text, // Pass affilateCode
-                          context: context,
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: redcolor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 15),
-                      textStyle: const TextStyle(fontSize: 18),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'تسجيل',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30),
-            const Divider(color: Colors.grey),
-            const SizedBox(height: 20),
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
+              const SizedBox(height: 15),
+              buildTextFormField(
+                controller: _parentPhoneController,
+                labelText: 'رقم هاتف ولي الامر',
+                prefixIcon: const Icon(Icons.phone, color: redcolor),
+                validator: (value) {
+                  final RegExp phoneRegExp = RegExp(r'^[0-9]{11}$');
+                  if (value == null || value.isEmpty) {
+                    return 'رقم الهاتف مطلوب';
+                  } else if (!phoneRegExp.hasMatch(value)) {
+                    return 'رقم الهاتف يجب أن يتكون من 11 رقماً';
+                  }
+                  return null;
                 },
-                child: const Text(
-                  'لديك حساب؟ تسجيل الدخول',
-                  style: TextStyle(fontSize: 18, color: redcolor),
+              ),
+              const SizedBox(height: 15),
+              buildTextFormField(
+                controller: _parentEmailController,
+                labelText: 'ايميل ولي الامر',
+                prefixIcon: const Icon(Icons.email, color: redcolor),
+                validator: (value) {
+                  final RegExp emailRegExp = RegExp(r"^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[cC][oO][mM]$");
+                  if (value == null || value.isEmpty) {
+                    return 'البريد الإلكتروني مطلوب';
+                  } else if (!emailRegExp.hasMatch(value)) {
+                    return 'البريد الإلكتروني غير صحيح';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15),
+              PasswordField(
+                controller: _parentPasswordController,
+                labelText: "الرقم السري",
+              ),
+              const SizedBox(height: 15),
+              PasswordField(
+                controller: _parentConfirmPasswordController,
+                labelText: "تاكيد الرقم السري",
+              ),
+              const SizedBox(height: 15),
+              DropdownButtonFormField<String>(
+                value: selectedParentRelation,
+                items: parentRelations.map((ParentRelation relation) {
+                  return DropdownMenuItem<String>(
+                    value: relation.id.toString(),
+                    child: Text(relation.name),
+                  );
+                }).toList(),
+                decoration: InputDecoration(
+                  labelText: 'قرابة ولي الامر',
+                  prefixIcon: const Icon(Icons.person, color: redcolor),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: redcolor),
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: redcolor),
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedParentRelation = newValue;
+                  });
+                },
+                validator: (value) =>
+                    value == null ? 'Please select a parent relation' : null,
+              ),
+              const SizedBox(height: 15),
+              buildTextFormField(
+                controller: _affilateController,
+                labelText: ' كود التسويق التابع له',
+                prefixIcon: const Icon(Icons.code, color: redcolor),
+              ),
+              const SizedBox(height: 30),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pop(); // Go back to the previous screen
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            redcolor, // Set a different color for the back button
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 15),
+                        textStyle: const TextStyle(fontSize: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'رجوع',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          if (_parentPasswordController.text !=
+                              _parentConfirmPasswordController.text) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('كلمتا السر غير متطابقتين'),
+                                backgroundColor: redcolor,
+                              ),
+                            );
+                          } else {
+                            await ApiService.signUp(
+                              name: widget.name,
+                              email: widget.email,
+                              password: widget.password,
+                              confpassword: widget.confpassword,
+                              phone: widget.phone,
+                              selectedCountryId: widget.countryId,
+                              selectedCityId: widget.cityId,
+                              selectedCategoryId: widget.categoryId,
+                              selectedEducationId: widget.educationId,
+                              parentname: _parentNameController.text,
+                              parentemail: _parentEmailController.text,
+                              parentpassword: _parentPasswordController.text,
+                              parentphone: _parentPhoneController.text,
+                              selectedparentrealtionId: selectedParentRelation,
+                              gender: widget.gender, // Pass gender
+                              jobId: widget.jobId, // Pass jobId
+                              affilateCode:
+                                  _affilateController.text, // Pass affilateCode
+                              context: context,
+                            );
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: redcolor,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 15),
+                        textStyle: const TextStyle(fontSize: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'تسجيل',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 30),
+              const Divider(color: Colors.grey),
+              const SizedBox(height: 20),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'لديك حساب؟ تسجيل الدخول',
+                    style: TextStyle(fontSize: 18, color: redcolor),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget buildTextFormField({
+    required TextEditingController controller,
+    required String labelText,
+    required Icon prefixIcon,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        prefixIcon: prefixIcon,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: redcolor),
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: redcolor),
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+      ),
+      validator: validator,
     );
   }
 }
