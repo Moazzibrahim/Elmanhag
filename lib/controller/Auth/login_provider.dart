@@ -139,7 +139,7 @@ class LoginModel with ChangeNotifier {
         context,
         MaterialPageRoute(builder: (context) => const HomeParentScreen()),
       );
-    } else if (role == 'affiliate') {
+    } else if (role == 'affilate') {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const AffiliateHomeScreen()));
     } else {
