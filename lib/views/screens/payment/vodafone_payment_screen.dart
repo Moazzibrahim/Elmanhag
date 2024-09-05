@@ -268,6 +268,7 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
         _showSuccessDialog(context);
       } else {
         print('Failed to submit payment: ${response.statusCode}');
+        _showfilDialog(context);
       }
     } catch (e) {
       print('Error submitting payment: $e');
@@ -282,6 +283,37 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
           title: const Icon(Icons.warning, color: Colors.grey, size: 60),
           content: const Text(
             ' عملية الدفع قيد المراجعة!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    ));
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showfilDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Icon(Icons.error, color: redcolor, size: 60),
+          content: const Text(
+            ' عملية الدفع  مرفوضة!',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,
