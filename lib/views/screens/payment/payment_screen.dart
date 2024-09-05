@@ -1,7 +1,6 @@
 // ignore_for_file: must_be_immutable
 
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/payment/fawry_payment_screen.dart';
@@ -25,17 +24,17 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   int _selectedIndex = -1; // Initialize with -1 (none selected)
+  final TextEditingController _promoCodeController = TextEditingController();
+  String? _promoCodeError;
 
   @override
   Widget build(BuildContext context) {
-    // Access the current theme
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
       body: Stack(
         children: [
-          // Background image for dark mode
           if (isDarkMode)
             Positioned.fill(
               child: Image.asset(
@@ -43,93 +42,150 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 25,
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: isDarkMode ? redcolor : redcolor,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    const Spacer(
-                      flex: 2,
-                    ), // Push the text to the center
-                    const Text(
-                      'طرق الدفع',
-                      style: TextStyle(
-                        color: redcolor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Spacer(
-                      flex: 3,
-                    ), // Push the text to the center
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'اختر طريقة الدفع',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _buildPaymentOption(0, 'فيزا', 'assets/images/visa.png'),
-                _buildPaymentOption(1, 'فودافون كاش', 'assets/images/vod.png'),
-                _buildPaymentOption(2, 'فوري', 'assets/images/Fawry.png'),
-                const Spacer(),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _selectedIndex != -1
-                            ? () {
-                                _navigateToSelectedScreen();
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: redcolor,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+          Positioned.fill(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 25),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back_ios, color: redcolor),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                           ),
-                          elevation: 5,
-                        ),
-                        child: const Text(
-                          'التالي',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                          const Spacer(flex: 2),
+                          const Text(
+                            'طرق الدفع',
+                            style: TextStyle(
+                              color: redcolor,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                          const Spacer(flex: 3),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'اختر طريقة الدفع',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 16),
+                      _buildPaymentOption(0, 'فيزا', 'assets/images/visa.png'),
+                      _buildPaymentOption(
+                          1, 'فودافون كاش', 'assets/images/vod.png'),
+                      _buildPaymentOption(2, 'فوري', 'assets/images/Fawry.png'),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'ادخل كود الخصم',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _promoCodeController,
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                hintText: 'كود الخصم',
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                errorText: _promoCodeError,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: _applyPromoCode,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: redcolor,
+                            ),
+                            child: const Text('تطبيق',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 180),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _selectedIndex != -1
+                                ? _navigateToSelectedScreen
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: redcolor,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 5,
+                            ),
+                            child: const Text(
+                              'التالي',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _applyPromoCode() {
+    final promoCode = _promoCodeController.text;
+
+    // Sample validation logic for promo code
+    if (promoCode.isEmpty) {
+      setState(() {
+        _promoCodeError = 'يرجى إدخال كود الخصم';
+      });
+      return;
+    }
+
+    // Here you would typically call an API or service to validate the promo code
+    // For now, we'll just simulate success and failure
+    if (promoCode == 'VALIDCODE') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('كود الخصم تم تطبيقه')),
+      );
+      setState(() {
+        _promoCodeError = null;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('كود الخصم غير صحيح')),
+      );
+      setState(() {
+        _promoCodeError = 'كود الخصم غير صحيح';
+      });
+    }
   }
 
   void _navigateToSelectedScreen() {
