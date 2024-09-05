@@ -4,7 +4,14 @@ import 'package:flutter_application_1/views/screens/login/second_sign_screen.dar
 import 'package:flutter_application_1/views/widgets/progress_widget.dart';
 import 'package:flutter_application_1/views/widgets/text_field.dart';
 
-class SignScreen extends StatelessWidget {
+class SignScreen extends StatefulWidget {
+  const SignScreen({super.key});
+
+  @override
+  _SignScreenState createState() => _SignScreenState();
+}
+
+class _SignScreenState extends State<SignScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -12,7 +19,12 @@ class SignScreen extends StatelessWidget {
       TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  SignScreen({super.key});
+  // Regex for email and phone validation
+  final RegExp emailRegExp =
+      RegExp(r"^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[cC][oO][mM]$");
+  // Simple email validation regex
+  final RegExp phoneRegExp =
+      RegExp(r'^[0-9]{11}$'); // Updated: 11-digit phone number validation
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +84,8 @@ class SignScreen extends StatelessWidget {
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  // Validation logic
                   if (_nameController.text.isEmpty ||
                       _emailController.text.isEmpty ||
                       _passwordController.text.isEmpty ||
@@ -84,16 +97,30 @@ class SignScreen extends StatelessWidget {
                         backgroundColor: redcolor,
                       ),
                     );
+                  } else if (!emailRegExp.hasMatch(_emailController.text)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('البريد الإلكتروني غير صالح'),
+                        backgroundColor:redcolor,
+                      ),
+                    );
+                  } else if (!phoneRegExp.hasMatch(_phoneController.text)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('رقم الهاتف غير صالح'),
+                        backgroundColor:redcolor,
+                      ),
+                    );
                   } else if (_passwordController.text !=
                       _confirmPasswordController.text) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('كلمتا السر غير متطابقتين'),
-                        backgroundColor: Colors.red,
+                        backgroundColor:redcolor,
                       ),
                     );
                   } else {
-                    Navigator.push(
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => SecondSignScreen(
@@ -105,6 +132,21 @@ class SignScreen extends StatelessWidget {
                         ),
                       ),
                     );
+                    if (result != null) {
+                      setState(() {
+                        _nameController.text =
+                            result['name'] ?? _nameController.text;
+                        _emailController.text =
+                            result['email'] ?? _emailController.text;
+                        _phoneController.text =
+                            result['phone'] ?? _phoneController.text;
+                        _passwordController.text =
+                            result['password'] ?? _passwordController.text;
+                        _confirmPasswordController.text =
+                            result['confpassword'] ??
+                                _confirmPasswordController.text;
+                      });
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(

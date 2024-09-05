@@ -44,12 +44,11 @@ class ApiService {
       'parent_email': parentemail,
       'parent_password': parentpassword,
       'parent_relation_id': selectedparentrealtionId,
-      'gender': gender, // Added gender
-      'student_job_id': jobId, // Added student_job_id
-      'affilate_id': affilateCode // Added affilateCode
+      'gender': gender,
+      'student_job_id': jobId,
+      'affilate_id': affilateCode
     });
 
-    // Log the data being sent to the API
     print('Sending data to API: $requestBody');
 
     final response = await http.post(
