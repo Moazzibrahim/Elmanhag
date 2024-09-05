@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
+// import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
 import 'package:flutter_application_1/views/screens/curriculum/mycurriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/hw_my_cirriculam.dart';
-import 'package:flutter_application_1/views/screens/live/live_screen.dart';
+// import 'package:flutter_application_1/views/screens/live/live_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/subjects_services.dart';
@@ -47,40 +47,70 @@ class HomeGrid extends StatelessWidget {
                   .getSubjects(context);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (ctx) => const MyCurriculumScreen()));
+            }else{
+              null;
             }
             if (texts[index] == localizations.translate('tasks')) {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (ctx) => const HomeworkMyCirriculam()));
             }
-            if (texts[index] == localizations.translate('exam_solutions')) {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => const AffiliateHomeScreen()));
-            }
-            if (texts[index] == localizations.translate('live_classes')) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LiveScreen(),
-                ),
-              );
-            }
+            // if (texts[index] == localizations.translate('exam_solutions')) {
+            //   Navigator.of(context).push(MaterialPageRoute(
+            //       builder: (ctx) => const AffiliateHomeScreen()));
+            // }
+            // if (texts[index] == localizations.translate('live_classes')) {
+            //   Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => const LiveScreen(),
+            //     ),
+            //   );
+            // }
           },
           child: Card(
-            color: theme.scaffoldBackgroundColor,
-            elevation: 3,
-            shadowColor: redcolor,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  texts[index],
-                  style: const TextStyle(color: redcolor, fontSize: 20),
-                ),
-                const SizedBox(height: 7),
-                Image.asset(images[index]),
-              ],
+  color: theme.scaffoldBackgroundColor,
+  elevation: 3,
+  shadowColor: redcolor,
+  child: Stack(
+    children: [
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            texts[index],
+            style: const TextStyle(color: redcolor, fontSize: 20),
+          ),
+          const SizedBox(height: 7),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(images[index]),
+            ],
+          ),
+        ],
+      ),
+      texts[index] != localizations.translate('curriculum') && texts[index] != localizations.translate('tasks')? Positioned.fill(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13),
+            color: Colors.black.withOpacity(0.6), // Semi-transparent overlay
+          ),
+          child: const Center(
+            child: Text(
+              'Coming Soon',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
+        ),
+      ) : const SizedBox()
+    ],
+  ),
+),
+
         );
       },
     );

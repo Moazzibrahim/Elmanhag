@@ -7,7 +7,7 @@ import 'package:flutter_application_1/views/screens/login/login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class ApiService {
+class ApiService with ChangeNotifier{
   static Future<void> signUp({
     required String name,
     required String email,
@@ -95,5 +95,20 @@ class ApiService {
         );
       },
     );
+  }
+    String? previousCountry;
+    String? previousCity;
+    String? previousCategory;
+    String? previousEdu;
+    String? previousGender;
+    String? previousjob;
+  void saveFormData(String? prevCountry,String? prevCity,String? prevCategory,String? prevEdu,String? prevGender,String? prevjob){
+    previousCountry = prevCountry;
+    previousCity = prevCity;
+    previousCategory = prevCategory;
+    previousEdu = prevEdu;
+    previousGender = prevGender;
+    previousjob = prevjob;
+    print('previous country: $prevCountry');
   }
 }

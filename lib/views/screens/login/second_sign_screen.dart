@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controller/Auth/sign_up_provider.dart';
 import 'package:flutter_application_1/views/widgets/progress_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -66,6 +67,28 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
         studentJobs = dataProvider.dataModel?.studentJobs ?? [];
       });
     });
+    final savedData = Provider.of<ApiService>(context, listen: false);
+    log('${savedData.previousCountry}');
+      if(savedData.previousCategory != null){
+        selectedCategoryName = savedData.previousCategory;
+      }
+      if(savedData.previousCity != null){
+        selectedCityName = savedData.previousCity;
+      }
+      if(savedData.previousCountry != null){
+        setState(() {
+          selectedCountryName = savedData.previousCountry;
+        });
+      }
+      if( savedData.previousEdu != null){
+        selectedEducationName = savedData.previousEdu;
+      }
+      if(savedData.previousGender != null){
+        selectedGender = savedData.previousGender;
+      }
+      if(savedData.previousjob != null){
+        selectedJobName = savedData.previousjob;
+      }
   }
 
   String truncateString(String text, int length) {
@@ -308,7 +331,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 );
               }).toList(),
               decoration: InputDecoration(
-                labelText: 'الجنس',
+                labelText: 'النوع',
                 prefixIcon: const Icon(Icons.person, color: redcolor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
@@ -375,6 +398,15 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
+                      Provider.of<ApiService>(context, listen: false)
+                          .saveFormData(
+                        selectedCountryName,
+                        selectedCityName,
+                        selectedCategoryName,
+                        selectedEducationName,
+                        selectedGender,
+                        selectedJobName,
+                      );
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(

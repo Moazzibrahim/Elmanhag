@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/country_provider.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
+import 'package:flutter_application_1/controller/Auth/sign_up_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/bundle/get_bundle_data.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
@@ -26,6 +27,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => UserProfileProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => GetBundleData()),
+        ChangeNotifierProvider(create: (_) => ApiService()),
       ],
       child: const MyApp(),
     ),
