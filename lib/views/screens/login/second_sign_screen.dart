@@ -363,7 +363,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 );
               }).toList(),
               decoration: InputDecoration(
-                labelText: 'الوظيفة',
+                labelText: 'نفسك تطلع اي',
                 prefixIcon: const Icon(Icons.work, color: redcolor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),

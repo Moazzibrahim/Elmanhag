@@ -167,6 +167,7 @@ class _ChapterTileState extends State<ChapterTile> {
         var responseData = json.decode(response.body);
         if (responseData['faield'] == 'This Lesson Unpaid') {
           showDialog(
+            // ignore: use_build_context_synchronously
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
@@ -228,6 +229,7 @@ class _ChapterTileState extends State<ChapterTile> {
         if (responseData['faield'] ==
             'You Can\'t Take This Lesson cause Don\'t end homework Before Lesson') {
           showDialog(
+            // ignore: use_build_context_synchronously
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
@@ -277,6 +279,7 @@ class _ChapterTileState extends State<ChapterTile> {
         if (responseData['not_found'] ==
             'Not Found homeWork for previous lesson.') {
           showDialog(
+            // ignore: use_build_context_synchronously
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
@@ -326,6 +329,7 @@ class _ChapterTileState extends State<ChapterTile> {
         if (responseData['lesson_not_solved'] ==
             'The previous lesson was not solved.') {
           showDialog(
+            // ignore: use_build_context_synchronously
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {

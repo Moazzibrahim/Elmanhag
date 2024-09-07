@@ -36,6 +36,7 @@ class ThirdSignUp extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _ThirdSignUpState createState() => _ThirdSignUpState();
 }
 
@@ -51,7 +52,8 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
 
   String? selectedParentRelation;
   List<ParentRelation> parentRelations = [];
-  final _formKey = GlobalKey<FormState>(); // Add a global key for the Form widget
+  final _formKey =
+      GlobalKey<FormState>(); // Add a global key for the Form widget
 
   @override
   void initState() {
@@ -123,7 +125,8 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
                 labelText: 'ايميل ولي الامر',
                 prefixIcon: const Icon(Icons.email, color: redcolor),
                 validator: (value) {
-                  final RegExp emailRegExp = RegExp(r"^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[cC][oO][mM]$");
+                  final RegExp emailRegExp =
+                      RegExp(r"^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[cC][oO][mM]$");
                   if (value == null || value.isEmpty) {
                     return 'البريد الإلكتروني مطلوب';
                   } else if (!emailRegExp.hasMatch(value)) {
@@ -294,11 +297,11 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
           borderRadius: BorderRadius.circular(30.0),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: redcolor),
+          borderSide: const BorderSide(color: redcolor),
           borderRadius: BorderRadius.circular(30.0),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: redcolor),
+          borderSide: const BorderSide(color: redcolor),
           borderRadius: BorderRadius.circular(30.0),
         ),
       ),
