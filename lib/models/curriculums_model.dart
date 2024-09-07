@@ -3,65 +3,66 @@ class Subject {
   final String name;
   final int price;
   final int categoryId;
-  final int? educationId; // Make this field nullable
-  final String demoVideo;
-  final String coverPhoto;
-  final String thumbnail;
+  final int? educationId; // Nullable
+  final String? demoVideo; // Nullable
+  final String? coverPhoto; // Nullable
+  final String? thumbnail; // Nullable
   final String url;
-  final String description;
+  final String? description; // Nullable
   final int status;
-  final String semester;
-  final String expiredDate;
-  final String createdAt;
-  final String updatedAt;
-  final String demoVideoUrl;
-  final String coverPhotoUrl;
-  final String thumbnailUrl;
+  final String? semester; // Nullable
+  final String? expiredDate; // Nullable
+  final String? createdAt; // Nullable
+  final String? updatedAt; // Nullable
+  final String? demoVideoUrl; // Nullable
+  final String? coverPhotoUrl; // Nullable
+  final String? thumbnailUrl; // Nullable
 
   Subject({
     required this.id,
     required this.name,
     required this.price,
     required this.categoryId,
-    this.educationId, // Make this field nullable
-    required this.demoVideo,
-    required this.coverPhoto,
-    required this.thumbnail,
+    this.educationId,
+    this.demoVideo,
+    this.coverPhoto,
+    this.thumbnail,
     required this.url,
-    required this.description,
+    this.description,
     required this.status,
-    required this.semester,
-    required this.expiredDate,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.demoVideoUrl,
-    required this.coverPhotoUrl,
-    required this.thumbnailUrl,
+    this.semester,
+    this.expiredDate,
+    this.createdAt,
+    this.updatedAt,
+    this.demoVideoUrl,
+    this.coverPhotoUrl,
+    this.thumbnailUrl,
   });
 
   factory Subject.fromJson(Map<String, dynamic> json) {
     return Subject(
       id: json['id'],
-      name: json['name'],
+      name: json['name'] ?? '', // Default empty string if null
       price: json['price'],
       categoryId: json['category_id'],
-      educationId: json['education_id'], // Adjusted for nullable type
-      demoVideo: json['demo_video'],
-      coverPhoto: json['cover_photo'],
-      thumbnail: json['thumbnail'],
-      url: json['url'],
-      description: json['description'],
+      educationId: json['education_id'],
+      demoVideo: json['demo_video'], // Nullable
+      coverPhoto: json['cover_photo'], // Nullable
+      thumbnail: json['thumbnail'], // Nullable
+      url: json['url'] ?? '', // Default empty string if null
+      description: json['description'], // Nullable
       status: json['status'],
-      semester: json['semester'],
-      expiredDate: json['expired_date'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
-      demoVideoUrl: json['demo_video_url'],
-      coverPhotoUrl: json['cover_photo_url'],
-      thumbnailUrl: json['thumbnail_url'],
+      semester: json['semester'], // Nullable
+      expiredDate: json['expired_date'], // Nullable
+      createdAt: json['created_at'], // Nullable
+      updatedAt: json['updated_at'], // Nullable
+      demoVideoUrl: json['demo_video_url'], // Nullable
+      coverPhotoUrl: json['cover_photo_url'], // Nullable
+      thumbnailUrl: json['thumbnail_url'], // Nullable
     );
   }
 }
+
 
 class SubjectResponse {
   final String success;

@@ -22,7 +22,7 @@ class MyCurriculumScreen extends StatelessWidget {
                     fit: BoxFit.cover,
                   )
                 : Container(
-                    color: Colors.white, 
+                    color: Colors.white,
                   ),
           ),
           FutureBuilder(
@@ -126,15 +126,21 @@ class MyCurriculumScreen extends StatelessWidget {
                                           ),
                                           const SizedBox(height: 7),
                                           // ignore: unnecessary_null_comparison
-                                          subjects[index].coverPhotoUrl != null
+                                          subjects[index].coverPhotoUrl !=
+                                                      null &&
+                                                  subjects[index]
+                                                      .coverPhotoUrl!
+                                                      .isNotEmpty
                                               ? Image.network(
-                                                  subjects[index].coverPhotoUrl,
+                                                  subjects[index]
+                                                      .coverPhotoUrl!,
                                                   height: 50,
                                                   width: 50,
                                                 )
                                               : const Icon(
                                                   Icons.image_not_supported,
-                                                  size: 50),
+                                                  size: 50,
+                                                )
                                         ],
                                       ),
                                     ),
