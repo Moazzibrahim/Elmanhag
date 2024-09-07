@@ -86,6 +86,12 @@
   "Upload from Gallery":"Upload from Gallery",
   "Take_Photo":"Take Photo",
   "subscripe":"subscripe",
-  "subscripe_now":"subscripe now"
+  "subscripe_now":"subscripe now",
+  "delete_account":"delete account",
+  "Are you sure you want to delete your account?":"Are you sure you want to delete your account?",
+  "cancel":"cancel",
+  "delete":"delete",
+  "account deleted successfully":"account deleted successfully",
+  "Failed to delete account":"Failed to delete account"
 
 }

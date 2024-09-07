@@ -9,6 +9,7 @@ import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_application_1/views/screens/aa.dart';
+import 'package:flutter_application_1/views/screens/login/login_screen.dart';
 import 'package:flutter_application_1/views/screens/subscriptions/my_subscriptions.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -46,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final user = userProfileProvider.user;
     final theme = Theme.of(context);
+
     Future<void> deleteAccount(BuildContext context) async {
       final url =
           Uri.parse('https://bdev.elmanhag.shop/student/profile/delete');
@@ -61,21 +63,34 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         );
 
-        if (mounted) {
-          // Check if the widget is still mounted
-          if (response.statusCode == 200) {
+        if (response.statusCode == 200) {
+          if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Account deleted successfully')),
+              SnackBar(
+                  content: Text(
+                      localizations.translate('account deleted successfully'))),
             );
-          } else {
+            Future.delayed(
+              const Duration(seconds: 2),
+              () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
+              },
+            );
+            // Navigate to login screen after account deletion
+          }
+        } else {
+          if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Failed to delete account')),
+              SnackBar(
+                  content: Text(
+                      localizations.translate('Failed to delete account'))),
             );
           }
         }
       } catch (error) {
         if (mounted) {
-          // Check if the widget is still mounted
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: $error')),
           );
@@ -83,26 +98,26 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    Future<void> showDeleteConfirmationDialog(BuildContext context) {
+    Future<void> showDeleteConfirmationDialog(BuildContext parentContext) {
       return showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
+        context: parentContext,
+        builder: (BuildContext dialogContext) {
           return AlertDialog(
-            title: const Text('Delete Account'),
-            content:
-                const Text('Are you sure you want to delete your account?'),
+            title: Text(localizations.translate('delete_account')),
+            content: Text(localizations
+                .translate('Are you sure you want to delete your account?')),
             actions: <Widget>[
               TextButton(
-                child: const Text('Cancel'),
+                child: Text(localizations.translate('cancel')),
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(dialogContext).pop(); // Close the dialog
                 },
               ),
               TextButton(
-                child: const Text('Delete'),
+                child: Text(localizations.translate('delete')),
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                  deleteAccount(context); // Call delete account function
+                  Navigator.of(dialogContext).pop(); // Close the dialog
+                  deleteAccount(parentContext); // Use the parent context
                 },
               ),
             ],
@@ -215,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.delete),
-              title: const Text('Delete Account'),
+              title: Text(localizations.translate('delete_account')),
               onTap: () {
                 // Get token
                 showDeleteConfirmationDialog(context);
