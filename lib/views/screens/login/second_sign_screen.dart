@@ -52,7 +52,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
   List<Education> educations = [];
   List<StudentJob> studentJobs = [];
 
-  final List<String> genderOptions = ['ذكر', 'أنثى'];
+  final List<String> genderOptions = ['male', 'female'];
 
   @override
   void initState() {
@@ -69,26 +69,26 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
     });
     final savedData = Provider.of<ApiService>(context, listen: false);
     log('${savedData.previousCountry}');
-      if(savedData.previousCategory != null){
-        selectedCategoryName = savedData.previousCategory;
-      }
-      if(savedData.previousCity != null){
-        selectedCityName = savedData.previousCity;
-      }
-      if(savedData.previousCountry != null){
-        setState(() {
-          selectedCountryName = savedData.previousCountry;
-        });
-      }
-      if( savedData.previousEdu != null){
-        selectedEducationName = savedData.previousEdu;
-      }
-      if(savedData.previousGender != null){
-        selectedGender = savedData.previousGender;
-      }
-      if(savedData.previousjob != null){
-        selectedJobName = savedData.previousjob;
-      }
+    if (savedData.previousCategory != null) {
+      selectedCategoryName = savedData.previousCategory;
+    }
+    if (savedData.previousCity != null) {
+      selectedCityName = savedData.previousCity;
+    }
+    if (savedData.previousCountry != null) {
+      setState(() {
+        selectedCountryName = savedData.previousCountry;
+      });
+    }
+    if (savedData.previousEdu != null) {
+      selectedEducationName = savedData.previousEdu;
+    }
+    if (savedData.previousGender != null) {
+      selectedGender = savedData.previousGender;
+    }
+    if (savedData.previousjob != null) {
+      selectedJobName = savedData.previousjob;
+    }
   }
 
   String truncateString(String text, int length) {
