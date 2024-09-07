@@ -88,7 +88,13 @@
     "Upload from Gallery":"ارفع من الصور",
     "Take_Photo":"التقط صورة",
     "subscripe":"اشترك",
-    "subscripe_now":"اشترك الان"
+    "subscripe_now":"اشترك الان",
+    "delete_account":"مسح الحساب",
+    "Are you sure you want to delete your account?":"هل تريد ان تمسح حسابك؟",
+    "cancel":"الغاء",
+    "delete":"مسح",
+    "account deleted successfully":"تم مسح الاكونت بنجاح",
+    "Failed to delete account":"فشل في مسح الحساب"
     
 
 }
