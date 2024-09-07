@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:webview_flutter_x5/webview_flutter.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class IdeasContent extends StatefulWidget {
   final List<dynamic> resources;
@@ -16,13 +16,48 @@ class _IdeasContentState extends State<IdeasContent> {
   int rating = 0;
   int viewedVideoIndex = 0;
   bool isLandscape = false;
+  List videoResources =[];
+  final controller = WebViewController();
 
   void updateRating(int newRating) {
     setState(() {
       rating = newRating;
     });
   }
-
+  @override
+  void initState() {
+    if (videoResources.isNotEmpty){
+      videoResources =
+        widget.resources.where((res) => res['type'] == 'video').toList();
+    controller
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..loadRequest(Uri.parse(videoResources[viewedVideoIndex]['link']));
+    }else{
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showNoVideosDialog();
+        });
+    }
+    super.initState();
+  }
+  void _showNoVideosDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('No Videos'),
+          content: const Text('There are no videos for this lesson.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
   void toggleRotation() {
     if (isLandscape) {
       SystemChrome.setPreferredOrientations([
@@ -40,10 +75,10 @@ class _IdeasContentState extends State<IdeasContent> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    final videoResources =
-        widget.resources.where((res) => res['type'] == 'video').toList();
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -64,15 +99,12 @@ class _IdeasContentState extends State<IdeasContent> {
                       ),
                     ],
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: WebView(
-                      initialUrl: videoResources[viewedVideoIndex]['link'],
-                      javascriptMode: JavascriptMode.unrestricted,
-                      initialMediaPlaybackPolicy:
-                          AutoMediaPlaybackPolicy.always_allow,
-                    ),
+                  child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: WebViewWidget(
+                    controller: controller,
                   ),
+                )
                 ),
               )
             else
