@@ -20,14 +20,52 @@ class HomeWorkWidget extends StatefulWidget {
 }
 
 class HomeWorkWidgetState extends State<HomeWorkWidget> {
-  List<int> taskStars = List.generate(3, (index) => 0);
+  late List<int> taskStars;
   int unlockedTasks = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    taskStars = List.generate(widget.homework.length,
+        (index) => 0); // Ensure taskStars length matches homework length
+
+    // Log homework IDs if they exist
+    if (widget.homework.isNotEmpty) {
+      for (var item in widget.homework) {
+        if (item is Map<String, dynamic> && item.containsKey('id')) {
+          print('Homework ID: ${item['id']}');
+        }
+      }
+    } else {
+      // Show a dialog if no homework items exist
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('No Homework Items'),
+              content: const Text('There are no homework items available.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      });
+    }
+  }
 
   Future<void> sendHomeworkId(int homeworkId) async {
     final url = Uri.parse(
         'https://bdev.elmanhag.shop/student/chapter/lesson/MyHmework');
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
+
     try {
       final response = await http.post(
         url,
@@ -41,7 +79,7 @@ class HomeWorkWidgetState extends State<HomeWorkWidget> {
 
       if (response.statusCode == 200) {
         print('Homework ID sent successfully');
-        log("response:${response.body}");
+        log("response: ${response.body}");
         final responseData = json.decode(response.body);
 
         // Parse the response using the HomeworkResponse model
@@ -67,6 +105,7 @@ class HomeWorkWidgetState extends State<HomeWorkWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     bool isDarkMode = theme.brightness == Brightness.dark;
+
     return Container(
       decoration: isDarkMode
           ? const BoxDecoration(
@@ -89,14 +128,18 @@ class HomeWorkWidgetState extends State<HomeWorkWidget> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
-                itemCount: taskStars.length,
+                itemCount: widget.homework.length,
                 itemBuilder: (context, index) {
                   if (index < unlockedTasks) {
                     return TaskCard(
                       index: index + 1,
                       stars: taskStars[index],
                       onTap: () {
-                        sendHomeworkId(widget.homework[index]['id']);
+                        if (index < widget.homework.length) {
+                          sendHomeworkId(widget.homework[index]['id']);
+                        } else {
+                          print('Index out of range');
+                        }
                       },
                     );
                   } else {

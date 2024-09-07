@@ -24,6 +24,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   bool _isInitialized = false;
   String selectedItemPrice = '0';
   String service = '';
+  int bundleid = 0;
+  int subid = 0;
 
   @override
   void initState() {
@@ -57,36 +59,35 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
     // Combine bundles and subjects into a single list
     final combinedList = [
-  ...bundles.map((bundle) => BundleSubjectItem(
-        id: bundle.id,
-        name: bundle.name,
-        price: bundle.price.toString(),
-        description: bundle.description,
-        coverPhoto: bundle.coverPhoto,
-        expiredDate: bundle.expiredDate,
-        type: 'bundle',
-      )),
-  ...(widget.subjectId == null
-      ? subjects.map((subject) => BundleSubjectItem(
-            id: subject.id,
-            name: subject.name,
-            price: subject.price.toString(),
-            description: subject.description,
-            coverPhoto: subject.coverPhotoUrl,
-            expiredDate: subject.expiredDate,
-            type: 'subject',
-          ))
-      : filteredSubject.map((subject) => BundleSubjectItem(
-            id: subject.id,
-            name: subject.name,
-            price: subject.price.toString(),
-            description: subject.description,
-            coverPhoto: subject.coverPhotoUrl,
-            expiredDate: subject.expiredDate,
-            type: 'subject',
-          ))),
-];
-
+      ...bundles.map((bundle) => BundleSubjectItem(
+            id: bundle.id,
+            name: bundle.name,
+            price: bundle.price.toString(),
+            description: bundle.description,
+            coverPhoto: bundle.coverPhoto,
+            expiredDate: bundle.expiredDate,
+            type: 'bundle',
+          )),
+      ...(widget.subjectId == null
+          ? subjects.map((subject) => BundleSubjectItem(
+                id: subject.id,
+                name: subject.name,
+                price: subject.price.toString(),
+                description: subject.description,
+                coverPhoto: subject.coverPhotoUrl,
+                expiredDate: subject.expiredDate,
+                type: 'subject',
+              ))
+          : filteredSubject.map((subject) => BundleSubjectItem(
+                id: subject.id,
+                name: subject.name,
+                price: subject.price.toString(),
+                description: subject.description,
+                coverPhoto: subject.coverPhotoUrl,
+                expiredDate: subject.expiredDate,
+                type: 'subject',
+              ))),
+    ];
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -217,8 +218,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           service = selectedItem.type == 'bundle'
                               ? 'Bundle'
                               : 'Subject';
-
-                          log('bundle id: ${selectedItem.id!}');
+                          if (selectedItem.type == 'bundle') {
+                            bundleid = selectedItem.id!;
+                            subid = 0;
+                          } else {
+                            subid = selectedItem.id!;
+                            bundleid = 0;
+                          }
+                          log('bundle id: $bundleid');
+                          log('subid:$subid');
                           log('service: $service');
                           log('price: $selectedItemPrice');
 
@@ -227,7 +235,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => PaymentScreen(
-                                itemid: selectedItem.id!,
+                                itemidbundle: bundleid,
+                                itemidsubject: subid,
                                 itemprice: selectedItemPrice, // Pass price
                                 itemservice: service, // Pass service type
                               ),
@@ -370,7 +379,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PaymentScreen(
-                        itemid: selectedItem.id!,
+                        itemidbundle: bundleid,
+                        itemidsubject: subid,
                         itemprice: selectedItemPrice,
                         itemservice: service,
                       ),

@@ -16,11 +16,13 @@ import 'package:http/http.dart' as http;
 
 class VodafonePaymentScreen extends StatefulWidget {
   final int itemids;
+  final int itemidsub;
   final String itemsprice;
   final String services;
   const VodafonePaymentScreen(
       {super.key,
       required this.itemids,
+      required this.itemidsub,
       required this.itemsprice,
       required this.services});
 
@@ -207,8 +209,10 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                     ),
                     onPressed: () {
                       submitPayment();
-                      log(widget.itemsprice);
-                      log(widget.services);
+                      log('price: ${widget.itemsprice}');
+                      log('service: ${widget.services}');
+                      log('subid: ${widget.itemidsub}');
+                      log("bundleid:  ${widget.itemids}");
                     },
                     child: Text(
                       localizations.translate('subscripe'),
@@ -250,8 +254,12 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
           widget.services.toString(); // Replace with the actual service
       request.fields['payment_method_id'] =
           1.toString(); // Replace with the actual payment method ID
-      request.fields['bundle_id'] =
-          widget.itemids.toString(); // Pass the bundle ID
+      if (widget.itemidsub == 0) {
+        request.fields['bundle_id'] =
+            widget.itemids.toString(); // Pass the bundle ID
+      } else if (widget.itemids == 0) {
+        request.fields['subject_id'] = widget.itemidsub.toString();
+      }
 
       // Add receipt (image file)
       request.files.add(

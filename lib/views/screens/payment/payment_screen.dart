@@ -8,12 +8,14 @@ import 'package:flutter_application_1/views/screens/payment/visa_payment_screen.
 import 'package:flutter_application_1/views/screens/payment/vodafone_payment_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
-  final int itemid;
+  final int itemidbundle;
   final String itemprice;
   final String itemservice;
+  final int itemidsubject;
   const PaymentScreen(
       {super.key,
-      required this.itemid,
+      required this.itemidbundle,
+      required this.itemidsubject,
       required this.itemprice,
       required this.itemservice});
 
@@ -55,7 +57,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.arrow_back_ios, color: redcolor),
+                            icon: const Icon(Icons.arrow_back_ios,
+                                color: redcolor),
                             onPressed: () {
                               Navigator.pop(context);
                             },
@@ -199,12 +202,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
         Navigator.of(context).push(
           MaterialPageRoute(
               builder: (ctx) => VodafonePaymentScreen(
-                    itemids: widget.itemid,
+                    itemids: widget.itemidbundle,
                     itemsprice: widget.itemprice,
                     services: widget.itemservice,
+                    itemidsub: widget.itemidsubject,
                   )),
         );
-        log("${widget.itemid}");
+        log("${widget.itemidbundle}");
         break;
       case 2:
         Navigator.of(context).push(

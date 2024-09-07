@@ -50,7 +50,7 @@ class _SignScreenState extends State<SignScreen> {
             const ProgressCircles(currentScreen: 1),
             const SizedBox(height: 15),
             const Text(
-              'أهلا بك معنا',
+              '  بيانات الطالب',
               style: TextStyle(
                 fontSize: 24,
                 color: Colors.grey,
@@ -59,19 +59,19 @@ class _SignScreenState extends State<SignScreen> {
             const SizedBox(height: 30),
             buildTextField(
               controller: _nameController,
-              labelText: 'الاسم',
+              labelText: 'اسم الطالب',
               prefixIcon: const Icon(Icons.person, color: redcolor),
             ),
             const SizedBox(height: 15),
             buildTextField(
               controller: _phoneController,
-              labelText: 'رقم الهاتف',
+              labelText: 'رقم تليفون الطالب',
               prefixIcon: const Icon(Icons.phone, color: redcolor),
             ),
             const SizedBox(height: 15),
             buildTextField(
               controller: _emailController,
-              labelText: 'الايميل',
+              labelText: 'ايميل الطالب',
               prefixIcon: const Icon(Icons.email, color: redcolor),
             ),
             const SizedBox(height: 15),
@@ -101,14 +101,14 @@ class _SignScreenState extends State<SignScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('البريد الإلكتروني غير صالح'),
-                        backgroundColor:redcolor,
+                        backgroundColor: redcolor,
                       ),
                     );
                   } else if (!phoneRegExp.hasMatch(_phoneController.text)) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('رقم الهاتف غير صالح'),
-                        backgroundColor:redcolor,
+                        backgroundColor: redcolor,
                       ),
                     );
                   } else if (_passwordController.text !=
@@ -116,7 +116,7 @@ class _SignScreenState extends State<SignScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('كلمتا السر غير متطابقتين'),
-                        backgroundColor:redcolor,
+                        backgroundColor: redcolor,
                       ),
                     );
                   } else {
