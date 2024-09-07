@@ -7,11 +7,13 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/bundle/get_bundle_data.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
+import 'package:flutter_application_1/models/bundle_model.dart';
 import 'package:flutter_application_1/views/screens/payment/payment_screen.dart';
 import 'package:provider/provider.dart';
 
 class SubscriptionScreen extends StatefulWidget {
-  const SubscriptionScreen({super.key});
+  const SubscriptionScreen({super.key, this.subjectId});
+  final String? subjectId;
 
   @override
   _SubscriptionScreenState createState() => _SubscriptionScreenState();
@@ -45,21 +47,27 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final user = userProfileProvider.user;
     final localizations = AppLocalizations.of(context);
     final bundleDataProvider = Provider.of<GetBundleData>(context);
-    final bundles = bundleDataProvider.getBundles() ?? [];
-    final subjects = bundleDataProvider.getSubjects() ?? [];
+    List<Bundle> bundles = bundleDataProvider.getBundles() ?? [];
+    List<Subject> subjects = bundleDataProvider.getSubjects() ?? [];
+    List<Subject> filteredSubject = subjects
+        .where(
+          (element) => element.id.toString() == widget.subjectId,
+        )
+        .toList();
 
     // Combine bundles and subjects into a single list
     final combinedList = [
-      ...bundles.map((bundle) => BundleSubjectItem(
-            id: bundle.id,
-            name: bundle.name,
-            price: bundle.price.toString(),
-            description: bundle.description,
-            coverPhoto: bundle.coverPhoto,
-            expiredDate: bundle.expiredDate,
-            type: 'bundle',
-          )),
-      ...subjects.map((subject) => BundleSubjectItem(
+  ...bundles.map((bundle) => BundleSubjectItem(
+        id: bundle.id,
+        name: bundle.name,
+        price: bundle.price.toString(),
+        description: bundle.description,
+        coverPhoto: bundle.coverPhoto,
+        expiredDate: bundle.expiredDate,
+        type: 'bundle',
+      )),
+  ...(widget.subjectId == null
+      ? subjects.map((subject) => BundleSubjectItem(
             id: subject.id,
             name: subject.name,
             price: subject.price.toString(),
@@ -67,8 +75,18 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             coverPhoto: subject.coverPhotoUrl,
             expiredDate: subject.expiredDate,
             type: 'subject',
-          )),
-    ];
+          ))
+      : filteredSubject.map((subject) => BundleSubjectItem(
+            id: subject.id,
+            name: subject.name,
+            price: subject.price.toString(),
+            description: subject.description,
+            coverPhoto: subject.coverPhotoUrl,
+            expiredDate: subject.expiredDate,
+            type: 'subject',
+          ))),
+];
+
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,

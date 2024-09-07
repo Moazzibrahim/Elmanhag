@@ -198,12 +198,12 @@ class _ChapterTileState extends State<ChapterTile> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const SubscriptionScreen(),
+                          builder: (context) => SubscriptionScreen(subjectId: widget.subjectId,),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Colors.red,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 12),
                       shape: RoundedRectangleBorder(
