@@ -92,6 +92,7 @@
   "cancel":"cancel",
   "delete":"delete",
   "account deleted successfully":"account deleted successfully",
-  "Failed to delete account":"Failed to delete account"
+  "Failed to delete account":"Failed to delete account",
+  "You should select a photo first!":"You should select a photo first!"
 
 }

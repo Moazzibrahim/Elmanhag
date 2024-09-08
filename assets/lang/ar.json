@@ -94,7 +94,8 @@
     "cancel":"الغاء",
     "delete":"مسح",
     "account deleted successfully":"تم مسح الاكونت بنجاح",
-    "Failed to delete account":"فشل في مسح الحساب"
+    "Failed to delete account":"فشل في مسح الحساب",
+    "You should select a photo first!":"يجب اختيار صورة !"
     
 
 }

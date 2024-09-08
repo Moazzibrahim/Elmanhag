@@ -210,8 +210,9 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                     onPressed: () {
                       if (_image == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('You should select a photo first!'),
+                          SnackBar(
+                            content: Text(localizations
+                                .translate('You should select a photo first!')),
                             backgroundColor: redcolor,
                           ),
                         );
