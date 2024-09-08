@@ -24,7 +24,7 @@ class _ComplaintsSuggestionsScreenState
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(
+            const Text(
               'We value your feedback. Please let us know your complaints or suggestions.',
               textAlign: TextAlign.center,
             ),
