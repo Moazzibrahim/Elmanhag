@@ -208,6 +208,15 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                       ),
                     ),
                     onPressed: () {
+                      if (_image == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('You should select a photo first!'),
+                            backgroundColor: redcolor,
+                          ),
+                        );
+                        return; // Exit if no image is selected
+                      }
                       submitPayment();
                       log('price: ${widget.itemsprice}');
                       log('service: ${widget.services}');
