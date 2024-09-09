@@ -3,6 +3,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/views/parent%20screens/notfications_parent_screen.dart';
 import 'package:flutter_application_1/views/parent%20widgets/home_parent_grid.dart';
+import 'package:flutter_application_1/views/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart'; // Import Provider
 
 class HomeParentScreen extends StatelessWidget {
@@ -24,6 +25,22 @@ class HomeParentScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
+                    InkWell(
+                      onTap: () async {
+                        // Invoke the logout function
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const CustomProfileScreen()));
+                      },
+                      child: const Icon(
+                        Icons.person, // Replace with logout icon
+                        color: redcolor,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     InkWell(
                       onTap: () async {
                         // Invoke the logout function

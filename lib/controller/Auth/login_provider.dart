@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
-import 'package:flutter_application_1/views/parent%20screens/home_parent_screen.dart';
+import 'package:flutter_application_1/views/parent%20screens/choose_son.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -137,7 +137,7 @@ class LoginModel with ChangeNotifier {
     } else if (role == 'parent') {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeParentScreen()),
+        MaterialPageRoute(builder: (context) => const ChooseSon()),
       );
     } else if (role == 'affilate') {
       Navigator.pushReplacement(context,
