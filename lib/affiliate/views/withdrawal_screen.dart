@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
@@ -32,100 +30,127 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Balance Cards
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                BalanceCard(amount: '1000 ج.م', label: 'العمولات المستحقه'),
-                SizedBox(width: 16),
-                BalanceCard(amount: '1000 ج.م', label: 'العمولات المدفوعه'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Balance Cards
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  BalanceCard(amount: '1000 ج.م', label: 'العمولات المستحقه'),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Input for amount
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'المبلغ الذي تريد سحبه',
+                  hintStyle: TextStyle(color: Colors.grey.shade600),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: redcolor),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide(color: Colors.grey.shade400),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: redcolor, width: 2),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 24),
+
+              // Payment Methods
+              const Text('طرق السحب',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+
+              const SizedBox(height: 16),
+              PaymentMethodOption(
+                label: 'فودافون كاش',
+                icon: Icons.mobile_friendly,
+                logo: 'assets/images/vod.png', // Replace with your asset path
+                value: 'vodafone_cash',
+                groupValue: _selectedPaymentMethod,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedPaymentMethod = value;
+                  });
+                },
+              ),
+              PaymentMethodOption(
+                label: 'فوري',
+                icon: Icons.local_atm,
+                logo: 'assets/images/Fawry.png', // Replace with your asset path
+                value: 'fawry',
+                groupValue: _selectedPaymentMethod,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedPaymentMethod = value;
+                  });
+                },
+              ),
+
+              // Show the text field under the selected method
+              if (_selectedPaymentMethod != null) ...[
+                const SizedBox(height: 16),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'ادخل البيانات المطلوبة',
+                    hintStyle: TextStyle(color: Colors.grey.shade600),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: const BorderSide(color: redcolor),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(color: Colors.grey.shade400),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: const BorderSide(color: redcolor, width: 2),
+                    ),
+                  ),
+                  keyboardType: TextInputType.text,
+                ),
               ],
-            ),
-            const SizedBox(height: 24),
 
-            // Amount Input
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'المبلغ الذي تريد سحبه',
-                hintStyle: TextStyle(color: Colors.grey.shade600),
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: const BorderSide(color: redcolor),
+              const SizedBox(height: 24),
+
+              // Withdrawal Button
+              ElevatedButton(
+                onPressed: _selectedPaymentMethod != null
+                    ? () {
+                        _showProcessingDialog(context);
+                      }
+                    : null, // Disable the button if no payment method is selected
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: redcolor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide(color: Colors.grey.shade400),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: const BorderSide(color: redcolor, width: 2),
-                ),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 24),
-
-            // Payment Methods
-            const Text('طرق السحب',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-
-            const SizedBox(height: 16),
-            PaymentMethodOption(
-              label: 'فودافون كاش',
-              icon: Icons.mobile_friendly,
-              logo: 'assets/images/vod.png', // Replace with your asset path
-              value: 'vodafone_cash',
-              groupValue: _selectedPaymentMethod,
-              onChanged: (value) {
-                setState(() {
-                  _selectedPaymentMethod = value;
-                });
-              },
-            ),
-            PaymentMethodOption(
-              label: 'فوري',
-              icon: Icons.local_atm,
-              logo: 'assets/images/Fawry.png', // Replace with your asset path
-              value: 'fawry',
-              groupValue: _selectedPaymentMethod,
-              onChanged: (value) {
-                setState(() {
-                  _selectedPaymentMethod = value;
-                });
-              },
-            ),
-            const Spacer(),
-
-            // Withdrawal Button
-            ElevatedButton(
-              onPressed: _selectedPaymentMethod != null
-                  ? () {
-                      _showProcessingDialog(context);
-                    }
-                  : null, // Disable the button if no payment method is selected
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: redcolor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                child: const Text(
+                  'اسحب ارباحك',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
-              child: const Text(
-                'اسحب ارباحك',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

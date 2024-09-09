@@ -5,14 +5,14 @@ import 'package:flutter_application_1/affiliate/views/rewards_screen.dart';
 import 'package:flutter_application_1/affiliate/views/transactions.dart';
 import 'package:flutter_application_1/affiliate/views/withdrawal_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/models/affiliate_model.dart';
+import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
 import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
-import '../../controller/affiliate_provider.dart';
+import '../controller/affiliate_provider.dart';
 
 class AffiliateHomeScreen extends StatelessWidget {
   const AffiliateHomeScreen({super.key});
 
-  Future<AffiliateDate?> _fetchProfile(BuildContext context) {
+  Future<AffiliateData?> _fetchProfile(BuildContext context) {
     final apiService = ApiService();
     return apiService
         .fetchUserProfile(context); // Ensure this method exists in ApiService
@@ -28,7 +28,7 @@ class AffiliateHomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 25),
-            FutureBuilder<AffiliateDate?>(
+            FutureBuilder<AffiliateData?>(
               future: _fetchProfile(context),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -38,7 +38,7 @@ class AffiliateHomeScreen extends StatelessWidget {
                 } else if (!snapshot.hasData || snapshot.data == null) {
                   return const Text('No profile data found.');
                 } else {
-                  AffiliateDate userProfile = snapshot.data!;
+                  AffiliateData userProfile = snapshot.data!;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -117,7 +117,7 @@ class AffiliateHomeScreen extends StatelessWidget {
                         children: [
                           // Show the available wallet balance using the dynamic data
                           _buildInfoCard(
-                              '${userProfile.user.income[0].wallet} ج.م',
+                              '${userProfile.user.income.wallet} ج.م',
                               'الرصيد المتاح',
                               Icons.account_balance_wallet_outlined),
                           const SizedBox(width: 10),
@@ -126,11 +126,12 @@ class AffiliateHomeScreen extends StatelessWidget {
                           const SizedBox(width: 10),
                           // Show the total income using the dynamic data
                           _buildInfoCard(
-                              '${userProfile.user.income[0].income} ج.م',
+                              '${userProfile.user.income.income} ج.م',
                               'الإيرادات الكلية',
                               Icons.attach_money_outlined),
                         ],
                       ),
+
                       const SizedBox(height: 30),
                       _buildProgressSection(context),
                     ],

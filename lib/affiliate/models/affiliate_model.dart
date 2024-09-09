@@ -1,16 +1,16 @@
-class AffiliateDate {
+class AffiliateData {
   final String success;
   final int totalPayout;
   final User user;
 
-  AffiliateDate({
+  AffiliateData({
     required this.success,
     required this.totalPayout,
     required this.user,
   });
 
-  factory AffiliateDate.fromJson(Map<String, dynamic> json) {
-    return AffiliateDate(
+  factory AffiliateData.fromJson(Map<String, dynamic> json) {
+    return AffiliateData(
       success: json['success'] ?? '',
       totalPayout: json['total_payout'] ?? 0,
       user: User.fromJson(json['user'] ?? {}),
@@ -49,7 +49,7 @@ class User {
   final String createdAt;
   final String updatedAt;
   final String imageLink;
-  final List<Income> income;
+  final Income income;
   final List<PayoutHistory> payoutHistory;
   final List<AffiliateHistory> affiliateHistory;
 
@@ -82,7 +82,6 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    var incomeList = json['income'] as List? ?? [];
     var payoutList = json['payout_history'] as List? ?? [];
     var affiliateHistoryList = json['affiliate_history'] as List? ?? [];
 
@@ -109,7 +108,7 @@ class User {
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
       imageLink: json['image_link'] ?? '',
-      income: incomeList.map((i) => Income.fromJson(i)).toList(),
+      income: Income.fromJson(json['income'] ?? {}),
       payoutHistory: payoutList.map((p) => PayoutHistory.fromJson(p)).toList(),
       affiliateHistory: affiliateHistoryList
           .map((a) => AffiliateHistory.fromJson(a))
@@ -141,7 +140,7 @@ class User {
       'created_at': createdAt,
       'updated_at': updatedAt,
       'image_link': imageLink,
-      'income': income.map((i) => i.toJson()).toList(),
+      'income': income.toJson(),
       'payout_history': payoutHistory.map((p) => p.toJson()).toList(),
       'affiliate_history': affiliateHistory.map((a) => a.toJson()).toList(),
     };
@@ -192,19 +191,21 @@ class PayoutHistory {
   final int id;
   final String date;
   final int amount;
-  final String rejectedReason;
+  final String? description;
+  final String? rejectedReason;
   final int status;
   final int affiliateId;
-  final String? paymentMethodAffiliateId;
+  final int? paymentMethodAffiliateId;
   final String createdAt;
   final String updatedAt;
-  final String? method;
+  final PaymentMethod? method;
 
   PayoutHistory({
     required this.id,
     required this.date,
     required this.amount,
-    required this.rejectedReason,
+    this.description,
+    this.rejectedReason,
     required this.status,
     required this.affiliateId,
     this.paymentMethodAffiliateId,
@@ -218,13 +219,14 @@ class PayoutHistory {
       id: json['id'] ?? 0,
       date: json['date'] ?? '',
       amount: json['amount'] ?? 0,
-      rejectedReason: json['rejected_reason'] ?? '',
+      description: json['description'],
+      rejectedReason: json['rejected_reason'],
       status: json['status'] ?? 0,
       affiliateId: json['affiliate_id'] ?? 0,
       paymentMethodAffiliateId: json['payment_method_affiliate_id'],
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      method: json['method'],
+      method: json['method'] != null ? PaymentMethod.fromJson(json['method']) : null,
     );
   }
 
@@ -233,13 +235,50 @@ class PayoutHistory {
       'id': id,
       'date': date,
       'amount': amount,
+      'description': description,
       'rejected_reason': rejectedReason,
       'status': status,
       'affiliate_id': affiliateId,
       'payment_method_affiliate_id': paymentMethodAffiliateId,
       'created_at': createdAt,
       'updated_at': updatedAt,
+      'method': method?.toJson(),
+    };
+  }
+}
+
+class PaymentMethod {
+  final int id;
+  final String method;
+  final int minPayout;
+  final String createdAt;
+  final String updatedAt;
+
+  PaymentMethod({
+    required this.id,
+    required this.method,
+    required this.minPayout,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory PaymentMethod.fromJson(Map<String, dynamic> json) {
+    return PaymentMethod(
+      id: json['id'] ?? 0,
+      method: json['method'] ?? '',
+      minPayout: json['min_payout'] ?? 0,
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
       'method': method,
+      'min_payout': minPayout,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
     };
   }
 }
@@ -277,8 +316,8 @@ class AffiliateHistory {
       date: json['date'] ?? '',
       service: json['service'] ?? '',
       serviceType: json['service_type'] ?? '',
-      price: (json['price'] ?? 0).toDouble(),
-      commission: (json['commission'] ?? 0).toDouble(),
+      price: (json['price'] ?? 0.0).toDouble(),
+      commission: (json['commission'] ?? 0.0).toDouble(),
       studentId: json['student_id'] ?? 0,
       categoryId: json['category_id'] ?? 0,
       paymentMethodId: json['payment_method_id'] ?? 0,
@@ -307,76 +346,19 @@ class AffiliateHistory {
 class Student {
   final int id;
   final String name;
-  final String phone;
   final String image;
-  final String role;
-  final String gender;
-  final String email;
-  final String? emailVerifiedAt;
-  final int? parentRelationId;
-  final int? categoryId;
-  final int countryId;
-  final int cityId;
-  final int? parentId;
-  final int? educationId;
-  final int? studentJobsId;
-  final int? affiliateId;
-  final String? affiliateCode;
-  final int status;
-  final String? adminPositionId;
-  final String createdAt;
-  final String updatedAt;
-  final String imageLink;
 
   Student({
     required this.id,
     required this.name,
-    required this.phone,
     required this.image,
-    required this.role,
-    required this.gender,
-    required this.email,
-    this.emailVerifiedAt,
-    this.parentRelationId,
-    this.categoryId,
-    required this.countryId,
-    required this.cityId,
-    this.parentId,
-    this.educationId,
-    this.studentJobsId,
-    this.affiliateId,
-    this.affiliateCode,
-    required this.status,
-    this.adminPositionId,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.imageLink,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
-      phone: json['phone'] ?? '',
       image: json['image'] ?? '',
-      role: json['role'] ?? '',
-      gender: json['gender'] ?? '',
-      email: json['email'] ?? '',
-      emailVerifiedAt: json['email_verified_at'],
-      parentRelationId: json['parent_relation_id'],
-      categoryId: json['category_id'],
-      countryId: json['country_id'] ?? 0,
-      cityId: json['city_id'] ?? 0,
-      parentId: json['parent_id'],
-      educationId: json['education_id'],
-      studentJobsId: json['student_jobs_id'],
-      affiliateId: json['affiliate_id'],
-      affiliateCode: json['affiliate_code'],
-      status: json['status'] ?? 0,
-      adminPositionId: json['admin_position_id'],
-      createdAt: json['created_at'] ?? '',
-      updatedAt: json['updated_at'] ?? '',
-      imageLink: json['image_link'] ?? '', // Default to empty string
     );
   }
 
@@ -384,26 +366,7 @@ class Student {
     return {
       'id': id,
       'name': name,
-      'phone': phone,
       'image': image,
-      'role': role,
-      'gender': gender,
-      'email': email,
-      'email_verified_at': emailVerifiedAt,
-      'parent_relation_id': parentRelationId,
-      'category_id': categoryId,
-      'country_id': countryId,
-      'city_id': cityId,
-      'parent_id': parentId,
-      'education_id': educationId,
-      'student_jobs_id': studentJobsId,
-      'affiliate_id': affiliateId,
-      'affiliate_code': affiliateCode,
-      'status': status,
-      'admin_position_id': adminPositionId,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-      'image_link': imageLink,
     };
   }
 }

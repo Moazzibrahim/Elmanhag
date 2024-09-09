@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/affiliate_model.dart';
+import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -10,7 +10,7 @@ import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 class ApiService {
   final String apiUrl = 'https://bdev.elmanhag.shop/affilate/profile/view';
 
-  Future<AffiliateDate?> fetchUserProfile(BuildContext context) async {
+  Future<AffiliateData?> fetchUserProfile(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final String? token = tokenProvider.token;
     try {
@@ -25,14 +25,16 @@ class ApiService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
 
-        if (data['success'] == "data Returned Successfully" && data['user'] != null) {
-          return AffiliateDate.fromJson(data); // Parse user data
+        if (data['success'] == "data Returned Successfully" &&
+            data['user'] != null) {
+          return AffiliateData.fromJson(data);
         } else {
           print('API returned an error: ${data['error'] ?? 'Unknown error'}');
           return null;
         }
       } else {
-        print('Failed to load profile data. Status code: ${response.statusCode}');
+        print(
+            'Failed to load profile data. Status code: ${response.statusCode}');
         return null;
       }
     } catch (e) {

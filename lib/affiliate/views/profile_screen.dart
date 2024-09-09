@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/affiliate/views/edit_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/models/affiliate_model.dart';
+import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
 
-import '../../controller/affiliate_provider.dart';
+import '../controller/affiliate_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -32,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: FutureBuilder<AffiliateDate?>(
+      body: FutureBuilder<AffiliateData?>(
         future: ApiService().fetchUserProfile(context),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -100,6 +100,8 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   _buildProfileItem('Email: ${user.email}', true),
                   const SizedBox(height: 10),
+                  _buildProfileItem(
+                      'Phone: ${user.phone}', true), // Added phone
                 ],
               ),
             );

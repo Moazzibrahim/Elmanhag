@@ -163,6 +163,31 @@ class StudentJob {
     );
   }
 }
+class PaymentMethodAffilate {
+  final int id;
+  final String method;
+  final int minPayout;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  PaymentMethodAffilate({
+    required this.id,
+    required this.method,
+    required this.minPayout,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory PaymentMethodAffilate.fromJson(Map<String, dynamic> json) {
+    return PaymentMethodAffilate(
+      id: json['id'] ?? 0,
+      method: json['method'] ?? 'Unknown',
+      minPayout: json['min_payout'] ?? 0,
+      createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
+      updatedAt: DateTime.parse(json['updated_at'] ?? DateTime.now().toIso8601String()),
+    );
+  }
+}
 
 class DataModel {
   final List<Country> countries;
@@ -170,7 +195,8 @@ class DataModel {
   final List<Category> categories;
   final List<Education> educations;
   final List<ParentRelation> parentRelations;
-  final List<StudentJob> studentJobs; // Add the studentJobs list here
+  final List<StudentJob> studentJobs;
+  final List<PaymentMethodAffilate> paymentMethodAffilates; // Add this field
 
   DataModel({
     required this.countries,
@@ -178,7 +204,8 @@ class DataModel {
     required this.categories,
     required this.educations,
     required this.parentRelations,
-    required this.studentJobs, // Add studentJobs to the constructor
+    required this.studentJobs,
+    required this.paymentMethodAffilates, // Include this in the constructor
   });
 
   factory DataModel.fromJson(Map<String, dynamic> json) {
@@ -200,7 +227,10 @@ class DataModel {
               .toList() ?? [],
       studentJobs: (json['studentJobs'] as List?)
               ?.map((job) => StudentJob.fromJson(job as Map<String, dynamic>))
-              .toList() ?? [], // Map studentJobs from the JSON
+              .toList() ?? [],
+      paymentMethodAffilates: (json['paymentMethodAffilate'] as List?)
+              ?.map((method) => PaymentMethodAffilate.fromJson(method as Map<String, dynamic>))
+              .toList() ?? [], // Map paymentMethodAffilate from the JSON
     );
   }
 }
