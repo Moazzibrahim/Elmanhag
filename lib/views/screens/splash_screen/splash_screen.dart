@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/onboarding_screens/onboarding_check.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
@@ -25,20 +26,33 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateBasedOnToken() async {
-    // Delay for splash screen duration
     await Future.delayed(const Duration(seconds: 2));
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
+    final userRole = prefs.getString('user_role'); // Get the stored role
 
-    if (token != null) {
-      // Token found, update TokenModel and navigate to home screen
+    if (token != null && userRole == 'affilate') {
       Provider.of<TokenModel>(context, listen: false).setToken(token);
 
-      // Fetch user role or other necessary data from backend
-      final loginModel = Provider.of<LoginModel>(context, listen: false);
-      final userRole = await _fetchUserRole(token); // Implement this function based on your API
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AffiliateHomeScreen()),
+      );
+    } else if (token != null && userRole == 'student') {
+      // Directly navigate to HomeScreen if role is student
+      Provider.of<TokenModel>(context, listen: false).setToken(token);
 
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else if (token != null) {
+      // Handle other roles or unknown scenarios
+      Provider.of<TokenModel>(context, listen: false).setToken(token);
+
+      final loginModel = Provider.of<LoginModel>(context, listen: false);
+      final userRole = await _fetchUserRole(token);
       loginModel.setRole(userRole);
       _navigateToHome();
     } else {
@@ -51,9 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<String> _fetchUserRole(String token) async {
-    // Implement API call to fetch user role based on token
-    // Return the user role or an empty string if not found
-    return 'student'; // Replace this with actual role fetching logic
+    return 'student';
   }
 
   void _navigateToHome() {

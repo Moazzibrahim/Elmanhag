@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/affiliate/views/notifications.dart';
 import 'package:flutter_application_1/affiliate/views/profile_screen.dart';
 import 'package:flutter_application_1/affiliate/views/rewards_screen.dart';
 import 'package:flutter_application_1/affiliate/views/transactions.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_application_1/affiliate/views/withdrawal_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
 import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
+import '../../controller/Auth/logout_provider.dart';
 import '../controller/affiliate_provider.dart';
 
 class AffiliateHomeScreen extends StatelessWidget {
@@ -20,164 +20,149 @@ class AffiliateHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 25),
-            FutureBuilder<AffiliateData?>(
-              future: _fetchProfile(context),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data == null) {
-                  return const Text('No profile data found.');
-                } else {
-                  AffiliateData userProfile = snapshot.data!;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header with user image and name
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(userProfile.user.imageLink),
-                                radius: 20,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                'اهلا بك ${userProfile.user.name}',
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: redcolor,
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 25),
+              FutureBuilder<AffiliateData?>(
+                future: _fetchProfile(context),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (!snapshot.hasData || snapshot.data == null) {
+                    return const Text('No profile data found.');
+                  } else {
+                    AffiliateData userProfile = snapshot.data!;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Header with user image and name
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(userProfile.user.imageLink),
+                                  radius: 20,
                                 ),
-                              ),
-                            ],
-                          ),
-                          // Notification and Profile buttons
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.person_outline,
-                                    size: 30, color: redcolor),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ProfileScreen()),
-                                  );
-                                },
-                              ),
-                              Stack(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.notifications_none,
-                                        size: 30, color: redcolor),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const NotificationsScreen()),
-                                      );
-                                    },
+                                const SizedBox(width: 10),
+                                Text(
+                                  'اهلا بك ${userProfile.user.name}',
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: redcolor,
                                   ),
-                                  Positioned(
-                                    top: 10,
-                                    right: 10,
-                                    child: Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        color: redcolor,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Show the available wallet balance using the dynamic data
-                          _buildInfoCard(
-                              '${userProfile.user.income.wallet} ج.م',
-                              'الرصيد المتاح',
-                              Icons.account_balance_wallet_outlined),
-                          const SizedBox(width: 10),
-                          _buildInfoCard('10', 'عدد التسجيلات',
-                              Icons.person_add_alt_1_outlined),
-                          const SizedBox(width: 10),
-                          // Show the total income using the dynamic data
-                          _buildInfoCard(
-                              '${userProfile.user.income.income} ج.م',
-                              'الإيرادات الكلية',
-                              Icons.attach_money_outlined),
-                        ],
-                      ),
+                                ),
+                              ],
+                            ),
+                            // Profile and Logout buttons
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.person_outline,
+                                      size: 30, color: redcolor),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ProfileScreen()),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.logout,
+                                      size: 30, color: redcolor),
+                                  onPressed: () {
+                                    // Call the logout function
+                                    LogoutModel().logout(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Show the available wallet balance using the dynamic data
+                            _buildInfoCard(
+                                '${userProfile.user.income.wallet} ج.م',
+                                'الرصيد المتاح',
+                                Icons.account_balance_wallet_outlined),
+                            const SizedBox(width: 10),
+                            _buildInfoCard('10', 'عدد التسجيلات',
+                                Icons.person_add_alt_1_outlined),
+                            const SizedBox(width: 10),
+                            // Show the total income using the dynamic data
+                            _buildInfoCard(
+                                '${userProfile.user.income.income} ج.م',
+                                'الإيرادات الكلية',
+                                Icons.attach_money_outlined),
+                          ],
+                        ),
 
-                      const SizedBox(height: 30),
-                      _buildProgressSection(context),
-                    ],
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 30),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                physics: const NeverScrollableScrollPhysics(),
-                childAspectRatio: 1,
-                children: [
-                  _buildGridOption('المعاملات', Icons.history_outlined, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TransactionsScreen()),
+                        const SizedBox(height: 30),
+                        _buildProgressSection(context),
+                      ],
                     );
-                  }),
-                  _buildGridOption('السحب', Icons.money_off_outlined, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const WithdrawalScreen()),
-                    );
-                  }),
-                  _buildGridOption('فيديوهات مساعده', Icons.play_circle_outline,
-                      () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ExamScreen()),
-                    );
-                  }),
-                  _buildGridOption('هدف اخر', Icons.flag_outlined, () {
-                    // Define action here
-                  }),
-                ],
+                  }
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 30),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  physics: const NeverScrollableScrollPhysics(),
+                  childAspectRatio: 1,
+                  children: [
+                    _buildGridOption('المعاملات', Icons.history_outlined, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TransactionsScreen()),
+                      );
+                    }),
+                    _buildGridOption('السحب', Icons.money_off_outlined, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>  const WithdrawalScreen()),
+                      );
+                    }),
+                    _buildGridOption(
+                        'فيديوهات مساعده', Icons.play_circle_outline, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ExamScreen()),
+                      );
+                    }),
+                    _buildGridOption('هدف اخر', Icons.flag_outlined, () {
+                      // Define action here
+                    }),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

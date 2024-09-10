@@ -1,18 +1,123 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/country_provider.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
+import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import '../controller/affiliate_provider.dart';
 
 class WithdrawalScreen extends StatefulWidget {
   const WithdrawalScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _WithdrawalScreenState createState() => _WithdrawalScreenState();
 }
 
 class _WithdrawalScreenState extends State<WithdrawalScreen> {
-  String? _selectedPaymentMethod;
+  int? _selectedPaymentMethodId; // Store payment method ID
+  double _walletBalance = 0.0;
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<DataProvider>(context, listen: false).fetchData(context);
+    _fetchUserBalance();
+  }
+
+  Future<void> _fetchUserBalance() async {
+    final data = await ApiService().fetchUserProfile(context);
+    if (data != null) {
+      setState(() {
+        _walletBalance = data.user.income.wallet.toDouble();
+      });
+    }
+  }
+
+  Future<void> _submitWithdrawalRequest() async {
+    // Retrieve token from TokenModel
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final String? token = tokenProvider.token;
+
+    if (_selectedPaymentMethodId == null || _walletBalance <= 0) {
+      // Handle validation error
+      _showErrorDialog("Please fill all required fields.");
+      return;
+    }
+
+    final amount = _amountController.text.trim();
+    final description = _descriptionController.text.trim();
+
+    if (amount.isEmpty || description.isEmpty) {
+      _showErrorDialog("Please enter valid data.");
+      return;
+    }
+
+    // print({
+    //   'payment_method_affilate_id': _selectedPaymentMethodId,
+    //   'amount': amount,
+    //   'description': description,
+    // });
+
+    try {
+      // Send POST request with data
+      final response = await http.post(
+        Uri.parse('https://bdev.elmanhag.shop/affilate/account/withdraw'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'payment_method_affilate_id':
+              _selectedPaymentMethodId, // Payment method ID
+          'amount': amount, // Amount entered by the user
+          'description': description, // Description entered by the user
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        log(response.body);
+        // ignore: use_build_context_synchronously
+        _showProcessingDialog(context); // Show success dialog
+      } else {
+        _showErrorDialog("Failed to process request.");
+      }
+    } catch (e) {
+      _showErrorDialog("An error occurred: $e");
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context);
+    final paymentMethods = dataProvider.dataModel?.paymentMethods ?? [];
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -36,17 +141,20 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Balance Cards
-              const Row(
+              // Balance Cards with fetched balance
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  BalanceCard(amount: '1000 ج.م', label: 'العمولات المستحقه'),
+                  BalanceCard(
+                      amount: '${_walletBalance.toStringAsFixed(2)} ج.م',
+                      label: 'محفظتك'),
                 ],
               ),
               const SizedBox(height: 24),
 
               // Input for amount
               TextField(
+                controller: _amountController,
                 decoration: InputDecoration(
                   hintText: 'المبلغ الذي تريد سحبه',
                   hintStyle: TextStyle(color: Colors.grey.shade600),
@@ -74,35 +182,30 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
 
               const SizedBox(height: 16),
-              PaymentMethodOption(
-                label: 'فودافون كاش',
-                icon: Icons.mobile_friendly,
-                logo: 'assets/images/vod.png', // Replace with your asset path
-                value: 'vodafone_cash',
-                groupValue: _selectedPaymentMethod,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedPaymentMethod = value;
-                  });
-                },
-              ),
-              PaymentMethodOption(
-                label: 'فوري',
-                icon: Icons.local_atm,
-                logo: 'assets/images/Fawry.png', // Replace with your asset path
-                value: 'fawry',
-                groupValue: _selectedPaymentMethod,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedPaymentMethod = value;
-                  });
-                },
-              ),
 
-              // Show the text field under the selected method
-              if (_selectedPaymentMethod != null) ...[
+              // Payment method options
+              if (paymentMethods.isNotEmpty)
+                ...paymentMethods.map((method) {
+                  return PaymentMethodOption(
+                    label: method.method,
+                    logo: method.thumbnail != null
+                        ? 'https://bdev.elmanhag.shop/${method.thumbnail}'
+                        : 'assets/images/Fawry.png', // Placeholder for missing image
+                    value: method.id, // Use ID instead of method name
+                    groupValue: _selectedPaymentMethodId,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedPaymentMethodId = value;
+                      });
+                    },
+                  );
+                // ignore: unnecessary_to_list_in_spreads
+                }).toList(),
+
+              if (_selectedPaymentMethodId != null) ...[
                 const SizedBox(height: 16),
-                TextField(
+                TextField( 
+                  controller: _descriptionController,
                   decoration: InputDecoration(
                     hintText: 'ادخل البيانات المطلوبة',
                     hintStyle: TextStyle(color: Colors.grey.shade600),
@@ -129,9 +232,9 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
 
               // Withdrawal Button
               ElevatedButton(
-                onPressed: _selectedPaymentMethod != null
+                onPressed: _selectedPaymentMethodId != null
                     ? () {
-                        _showProcessingDialog(context);
+                        _submitWithdrawalRequest(); // Trigger the POST request
                       }
                     : null, // Disable the button if no payment method is selected
                 style: ElevatedButton.styleFrom(
@@ -155,72 +258,6 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       ),
     );
   }
-}
-
-void _showProcessingDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        title: const Row(
-          children: [
-            Icon(
-              Icons.info_outline,
-              color: redcolor,
-            ),
-            SizedBox(width: 8),
-            Text(
-              'طلبك تحت التنفيذ',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ),
-        content: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          child: Text(
-            'لقد تم إرسال طلبك، وسيتم تنفيذه في أقرب وقت ممكن.',
-            style: TextStyle(
-              color: Colors.black54,
-              fontSize: 16,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        actions: <Widget>[
-          Center(
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: redcolor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'حسناً',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ),
-        ],
-        actionsPadding: const EdgeInsets.only(bottom: 10),
-      );
-    },
-  );
 }
 
 class BalanceCard extends StatelessWidget {
@@ -267,16 +304,14 @@ class BalanceCard extends StatelessWidget {
 
 class PaymentMethodOption extends StatelessWidget {
   final String label;
-  final IconData icon;
   final String logo;
-  final String value;
-  final String? groupValue;
-  final ValueChanged<String?> onChanged;
+  final int value; // ID instead of method name
+  final int? groupValue;
+  final ValueChanged<int?> onChanged;
 
   const PaymentMethodOption({
     super.key,
     required this.label,
-    required this.icon,
     required this.logo,
     required this.value,
     required this.groupValue,
@@ -285,20 +320,72 @@ class PaymentMethodOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        onChanged(value);
-      },
-      child: ListTile(
-        leading: Image.asset(logo, width: 40, height: 40),
-        title: Text(label, style: const TextStyle(fontSize: 16)),
-        trailing: Radio<String>(
-          value: value,
-          groupValue: groupValue,
-          onChanged: onChanged,
-          activeColor: redcolor,
-        ),
+    return RadioListTile<int>(
+      title: Text(label),
+      secondary: Image.network(
+        logo,
+        width: 50,
+        height: 50,
+        errorBuilder: (context, error, stackTrace) {
+          return Image.asset('assets/images/Fawry.png', width: 50, height: 50);
+        },
       ),
+      value: value,
+      groupValue: groupValue,
+      onChanged: onChanged,
     );
   }
+}
+
+void _showProcessingDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false, // Prevent dismissal by tapping outside
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Text(
+          'طلبك قيد التنفيذ',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Colors.black87,
+          ),
+        ),
+        content: const Row(
+          children: [
+            Icon(Icons.hourglass_empty,
+                color: redcolor, size: 40), // Hourglass icon
+            SizedBox(width: 20),
+            Expanded(
+              child: Text(
+                'برجاء الانتظار سيتم التحويل قريبا',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: redcolor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
 }

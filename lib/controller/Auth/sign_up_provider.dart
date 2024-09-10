@@ -3,11 +3,12 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:flutter_application_1/views/screens/login/login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class ApiService with ChangeNotifier{
+class ApiService with ChangeNotifier {
   static Future<void> signUp({
     required String name,
     required String email,
@@ -63,7 +64,7 @@ class ApiService with ChangeNotifier{
       log('Response Body: ${response.body}');
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     } else {
       log('Response Status: ${response.statusCode}');
@@ -96,13 +97,15 @@ class ApiService with ChangeNotifier{
       },
     );
   }
-    String? previousCountry;
-    String? previousCity;
-    String? previousCategory;
-    String? previousEdu;
-    String? previousGender;
-    String? previousjob;
-  void saveFormData(String? prevCountry,String? prevCity,String? prevCategory,String? prevEdu,String? prevGender,String? prevjob){
+
+  String? previousCountry;
+  String? previousCity;
+  String? previousCategory;
+  String? previousEdu;
+  String? previousGender;
+  String? previousjob;
+  void saveFormData(String? prevCountry, String? prevCity, String? prevCategory,
+      String? prevEdu, String? prevGender, String? prevjob) {
     previousCountry = prevCountry;
     previousCity = prevCity;
     previousCategory = prevCategory;
