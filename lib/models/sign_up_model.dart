@@ -15,11 +15,11 @@ class Country {
 
   factory Country.fromJson(Map<String, dynamic> json) {
     return Country(
-      id: json['id'] ?? 0, // Provide default values in case of null
-      name: json['name'] ?? 'Unknown', // Default value
+      id: json['id'] ?? 0,
+      name: json['name'] ?? 'Unknown',
       status: json['status'] ?? 0,
-      createdAt: DateTime.parse(json['created_at'] ??
-          DateTime.now().toIso8601String()), // Default to current date/time
+      createdAt: DateTime.parse(
+          json['created_at'] ?? DateTime.now().toIso8601String()),
       updatedAt: DateTime.parse(
           json['updated_at'] ?? DateTime.now().toIso8601String()),
     );
@@ -122,19 +122,28 @@ class Education {
 class ParentRelation {
   final int id;
   final String name;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   ParentRelation({
     required this.id,
     required this.name,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory ParentRelation.fromJson(Map<String, dynamic> json) {
     return ParentRelation(
       id: json['id'] ?? 0,
       name: json['name'] ?? 'Unknown',
+      createdAt: DateTime.parse(
+          json['created_at'] ?? DateTime.now().toIso8601String()),
+      updatedAt: DateTime.parse(
+          json['updated_at'] ?? DateTime.now().toIso8601String()),
     );
   }
 }
+
 class StudentJob {
   final int id;
   final String job;
@@ -156,26 +165,33 @@ class StudentJob {
     return StudentJob(
       id: json['id'] ?? 0,
       job: json['job'] ?? 'Unknown',
-      titleMale: json['title_male'] ?? 'Unknown',
-      titleFemale: json['title_female'] ?? 'Unknown',
-      createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updated_at'] ?? DateTime.now().toIso8601String()),
+      titleMale: json['title_male'] ?? '',
+      titleFemale: json['title_female'] ?? '',
+      createdAt: DateTime.parse(
+          json['created_at'] ?? DateTime.now().toIso8601String()),
+      updatedAt: DateTime.parse(
+          json['updated_at'] ?? DateTime.now().toIso8601String()),
     );
   }
 }
+
 class PaymentMethodAffilate {
   final int id;
   final String method;
   final int minPayout;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? thumbnail;
+  final int status;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   PaymentMethodAffilate({
     required this.id,
     required this.method,
     required this.minPayout,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.thumbnail,
+    required this.status,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory PaymentMethodAffilate.fromJson(Map<String, dynamic> json) {
@@ -183,54 +199,65 @@ class PaymentMethodAffilate {
       id: json['id'] ?? 0,
       method: json['method'] ?? 'Unknown',
       minPayout: json['min_payout'] ?? 0,
-      createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updated_at'] ?? DateTime.now().toIso8601String()),
+      thumbnail: json['thumbnail'],
+      status: json['status'] ?? 0,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
     );
   }
 }
 
 class DataModel {
+  final String success;
   final List<Country> countries;
   final List<City> cities;
   final List<Category> categories;
   final List<Education> educations;
   final List<ParentRelation> parentRelations;
   final List<StudentJob> studentJobs;
-  final List<PaymentMethodAffilate> paymentMethodAffilates; // Add this field
+  final List<PaymentMethodAffilate> paymentMethods;
 
   DataModel({
+    required this.success,
     required this.countries,
     required this.cities,
     required this.categories,
     required this.educations,
     required this.parentRelations,
     required this.studentJobs,
-    required this.paymentMethodAffilates, // Include this in the constructor
+    required this.paymentMethods,
   });
 
   factory DataModel.fromJson(Map<String, dynamic> json) {
     return DataModel(
-      countries: (json['country'] as List?)
-              ?.map((country) => Country.fromJson(country as Map<String, dynamic>))
-              .toList() ?? [],
-      cities: (json['city'] as List?)
-              ?.map((city) => City.fromJson(city as Map<String, dynamic>))
-              .toList() ?? [],
-      categories: (json['category'] as List?)
-              ?.map((category) => Category.fromJson(category as Map<String, dynamic>))
-              .toList() ?? [],
-      educations: (json['education'] as List?)
-              ?.map((education) => Education.fromJson(education as Map<String, dynamic>))
-              .toList() ?? [],
-      parentRelations: (json['parentRelation'] as List?)
-              ?.map((parentRelation) => ParentRelation.fromJson(parentRelation as Map<String, dynamic>))
-              .toList() ?? [],
-      studentJobs: (json['studentJobs'] as List?)
-              ?.map((job) => StudentJob.fromJson(job as Map<String, dynamic>))
-              .toList() ?? [],
-      paymentMethodAffilates: (json['paymentMethodAffilate'] as List?)
-              ?.map((method) => PaymentMethodAffilate.fromJson(method as Map<String, dynamic>))
-              .toList() ?? [], // Map paymentMethodAffilate from the JSON
+      success: json['success'] ?? '',
+      countries: (json['country'] as List)
+          .map((countryJson) => Country.fromJson(countryJson))
+          .toList(),
+      cities: (json['city'] as List)
+          .map((cityJson) => City.fromJson(cityJson))
+          .toList(),
+      categories: (json['category'] as List)
+          .map((categoryJson) => Category.fromJson(categoryJson))
+          .toList(),
+      educations: (json['education'] as List)
+          .map((educationJson) => Education.fromJson(educationJson))
+          .toList(),
+      parentRelations: (json['parentRelation'] as List)
+          .map((parentRelationJson) =>
+              ParentRelation.fromJson(parentRelationJson))
+          .toList(),
+      studentJobs: (json['studentJobs'] as List)
+          .map((studentJobJson) => StudentJob.fromJson(studentJobJson))
+          .toList(),
+      paymentMethods: (json['paymentMethodAffilate'] as List)
+          .map((paymentMethodJson) =>
+              PaymentMethodAffilate.fromJson(paymentMethodJson))
+          .toList(),
     );
   }
 }

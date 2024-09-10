@@ -106,7 +106,6 @@ class _SignScreenState extends State<SignScreen> {
               child: ElevatedButton(
                 onPressed: () async {
                   print('email: $_emailController');
-                  // Validation logic
                   if (_nameController.text.isEmpty ||
                       _emailController.text.isEmpty ||
                       _passwordController.text.isEmpty ||

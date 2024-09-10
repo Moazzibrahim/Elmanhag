@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'dart:developer';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 class LogoutModel with ChangeNotifier {
   Future<void> logout(BuildContext context) async {
     try {
@@ -26,10 +25,10 @@ class LogoutModel with ChangeNotifier {
         log('Logout successful');
         log(response.body);
 
-        // Clear token and reset isLoggedIn flag
         tokenProvider.clearToken();
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', false); // Ensure isLoggedIn is set to false
+        await prefs.setBool('isLoggedIn', false);
+        await prefs.remove('user_role');  // Remove role when logging out
 
         Navigator.pushReplacement(
           context,
