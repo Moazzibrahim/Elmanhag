@@ -47,7 +47,7 @@ class HomeGrid extends StatelessWidget {
                   .getSubjects(context);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (ctx) => const MyCurriculumScreen()));
-            }else{
+            } else {
               null;
             }
             if (texts[index] == localizations.translate('tasks')) {
@@ -68,49 +68,53 @@ class HomeGrid extends StatelessWidget {
             // }
           },
           child: Card(
-  color: theme.scaffoldBackgroundColor,
-  elevation: 3,
-  shadowColor: redcolor,
-  child: Stack(
-    children: [
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            texts[index],
-            style: const TextStyle(color: redcolor, fontSize: 20),
-          ),
-          const SizedBox(height: 7),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(images[index]),
-            ],
-          ),
-        ],
-      ),
-      texts[index] != localizations.translate('curriculum') && texts[index] != localizations.translate('tasks')? Positioned.fill(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(13),
-            color: Colors.black.withOpacity(0.6), // Semi-transparent overlay
-          ),
-          child: const Center(
-            child: Text(
-              'Coming Soon',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+            color: theme.scaffoldBackgroundColor,
+            elevation: 3,
+            shadowColor: redcolor,
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      texts[index],
+                      style: const TextStyle(color: redcolor, fontSize: 20),
+                    ),
+                    const SizedBox(height: 7),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(images[index]),
+                      ],
+                    ),
+                  ],
+                ),
+                texts[index] != localizations.translate('curriculum') &&
+                        texts[index] != localizations.translate('tasks')
+                    ? Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(13),
+                            color: Colors.black
+                                .withOpacity(0.6), // Semi-transparent overlay
+                          ),
+                          child: Center(
+                            child: Text(
+                              localizations.translate('coming_soon'),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : const SizedBox()
+              ],
             ),
           ),
-        ),
-      ) : const SizedBox()
-    ],
-  ),
-),
-
         );
       },
     );

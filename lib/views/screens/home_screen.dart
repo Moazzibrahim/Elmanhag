@@ -210,7 +210,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.feedback),
-                title: const Text('الشكاوي والاقتراحات'),
+                title: Text(
+                    '${localizations.translate('Complaints and suggestions')}'),
                 onTap: () {
                   Navigator.pop(context); // Close the drawer first
                   // Navigate to the Complaints and Suggestions screen

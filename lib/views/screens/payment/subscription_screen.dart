@@ -20,7 +20,7 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
-  int selectedCardIndex = -1; // Track selected card index
+  int selectedCardIndex = -1;
   bool _isInitialized = false;
   String selectedItemPrice = '0';
   String service = '';
@@ -57,7 +57,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         )
         .toList();
 
-    // Combine bundles and subjects into a single list
     final combinedList = [
       ...bundles.map((bundle) => BundleSubjectItem(
             id: bundle.id,
@@ -66,6 +65,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             description: bundle.description,
             coverPhoto: bundle.coverPhoto,
             expiredDate: bundle.expiredDate,
+            discount: bundle.discount,
             type: 'bundle',
           )),
       ...(widget.subjectId == null
@@ -76,6 +76,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 description: subject.description,
                 coverPhoto: subject.coverPhotoUrl,
                 expiredDate: subject.expiredDate,
+                discount: subject.subdiscount,
                 type: 'subject',
               ))
           : filteredSubject.map((subject) => BundleSubjectItem(
@@ -85,6 +86,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 description: subject.description,
                 coverPhoto: subject.coverPhotoUrl,
                 expiredDate: subject.expiredDate,
+                discount: subject.subdiscount,
                 type: 'subject',
               ))),
     ];
@@ -121,7 +123,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              ' ${localizations.translate('welcome')} ${user!.name}',
+                              ' ${localizations.translate('welcome')} ${user!.name} ${user.studentJob!.job}',
                               style: const TextStyle(
                                 color: redcolor,
                                 fontSize: 18,
@@ -154,47 +156,35 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       fontSize: 20,
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 14),
                   if (combinedList.isNotEmpty)
-                    SizedBox(
-                      height: 350, // Adjust the height as needed
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: combinedList.length,
-                        itemBuilder: (context, index) {
-                          final item = combinedList[index];
-                          return Container(
-                            width: 250, // Fixed width for horizontal scrolling
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: buildSubscriptionCard(
-                              context,
-                              index: index,
-                              title: item.name ?? 'No Name',
-                              price: item.price ?? '0',
-                              description: item.description ?? 'No Description',
-                              coverPhoto: item.coverPhoto ?? '',
-                              expiredDate: item.expiredDate ?? 'No Expiry Date',
-                              color: theme.primaryColor,
-                              isHighlighted: index == selectedCardIndex,
-                            ),
-                          );
-                        },
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // Two items per row
+                        crossAxisSpacing: 20.0,
+                        mainAxisSpacing: 20.0,
+                        childAspectRatio: 0.52, // Adjust height-to-width ratio
                       ),
+                      itemCount: combinedList.length,
+                      itemBuilder: (context, index) {
+                        final item = combinedList[index];
+                        return buildSubscriptionCard(
+                          context,
+                          index: index,
+                          title: item.name ?? 'No Name',
+                          price: item.price ?? '0',
+                          discount: item.discount!,
+                          description: item.description ?? 'No Description',
+                          coverPhoto: item.coverPhoto ?? '',
+                          expiredDate: item.expiredDate ?? 'No Expiry Date',
+                          color: theme.primaryColor,
+                          isHighlighted: index == selectedCardIndex,
+                        );
+                      },
                     ),
-                  const SizedBox(height: 57),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'استمتع بتجربة تعليمية شاملة: فيديوهات، واجبات، مراجعات، وحصص لايف لكل الدروس',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color:
-                            theme.textTheme.bodyLarge?.color?.withOpacity(0.7),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 16),
                 ],
               ),
@@ -210,11 +200,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   onPressed: selectedCardIndex != -1
                       ? () {
                           final selectedItem = combinedList[selectedCardIndex];
-
-                          // Set selected item price
                           selectedItemPrice = selectedItem.price ?? '0';
-
-                          // Determine service type based on the selected item type (bundle or subject)
                           service = selectedItem.type == 'bundle'
                               ? 'Bundle'
                               : 'Subject';
@@ -230,20 +216,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           log('service: $service');
                           log('price: $selectedItemPrice');
 
-                          // Navigate to PaymentScreen, passing itemid, price, and service
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => PaymentScreen(
                                 itemidbundle: bundleid,
                                 itemidsubject: subid,
-                                itemprice: selectedItemPrice, // Pass price
-                                itemservice: service, // Pass service type
+                                itemprice: selectedItemPrice,
+                                itemservice: service,
                               ),
                             ),
                           );
                         }
-                      : null, // Disable button if no card is selected
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: redcolor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -273,6 +258,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     required int index,
     required String title,
     required String price,
+    required double discount,
     required String description,
     required String coverPhoto,
     required String expiredDate,
@@ -283,10 +269,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     bool isSelected = index == selectedCardIndex;
     final localizations = AppLocalizations.of(context);
     final bundleDataProvider = Provider.of<GetBundleData>(context);
-    final bundles = bundleDataProvider.getBundles() ?? [];
-    final subjects = bundleDataProvider.getSubjects() ?? [];
-
-    // Combine bundles and subjects into a single list
+    List<Bundle> bundles = bundleDataProvider.getBundles() ?? [];
+    List<Subject> subjects = bundleDataProvider.getSubjects() ?? [];
+    List<Subject> filteredSubject = subjects
+        .where(
+          (element) => element.id.toString() == widget.subjectId,
+        )
+        .toList();
     final combinedList = [
       ...bundles.map((bundle) => BundleSubjectItem(
             id: bundle.id,
@@ -295,23 +284,36 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             description: bundle.description,
             coverPhoto: bundle.coverPhoto,
             expiredDate: bundle.expiredDate,
+            discount: bundle.discount,
             type: 'bundle',
           )),
-      ...subjects.map((subject) => BundleSubjectItem(
-            id: subject.id,
-            name: subject.name,
-            price: subject.price.toString(),
-            description: subject.description,
-            coverPhoto: subject.coverPhotoUrl,
-            expiredDate: subject.expiredDate,
-            type: 'subject',
-          )),
+      ...(widget.subjectId == null
+          ? subjects.map((subject) => BundleSubjectItem(
+                id: subject.id,
+                name: subject.name,
+                price: subject.price.toString(),
+                description: subject.description,
+                coverPhoto: subject.coverPhotoUrl,
+                expiredDate: subject.expiredDate,
+                discount: subject.subdiscount,
+                type: 'subject',
+              ))
+          : filteredSubject.map((subject) => BundleSubjectItem(
+                id: subject.id,
+                name: subject.name,
+                price: subject.price.toString(),
+                description: subject.description,
+                coverPhoto: subject.coverPhotoUrl,
+                expiredDate: subject.expiredDate,
+                discount: subject.subdiscount,
+                type: 'subject',
+              ))),
     ];
 
     return GestureDetector(
       onTap: () {
         setState(() {
-          selectedCardIndex = index; // Set selected card
+          selectedCardIndex = index;
         });
       },
       child: Card(
@@ -321,77 +323,119 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: isSelected ? color : Colors.red.shade700),
         ),
-        child: Container(
-          padding: const EdgeInsets.all(20),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 100,
+                height: 80,
+                width: 80,
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
                   image: DecorationImage(
                     image: NetworkImage(coverPhoto),
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                   ),
-                  borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               Text(
                 title,
                 style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isSelected ? redcolor : theme.primaryColor,
-                    fontSize: 15),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'السعر: $price جنيه',
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(color: Colors.black, fontSize: 15),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
-                    fontSize: 13),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'تاريخ الانتهاء: $expiredDate',
-                style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
-                    fontSize: 15),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: redcolor),
-                onPressed: () {
-                  final selectedItem = combinedList[index];
-                  selectedItemPrice = selectedItem.price!;
-                  service =
-                      selectedItem.type == 'bundle' ? 'Bundle' : 'Subject';
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentScreen(
-                        itemidbundle: bundleid,
-                        itemidsubject: subid,
-                        itemprice: selectedItemPrice,
-                        itemservice: service,
-                      ),
-                    ),
-                  );
-                },
-                child: Text(
-                  localizations.translate('subscripe_now'),
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                  fontWeight: FontWeight.bold,
+                  color: theme.textTheme.bodyLarge?.color,
                 ),
               ),
+              const SizedBox(height: 8),
+              Text(
+                '$discount',
+                style: const TextStyle(
+                  color: redcolor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                localizations.translate('instead_of'),
+                style: const TextStyle(color: redcolor),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Text(
+                price,
+                style: const TextStyle(
+                    color: redcolor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.lineThrough),
+              ),
+              // Text(
+              //   expiredDate,
+              //   style: TextStyle(
+              //     fontSize: 14,
+              //     color: theme.textTheme.bodySmall?.color,
+              //   ),
+              // ),
+              // const SizedBox(height: 8),
+              // Text(
+              //   description,
+              //   textAlign: TextAlign.center,
+              //   style: theme.textTheme.bodySmall,
+              // ),
+              const SizedBox(height: 8),
+              const Divider(
+                color: redcolor,
+                thickness: 2,
+              ),
+              Container(
+                height: 60,
+                width: 700,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: redcolor),
+                    onPressed: selectedCardIndex != -1
+                        ? () {
+                            final selectedItem =
+                                combinedList[selectedCardIndex];
+                            selectedItemPrice = selectedItem.price ?? '0';
+                            service = selectedItem.type == 'bundle'
+                                ? 'Bundle'
+                                : 'Subject';
+                            if (selectedItem.type == 'bundle') {
+                              bundleid = selectedItem.id!;
+                              subid = 0;
+                            } else {
+                              subid = selectedItem.id!;
+                              bundleid = 0;
+                            }
+                            log('bundle id: $bundleid');
+                            log('subid:$subid');
+                            log('service: $service');
+                            log('price: $selectedItemPrice');
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PaymentScreen(
+                                  itemidbundle: bundleid,
+                                  itemidsubject: subid,
+                                  itemprice: selectedItemPrice,
+                                  itemservice: service,
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
+                    child: Text(
+                      localizations.translate('subscripe_now'),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold),
+                    )),
+              )
             ],
           ),
         ),
@@ -408,6 +452,7 @@ class BundleSubjectItem {
   final String? coverPhoto;
   final String? expiredDate;
   final String type;
+  final double? discount;
 
   BundleSubjectItem({
     this.id,
@@ -416,6 +461,7 @@ class BundleSubjectItem {
     this.description,
     this.coverPhoto,
     this.expiredDate,
+    this.discount,
     required this.type,
   });
 }

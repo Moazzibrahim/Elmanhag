@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/parent%20screens/home_parent_screen.dart';
 
 class ChooseSon extends StatefulWidget {
@@ -16,6 +17,7 @@ class _ChooseSonState extends State<ChooseSon> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -77,7 +79,7 @@ class _ChooseSonState extends State<ChooseSon> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>const HomeParentScreen()));
+                            builder: (context) => const HomeParentScreen()));
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -87,9 +89,9 @@ class _ChooseSonState extends State<ChooseSon> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  child: Text(
+                    localizations.translate('next'),
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ),

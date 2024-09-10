@@ -33,10 +33,12 @@ class MainModel {
     };
   }
 }
+
 class Bundle {
   final int? id;
   final String? name;
   final double? price;
+  final double? discount;
   final String? tags;
   final String? thumbnail;
   final String? coverPhoto;
@@ -55,6 +57,7 @@ class Bundle {
     this.id,
     this.name,
     this.price,
+    this.discount,
     this.tags,
     this.thumbnail,
     this.coverPhoto,
@@ -75,6 +78,7 @@ class Bundle {
       id: json['id'],
       name: json['name'],
       price: json['price']?.toDouble(),
+      discount:json['price_discount']?.toDouble(), 
       tags: json['tags'],
       thumbnail: json['thumbnail'],
       coverPhoto: json['cover_photo'],
@@ -86,8 +90,12 @@ class Bundle {
       educationId: json['education_id'],
       expiredDate: json['expired_date'],
       status: json['status'],
-      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
-      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
     );
   }
 
@@ -96,6 +104,7 @@ class Bundle {
       'id': id,
       'name': name,
       'price': price,
+      'price_discount':discount,
       'tags': tags,
       'thumbnail': thumbnail,
       'cover_photo': coverPhoto,
@@ -112,10 +121,12 @@ class Bundle {
     };
   }
 }
+
 class Subject {
   final int? id;
   final String? name;
   final double? price;
+  final double? subdiscount;
   final String? tags;
   final int? categoryId;
   final int? educationId;
@@ -137,6 +148,7 @@ class Subject {
     this.id,
     this.name,
     this.price,
+    this.subdiscount,
     this.tags,
     this.categoryId,
     this.educationId,
@@ -160,6 +172,7 @@ class Subject {
       id: json['id'],
       name: json['name'],
       price: json['price']?.toDouble(),
+      subdiscount:json['price_discount']?.toDouble(),
       tags: json['tags'],
       categoryId: json['category_id'],
       educationId: json['education_id'],
@@ -171,8 +184,12 @@ class Subject {
       status: json['status'],
       semester: json['semester'],
       expiredDate: json['expired_date'],
-      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
-      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
       demoVideoUrl: json['demo_video_url'],
       coverPhotoUrl: json['cover_photo_url'],
       thumbnailUrl: json['thumbnail_url'],
@@ -184,6 +201,7 @@ class Subject {
       'id': id,
       'name': name,
       'price': price,
+      'price_discount':subdiscount,
       'tags': tags,
       'category_id': categoryId,
       'education_id': educationId,
