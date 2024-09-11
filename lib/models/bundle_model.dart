@@ -52,6 +52,7 @@ class Bundle {
   final int? status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final List<Discount>? discounts;
 
   Bundle({
     this.id,
@@ -71,6 +72,7 @@ class Bundle {
     this.status,
     this.createdAt,
     this.updatedAt,
+    this.discounts,
   });
 
   factory Bundle.fromJson(Map<String, dynamic> json) {
@@ -78,7 +80,7 @@ class Bundle {
       id: json['id'],
       name: json['name'],
       price: json['price']?.toDouble(),
-      discount:json['price_discount']?.toDouble(), 
+      discount: json['price_discount']?.toDouble(),
       tags: json['tags'],
       thumbnail: json['thumbnail'],
       coverPhoto: json['cover_photo'],
@@ -96,6 +98,11 @@ class Bundle {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : null,
+      discounts: json['discount'] != null
+          ? (json['discount'] as List)
+              .map((item) => Discount.fromJson(item))
+              .toList()
+          : null,
     );
   }
 
@@ -104,7 +111,7 @@ class Bundle {
       'id': id,
       'name': name,
       'price': price,
-      'price_discount':discount,
+      'price_discount': discount,
       'tags': tags,
       'thumbnail': thumbnail,
       'cover_photo': coverPhoto,
@@ -118,6 +125,92 @@ class Bundle {
       'status': status,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
+      'discount': discounts?.map((discount) => discount.toJson()).toList(),
+    };
+  }
+}
+
+class Discount {
+  final int? id;
+  final int? categoryId;
+  final double? amount;
+  final String? type;
+  final String? description;
+  final String? startDate;
+  final String? endDate;
+  final int? status;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final Pivot? pivot;
+
+  Discount({
+    this.id,
+    this.categoryId,
+    this.amount,
+    this.type,
+    this.description,
+    this.startDate,
+    this.endDate,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.pivot,
+  });
+
+  factory Discount.fromJson(Map<String, dynamic> json) {
+    return Discount(
+      id: json['id'],
+      categoryId: json['category_id'],
+      amount: json['amount']?.toDouble(),
+      type: json['type'],
+      description: json['description'],
+      startDate: json['start_date'],
+      endDate: json['end_date'],
+      status: json['statue'],
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
+      pivot: json['pivot'] != null ? Pivot.fromJson(json['pivot']) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'category_id': categoryId,
+      'amount': amount,
+      'type': type,
+      'description': description,
+      'start_date': startDate,
+      'end_date': endDate,
+      'statue': status,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+      'pivot': pivot?.toJson(),
+    };
+  }
+}
+
+class Pivot {
+  final int? bundleId;
+  final int? discountId;
+
+  Pivot({this.bundleId, this.discountId});
+
+  factory Pivot.fromJson(Map<String, dynamic> json) {
+    return Pivot(
+      bundleId: json['bundle_id'],
+      discountId: json['discount_id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'bundle_id': bundleId,
+      'discount_id': discountId,
     };
   }
 }
@@ -126,7 +219,6 @@ class Subject {
   final int? id;
   final String? name;
   final double? price;
-  final double? subdiscount;
   final String? tags;
   final int? categoryId;
   final int? educationId;
@@ -143,12 +235,13 @@ class Subject {
   final String? demoVideoUrl;
   final String? coverPhotoUrl;
   final String? thumbnailUrl;
+  final List<Discount>? discounts;
+  final List<Chapter>? chapters;
 
   Subject({
     this.id,
     this.name,
     this.price,
-    this.subdiscount,
     this.tags,
     this.categoryId,
     this.educationId,
@@ -165,6 +258,8 @@ class Subject {
     this.demoVideoUrl,
     this.coverPhotoUrl,
     this.thumbnailUrl,
+    this.discounts,
+    this.chapters,
   });
 
   factory Subject.fromJson(Map<String, dynamic> json) {
@@ -172,7 +267,6 @@ class Subject {
       id: json['id'],
       name: json['name'],
       price: json['price']?.toDouble(),
-      subdiscount:json['price_discount']?.toDouble(),
       tags: json['tags'],
       categoryId: json['category_id'],
       educationId: json['education_id'],
@@ -193,6 +287,16 @@ class Subject {
       demoVideoUrl: json['demo_video_url'],
       coverPhotoUrl: json['cover_photo_url'],
       thumbnailUrl: json['thumbnail_url'],
+      discounts: json['discount'] != null
+          ? (json['discount'] as List)
+              .map((item) => Discount.fromJson(item))
+              .toList()
+          : null,
+      chapters: json['chapters'] != null
+          ? (json['chapters'] as List)
+              .map((item) => Chapter.fromJson(item))
+              .toList()
+          : null,
     );
   }
 
@@ -201,7 +305,6 @@ class Subject {
       'id': id,
       'name': name,
       'price': price,
-      'price_discount':subdiscount,
       'tags': tags,
       'category_id': categoryId,
       'education_id': educationId,
@@ -215,9 +318,59 @@ class Subject {
       'expired_date': expiredDate,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
-      'demo_video_url': demoVideoUrl,
-      'cover_photo_url': coverPhotoUrl,
-      'thumbnail_url': thumbnailUrl,
+      'discount': discounts?.map((discount) => discount.toJson()).toList(),
+      'chapters': chapters?.map((chapter) => chapter.toJson()).toList(),
+    };
+  }
+}
+
+class Chapter {
+  final int? id;
+  final String? name;
+  final String? description;
+  final int? subid;
+  final String? coverphoto;
+  final String? thumbnaill;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  Chapter(
+      {this.id,
+      this.name,
+      this.description,
+      this.subid,
+      this.coverphoto,
+      this.thumbnaill,
+      this.createdAt,
+      this.updatedAt});
+
+  factory Chapter.fromJson(Map<String, dynamic> json) {
+    return Chapter(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      subid: json['subject_id'],
+      coverphoto: json['cover_photo'],
+      thumbnaill: json['thumbnail'],
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'subject_id': subid,
+      'cover_photo': coverphoto,
+      'thumbnail': thumbnaill,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 }

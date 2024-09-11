@@ -27,21 +27,26 @@ class GetBundleData with ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        // Decode the JSON response
-        final data = json.decode(response.body);
-        _mainModel = MainModel.fromJson(data);
+        try {
+          // Decode the JSON response
+          final data = json.decode(response.body);
+          _mainModel = MainModel.fromJson(data);
 
-        // Notify listeners
-        notifyListeners();
-
-        return _mainModel;
+          // Notify listeners
+          notifyListeners();
+          return _mainModel;
+        } catch (e) {
+          // Handle JSON parsing errors
+          print('Error parsing JSON: $e');
+          return null;
+        }
       } else {
-        // Handle the error if status code is not 200
+        // Handle non-200 status codes
         print('Failed to load data. Status code: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      // Handle any other errors
+      // Handle any other errors like network issues
       print('Error fetching data: $e');
       return null;
     }

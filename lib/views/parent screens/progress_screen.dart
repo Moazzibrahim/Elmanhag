@@ -43,11 +43,14 @@ class StudentProgressScreen extends StatelessWidget {
                   ),
           ),
           Positioned(
-            top: 20.h,
+            top: 5.h,
             left: 12.w,
             right: 12.w,
             child: _buildProgressBar(55), // Add your progress bar here
           ),
+          // const SizedBox(
+          //   height: 28,
+          // ),
           FutureBuilder(
             future: Provider.of<SubjectProvider>(context, listen: false)
                 .getSubjects(context),

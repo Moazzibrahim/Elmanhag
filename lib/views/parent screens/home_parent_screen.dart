@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/parent%20screens/notfications_parent_screen.dart';
 import 'package:flutter_application_1/views/parent%20widgets/home_parent_grid.dart';
 import 'package:flutter_application_1/views/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart'; // Import Provider
 
 class HomeParentScreen extends StatelessWidget {
-  const HomeParentScreen({super.key});
+  final String? childname;
+  final String? childcategory;
+  const HomeParentScreen({super.key, this.childcategory, this.childname});
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -31,7 +35,8 @@ class HomeParentScreen extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const CustomProfileScreen()));
+                                builder: (context) =>
+                                    const CustomProfileScreen()));
                       },
                       child: const Icon(
                         Icons.person, // Replace with logout icon
@@ -69,25 +74,34 @@ class HomeParentScreen extends StatelessWidget {
                     )
                   ],
                 ),
-                const Row(
+                Row(
                   children: [
                     Text(
-                      'اهلا بك يوسف',
-                      style: TextStyle(
+                      ' ${localizations.translate('welcome')} $childname',
+                      style: const TextStyle(
                           color: redcolor,
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
-                    CircleAvatar(
+                    const CircleAvatar(
                       backgroundImage: AssetImage(
                           'assets/images/tefl.png'), // Replace with actual image asset or network image
                       radius: 20,
                     ),
                   ],
                 ),
+              ],
+            ),
+            const SizedBox(
+              height: 7,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('$childcategory'),
               ],
             ),
             const SizedBox(

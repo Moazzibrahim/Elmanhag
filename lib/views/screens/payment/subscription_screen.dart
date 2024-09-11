@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable, library_private_types_in_public_api
-
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -76,7 +74,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 description: subject.description,
                 coverPhoto: subject.coverPhotoUrl,
                 expiredDate: subject.expiredDate,
-                discount: subject.subdiscount,
+                discount: subject.discounts?.isNotEmpty ?? false
+                    ? subject.discounts!.first.amount
+                    : 0, // Use the first discount amount if available
                 type: 'subject',
               ))
           : filteredSubject.map((subject) => BundleSubjectItem(
@@ -86,7 +86,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 description: subject.description,
                 coverPhoto: subject.coverPhotoUrl,
                 expiredDate: subject.expiredDate,
-                discount: subject.subdiscount,
+                discount: subject.discounts?.isNotEmpty ?? false
+                    ? subject.discounts!.first.amount
+                    : 0, // Use the first discount amount if available
                 type: 'subject',
               ))),
     ];
@@ -170,6 +172,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       ),
                       itemCount: combinedList.length,
                       itemBuilder: (context, index) {
+                        if (index >= combinedList.length) {
+                          // Return an empty container if the index is out of bounds
+                          return Container();
+                        }
                         final item = combinedList[index];
                         return buildSubscriptionCard(
                           context,
@@ -276,6 +282,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           (element) => element.id.toString() == widget.subjectId,
         )
         .toList();
+
     final combinedList = [
       ...bundles.map((bundle) => BundleSubjectItem(
             id: bundle.id,
@@ -295,7 +302,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 description: subject.description,
                 coverPhoto: subject.coverPhotoUrl,
                 expiredDate: subject.expiredDate,
-                discount: subject.subdiscount,
+                discount: subject.discounts?.isNotEmpty ?? false
+                    ? subject.discounts!.first.amount
+                    : 0, // Use the first discount amount if available
                 type: 'subject',
               ))
           : filteredSubject.map((subject) => BundleSubjectItem(
@@ -305,7 +314,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 description: subject.description,
                 coverPhoto: subject.coverPhotoUrl,
                 expiredDate: subject.expiredDate,
-                discount: subject.subdiscount,
+                discount: subject.discounts?.isNotEmpty ?? false
+                    ? subject.discounts!.first.amount
+                    : 0, // Use the first discount amount if available
                 type: 'subject',
               ))),
     ];
@@ -348,49 +359,36 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                '$discount',
-                style: const TextStyle(
-                  color: redcolor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+              if (discount > 0)
+                Text(
+                  '$discount', // Display discount percentage
+                  style: const TextStyle(
+                    color: redcolor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
               const SizedBox(height: 8),
               Text(
                 localizations.translate('instead_of'),
                 style: const TextStyle(color: redcolor),
               ),
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
               Text(
                 price,
                 style: const TextStyle(
-                    color: redcolor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.lineThrough),
+                  color: redcolor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.lineThrough,
+                ),
               ),
-              // Text(
-              //   expiredDate,
-              //   style: TextStyle(
-              //     fontSize: 14,
-              //     color: theme.textTheme.bodySmall?.color,
-              //   ),
-              // ),
-              // const SizedBox(height: 8),
-              // Text(
-              //   description,
-              //   textAlign: TextAlign.center,
-              //   style: theme.textTheme.bodySmall,
-              // ),
               const SizedBox(height: 8),
               const Divider(
                 color: redcolor,
                 thickness: 2,
               ),
-              Container(
+              SizedBox(
                 height: 60,
                 width: 700,
                 child: ElevatedButton(
