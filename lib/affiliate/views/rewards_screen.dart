@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import '../controller/bouns_provider.dart';
+import '../models/bouns_model.dart';
 
-class RewardsScreen extends StatelessWidget {
+class RewardsScreen extends StatefulWidget {
   const RewardsScreen({super.key});
+
+  @override
+  _RewardsScreenState createState() => _RewardsScreenState();
+}
+
+class _RewardsScreenState extends State<RewardsScreen> {
+  late Future<BonusResponse?> bonusResponseFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch the bonus data when the screen initializes
+    bonusResponseFuture = BonusService().fetchBonusData(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,28 +42,111 @@ class RewardsScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            RewardLevel(
-              level: 'المستوي الاول',
-              reward: '2000 جنيه',
-              progress: 1.0,
-            ),
-            SizedBox(height: 20),
-            RewardLevel(
-              level: 'المستوي الثاني',
-              reward: '5000 جنيه',
-              progress: 0.55,
-            ),
-            SizedBox(height: 20),
-            RewardLevel(
-              level: 'المستوي الثالث',
-              reward: '6000 جنيه',
-              progress: 0.0,
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder<BonusResponse?>(
+          future: bonusResponseFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData && snapshot.data != null) {
+              final affiliateBonus = snapshot.data!.affiliateBonus;
+              int remainingBundle = affiliateBonus.bundlePaid;
+              int cumulativeTarget = 0; // Cumulative target starts from 0
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(20.0), // Increased padding
+                      constraints: const BoxConstraints(
+                        minWidth: 100, // Increased minimum width
+                        minHeight: 100, // Increased minimum height
+                      ),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color.fromARGB(255, 242, 242, 243),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade400,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              ' حققت:',
+                              style: TextStyle(
+                                color: Colors.green.shade800,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              '$remainingBundle',
+                              style: TextStyle(
+                                color: Colors.green.shade800,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                      height:
+                          16.0), // Add some space between the circle and the ListView
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: affiliateBonus.totalBonus.length,
+                      itemBuilder: (context, index) {
+                        final bonus = affiliateBonus.totalBonus[index];
+                        double progress;
+
+                        cumulativeTarget +=
+                            bonus.target; // Accumulate the target
+
+                        if (remainingBundle >= bonus.target) {
+                          progress = 1.0;
+                          remainingBundle -= bonus.target;
+                        } else {
+                          progress =
+                              (remainingBundle / bonus.target).clamp(0.0, 1.0);
+                          remainingBundle =
+                              0; // No more bundle left after partial
+                        }
+
+                        return Column(
+                          children: [
+                            RewardLevel(
+                              level: bonus.title,
+                              reward: bonus.bonus,
+                              progress: progress,
+                              target:
+                                  cumulativeTarget, // Pass cumulative target here
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return const Center(child: Text('No data available'));
+            }
+          },
         ),
       ),
     );
@@ -58,12 +157,14 @@ class RewardLevel extends StatelessWidget {
   final String level;
   final String reward;
   final double progress;
+  final int target;
 
   const RewardLevel({
     super.key,
     required this.level,
     required this.reward,
     required this.progress,
+    required this.target,
   });
 
   @override
@@ -72,7 +173,16 @@ class RewardLevel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          '$level مكافأة $reward',
+          level,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          'حقق $target واحصل علي مكافاة  $reward',
           style: TextStyle(
             color: Colors.grey[800],
             fontSize: 16,
@@ -87,20 +197,38 @@ class RewardLevel extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 backgroundColor: Colors.grey[300],
-                color: redcolor,
+                color: progress == 1.0
+                    ? Colors.green
+                    : redcolor, // Green when 100%
                 minHeight: 20,
               ),
             ),
             Positioned.fill(
               child: Center(
-                child: Text(
-                  '${(progress * 100).toInt()}%',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: progress == 1.0
+                    ? const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.check, color: Colors.white, size: 16),
+                          SizedBox(width: 5),
+                          Text(
+                            'تم الحصول عليها',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text(
+                        '${(progress * 100).toInt()}%',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ),
           ],

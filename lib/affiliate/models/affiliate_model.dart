@@ -25,7 +25,6 @@ class AffiliateData {
     };
   }
 }
-
 class User {
   final int id;
   final String name;
@@ -43,7 +42,7 @@ class User {
   final int? educationId;
   final int? studentJobsId;
   final int? affiliateId;
-  final String? affiliateCode;
+  final String? affilateCode; // Updated field name
   final int status;
   final String? adminPositionId;
   final String createdAt;
@@ -52,6 +51,7 @@ class User {
   final Income income;
   final List<PayoutHistory> payoutHistory;
   final List<AffiliateHistory> affiliateHistory;
+  final int studentSignups; // New field
 
   User({
     required this.id,
@@ -70,7 +70,7 @@ class User {
     this.educationId,
     this.studentJobsId,
     this.affiliateId,
-    this.affiliateCode,
+    this.affilateCode, // Updated field name
     required this.status,
     this.adminPositionId,
     required this.createdAt,
@@ -79,6 +79,7 @@ class User {
     required this.income,
     required this.payoutHistory,
     required this.affiliateHistory,
+    required this.studentSignups, // New field
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -102,7 +103,7 @@ class User {
       educationId: json['education_id'],
       studentJobsId: json['student_jobs_id'],
       affiliateId: json['affiliate_id'],
-      affiliateCode: json['affiliate_code'],
+      affilateCode: json['affilate_code'] ?? '', // Updated field name
       status: json['status'] ?? 0,
       adminPositionId: json['admin_position_id'],
       createdAt: json['created_at'] ?? '',
@@ -113,6 +114,7 @@ class User {
       affiliateHistory: affiliateHistoryList
           .map((a) => AffiliateHistory.fromJson(a))
           .toList(),
+      studentSignups: json['student_signups'] ?? 2, // New field
     );
   }
 
@@ -134,7 +136,7 @@ class User {
       'education_id': educationId,
       'student_jobs_id': studentJobsId,
       'affiliate_id': affiliateId,
-      'affiliate_code': affiliateCode,
+      'affilate_code': affilateCode, // Updated field name
       'status': status,
       'admin_position_id': adminPositionId,
       'created_at': createdAt,
@@ -143,9 +145,11 @@ class User {
       'income': income.toJson(),
       'payout_history': payoutHistory.map((p) => p.toJson()).toList(),
       'affiliate_history': affiliateHistory.map((a) => a.toJson()).toList(),
+      'student_signups': studentSignups, // New field
     };
   }
 }
+
 
 class Income {
   final int id;
@@ -226,7 +230,9 @@ class PayoutHistory {
       paymentMethodAffiliateId: json['payment_method_affiliate_id'],
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      method: json['method'] != null ? PaymentMethod.fromJson(json['method']) : null,
+      method: json['method'] != null
+          ? PaymentMethod.fromJson(json['method'])
+          : null,
     );
   }
 

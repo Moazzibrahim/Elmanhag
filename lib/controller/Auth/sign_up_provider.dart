@@ -1,12 +1,13 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
-
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/views/screens/home_screen.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/views/screens/login/login_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+
+import '../../views/screens/home_screen.dart'; // Import your TokenModel
 
 class ApiService with ChangeNotifier {
   static Future<void> signUp({
@@ -24,9 +25,9 @@ class ApiService with ChangeNotifier {
     required String parentpassword,
     required String parentphone,
     required String? selectedparentrealtionId,
-    required String gender, // Added gender
-    required String jobId, // Added student_job_id
-    required String affilateCode, // Added affilateCode
+    required String gender,
+    required String jobId,
+    required String affilateCode,
     required BuildContext context,
   }) async {
     const url = 'https://bdev.elmanhag.shop/student/auth/signup/create';
@@ -47,7 +48,7 @@ class ApiService with ChangeNotifier {
       'parent_relation_id': selectedparentrealtionId,
       'gender': gender,
       'student_job_id': jobId,
-      'affilate_id': affilateCode
+      'affilate_code': affilateCode
     });
 
     print('Sending data to API: $requestBody');
@@ -59,13 +60,27 @@ class ApiService with ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      _showSuccessDialog(context);
-      log('Response Status: ${response.statusCode}');
-      log('Response Body: ${response.body}');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      // Check if response contains a token
+      if (responseData.containsKey('_token')) {
+        final String token = responseData['_token'];
+
+        // Save token using TokenModel
+        await Provider.of<TokenModel>(context, listen: false).setToken(token);
+
+        // Navigate to HomeScreen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+
+        log('Signup successful. Token: $token');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: Token not found in response')),
+        );
+      }
     } else {
       log('Response Status: ${response.statusCode}');
       log('Response Body: ${response.body}');
