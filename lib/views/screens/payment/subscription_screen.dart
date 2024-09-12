@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/models/bundle_model.dart';
 import 'package:flutter_application_1/views/screens/payment/payment_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key, this.subjectId});
@@ -272,6 +275,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     bool isHighlighted = false,
   }) {
     final theme = Theme.of(context);
+    final int priceAsInt = double.tryParse(price)?.toInt() ?? 0;
+    final int discountAsInt = discount.toInt();
     bool isSelected = index == selectedCardIndex;
     final localizations = AppLocalizations.of(context);
     final bundleDataProvider = Provider.of<GetBundleData>(context);
@@ -359,9 +364,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              if (discount > 0)
+              if (discountAsInt > 0)
                 Text(
-                  '$discount', // Display discount percentage
+                  '$discountAsInt', // Display discount percentage
                   style: const TextStyle(
                     color: redcolor,
                     fontSize: 16,
@@ -375,7 +380,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                price,
+                '$priceAsInt',
                 style: const TextStyle(
                   color: redcolor,
                   fontSize: 16,
@@ -390,9 +395,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               ),
               SizedBox(
                 height: 60,
-                width: 700,
+                width: 730,
                 child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: redcolor),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.h, horizontal: 24.w),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                    ),
                     onPressed: selectedCardIndex != -1
                         ? () {
                             final selectedItem =
@@ -428,9 +440,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         : null,
                     child: Text(
                       localizations.translate('subscripe_now'),
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: Colors.white,
-                          fontSize: 17,
+                          fontSize: 17.sp,
                           fontWeight: FontWeight.bold),
                     )),
               )

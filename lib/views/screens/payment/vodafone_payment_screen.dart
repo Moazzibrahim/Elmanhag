@@ -144,14 +144,14 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                             color: Colors.black,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'البريد الإلكتروني: ${user.email}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
-                        ),
+                        // const SizedBox(height: 10),
+                        // Text(
+                        //   'البريد الإلكتروني: ${user.email}',
+                        //   style: const TextStyle(
+                        //     fontSize: 18,
+                        //     color: Colors.black,
+                        //   ),
+                        // ),
                         const SizedBox(height: 20),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,

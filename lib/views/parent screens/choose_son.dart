@@ -9,6 +9,7 @@ class ChooseSon extends StatefulWidget {
   const ChooseSon({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChooseSonState createState() => _ChooseSonState();
 }
 
@@ -31,12 +32,7 @@ class _ChooseSonState extends State<ChooseSon> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: redcolor),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Center(
