@@ -51,7 +51,7 @@ class MySubscriptions extends StatelessWidget {
                     SubscriptionCard(
                       title: 'باقه المواد',
                       description:
-                          'انت الان على الباقه المجانيه. انتقل إلى الباقه المدفوعه للحصول على المواد المتقدمه بسعر 1500 جنيه لكل المواد بدلاً من 2600 جنيه.',
+                          'انت الان على الباقه المجانيه. انتقل إلى الباقه المدفوعه للحصول على المواد المتقدمه.',
                       buttonText: 'اشترك الآن',
                       imagePath: 'assets/images/materials.png',
                       isPrimary: true,

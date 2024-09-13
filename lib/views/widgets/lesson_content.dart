@@ -16,7 +16,7 @@ class _IdeasContentState extends State<IdeasContent> {
   int rating = 0;
   int viewedVideoIndex = 0;
   bool isLandscape = false;
-  List videoResources =[];
+  List videoResources = [];
   final controller = WebViewController();
 
   void updateRating(int newRating) {
@@ -24,21 +24,23 @@ class _IdeasContentState extends State<IdeasContent> {
       rating = newRating;
     });
   }
+
   @override
   void initState() {
-    if (videoResources.isNotEmpty){
-      videoResources =
+    videoResources =
         widget.resources.where((res) => res['type'] == 'video').toList();
-    controller
-          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-          ..loadRequest(Uri.parse(videoResources[viewedVideoIndex]['link']));
-    }else{
+    if (videoResources.isNotEmpty) {
+      controller
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..loadRequest(Uri.parse(videoResources[viewedVideoIndex]['file']));
+    } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-          _showNoVideosDialog();
-        });
+        _showNoVideosDialog();
+      });
     }
     super.initState();
   }
+
   void _showNoVideosDialog() {
     showDialog(
       context: context,
@@ -58,6 +60,7 @@ class _IdeasContentState extends State<IdeasContent> {
       },
     );
   }
+
   void toggleRotation() {
     if (isLandscape) {
       SystemChrome.setPreferredOrientations([
@@ -75,20 +78,17 @@ class _IdeasContentState extends State<IdeasContent> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SingleChildScrollView(
         child: Column(
           children: [
             if (videoResources.isNotEmpty)
-              AspectRatio(
-                aspectRatio: isLandscape ? 16 / 9 : 1 / 1,
-                child: Container(
+              Container(
+                  height: 200,
+                  width: 300,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
@@ -100,13 +100,11 @@ class _IdeasContentState extends State<IdeasContent> {
                     ],
                   ),
                   child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: WebViewWidget(
-                    controller: controller,
-                  ),
-                )
-                ),
-              )
+                    aspectRatio: 16 / 9,
+                    child: WebViewWidget(
+                      controller: controller,
+                    ),
+                  ))
             else
               Container(
                 height: 200, // Adjust as needed

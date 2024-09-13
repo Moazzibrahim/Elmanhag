@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/sign_up_provider.dart';
 import 'package:flutter_application_1/models/sign_up_model.dart';
@@ -36,7 +38,6 @@ class ThirdSignUp extends StatefulWidget {
   });
 
   @override
-  // ignore: library_private_types_in_public_api
   _ThirdSignUpState createState() => _ThirdSignUpState();
 }
 
@@ -58,12 +59,32 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
   @override
   void initState() {
     super.initState();
+
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
     dataProvider.fetchData(context).then((_) {
       setState(() {
         parentRelations = dataProvider.dataModel?.parentRelations ?? [];
       });
     });
+
+    // Add listener to update parent email when parent phone changes
+    _parentPhoneController.addListener(() {
+      final parentPhone = _parentPhoneController.text;
+      if (parentPhone.isNotEmpty && parentPhone.length == 11) {
+        _parentEmailController.text = "$parentPhone@elmanhag.com";
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _parentPhoneController.dispose();
+    _parentEmailController.dispose();
+    _parentNameController.dispose();
+    _parentPasswordController.dispose();
+    _parentConfirmPasswordController.dispose();
+    _affilateController.dispose();
+    super.dispose();
   }
 
   @override
@@ -124,6 +145,7 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
                 controller: _parentEmailController,
                 labelText: 'ايميل ولي الامر',
                 prefixIcon: const Icon(Icons.email, color: redcolor),
+                textdirection: TextDirection.ltr, // Make the email LTR
                 validator: (value) {
                   final RegExp emailRegExp =
                       RegExp(r"^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[cC][oO][mM]$");
@@ -286,10 +308,12 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
     required TextEditingController controller,
     required String labelText,
     required Icon prefixIcon,
+    TextDirection? textdirection,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
+      textDirection: textdirection,
       decoration: InputDecoration(
         labelText: labelText,
         prefixIcon: prefixIcon,

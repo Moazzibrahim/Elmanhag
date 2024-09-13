@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/login/second_sign_screen.dart';
@@ -8,7 +10,6 @@ class SignScreen extends StatefulWidget {
   const SignScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SignScreenState createState() => _SignScreenState();
 }
 
@@ -23,9 +24,26 @@ class _SignScreenState extends State<SignScreen> {
   // Regex for email and phone validation
   final RegExp emailRegExp =
       RegExp(r"^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[cC][oO][mM]$");
-  // Simple email validation regex
+  // Simple phone validation regex
   final RegExp phoneRegExp =
       RegExp(r'^[0-9]{11}$'); // Updated: 11-digit phone number validation
+
+  @override
+  void initState() {
+    super.initState();
+    // Add a listener to the phone controller to update the email field
+    _phoneController.addListener(() {
+      String phoneNumber = _phoneController.text;
+      if (phoneRegExp.hasMatch(phoneNumber)) {
+        // Update email controller with the phone number + email domain
+        _emailController.text =
+            '$phoneNumber@elmanhag.com'; // Change to your desired domain
+      } else {
+        // Clear email field if phone number is invalid
+        _emailController.clear();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +91,7 @@ class _SignScreenState extends State<SignScreen> {
             buildTextField(
               controller: _emailController,
               labelText: 'ايميل الطالب',
+              textdirection: TextDirection.ltr,
               prefixIcon: const Icon(Icons.email, color: redcolor),
             ),
             const SizedBox(height: 15),
@@ -86,7 +105,7 @@ class _SignScreenState extends State<SignScreen> {
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  // Validation logic
+                  print('email: $_emailController');
                   if (_nameController.text.isEmpty ||
                       _emailController.text.isEmpty ||
                       _passwordController.text.isEmpty ||

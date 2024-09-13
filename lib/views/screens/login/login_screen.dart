@@ -90,11 +90,18 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextField(
                 controller: _emailController,
-                textAlign: TextAlign.right,
+                textAlign: TextAlign.left, // Align the typed text to the left
+                textDirection:
+                    TextDirection.ltr, // Ensure the email text is typed LTR
                 decoration: InputDecoration(
                   labelText: localizations.translate('email'),
-                  hintText: localizations.translate('email'),
                   labelStyle: const TextStyle(color: greycolor),
+                  hintText: localizations.translate('email'),
+                  hintStyle: const TextStyle(color: greycolor),
+                  alignLabelWithHint:
+                      true, // Align label with hint for multiline fields
+                  hintTextDirection:
+                      TextDirection.rtl, // Align the hint text to the right
                   focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: redcolor),
                   ),

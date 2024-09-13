@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/affiliate/views/notifications.dart';
-import 'package:flutter_application_1/affiliate/views/profile_screen.dart';
+import 'package:flutter/services.dart'; // Import for clipboard functionality
+import 'package:flutter_application_1/affiliate/views/affiliate_profile_screen.dart';
 import 'package:flutter_application_1/affiliate/views/rewards_screen.dart';
 import 'package:flutter_application_1/affiliate/views/transactions.dart';
 import 'package:flutter_application_1/affiliate/views/withdrawal_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/models/affiliate_model.dart';
+import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
 import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
-import '../../controller/affiliate_provider.dart';
+import '../../controller/Auth/logout_provider.dart';
+import '../controller/affiliate_provider.dart';
 
 class AffiliateHomeScreen extends StatelessWidget {
   const AffiliateHomeScreen({super.key});
 
-  Future<AffiliateDate?> _fetchProfile(BuildContext context) {
+  Future<AffiliateData?> _fetchProfile(BuildContext context) {
     final apiService = ApiService();
     return apiService
         .fetchUserProfile(context); // Ensure this method exists in ApiService
@@ -20,163 +21,198 @@ class AffiliateHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 25),
-            FutureBuilder<AffiliateDate?>(
-              future: _fetchProfile(context),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data == null) {
-                  return const Text('No profile data found.');
-                } else {
-                  AffiliateDate userProfile = snapshot.data!;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header with user image and name
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(userProfile.user.imageLink),
-                                radius: 20,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                'اهلا بك ${userProfile.user.name}',
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: redcolor,
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 25),
+              FutureBuilder<AffiliateData?>(
+                future: _fetchProfile(context),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (!snapshot.hasData || snapshot.data == null) {
+                    return const Text('No profile data found.');
+                  } else {
+                    AffiliateData userProfile = snapshot.data!;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Header with user image and name
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(userProfile.user.imageLink),
+                                  radius: 20,
                                 ),
-                              ),
-                            ],
-                          ),
-                          // Notification and Profile buttons
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.person_outline,
-                                    size: 30, color: redcolor),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ProfileScreen()),
-                                  );
-                                },
-                              ),
-                              Stack(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.notifications_none,
-                                        size: 30, color: redcolor),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const NotificationsScreen()),
-                                      );
-                                    },
-                                  ),
-                                  Positioned(
-                                    top: 10,
-                                    right: 10,
-                                    child: Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
+                                const SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'اهلا بك ${userProfile.user.name}',
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
                                         color: redcolor,
-                                        shape: BoxShape.circle,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Show the available wallet balance using the dynamic data
-                          _buildInfoCard(
-                              '${userProfile.user.income[0].wallet} ج.م',
-                              'الرصيد المتاح',
-                              Icons.account_balance_wallet_outlined),
-                          const SizedBox(width: 10),
-                          _buildInfoCard('10', 'عدد التسجيلات',
-                              Icons.person_add_alt_1_outlined),
-                          const SizedBox(width: 10),
-                          // Show the total income using the dynamic data
-                          _buildInfoCard(
-                              '${userProfile.user.income[0].income} ج.م',
-                              'الإيرادات الكلية',
-                              Icons.attach_money_outlined),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-                      _buildProgressSection(context),
-                    ],
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 30),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                physics: const NeverScrollableScrollPhysics(),
-                childAspectRatio: 1,
-                children: [
-                  _buildGridOption('المعاملات', Icons.history_outlined, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TransactionsScreen()),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'كود التسويق: ${userProfile.user.affilateCode ?? ''}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.copy,
+                                              size: 20, color: redcolor),
+                                          onPressed: () {
+                                            final affiliateCode =
+                                                userProfile.user.affilateCode;
+                                            if (affiliateCode != null) {
+                                              Clipboard.setData(
+                                                ClipboardData(
+                                                    text: affiliateCode),
+                                              ).then((_) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                        'كود التسويق تم نسخه إلى الحافظة'),
+                                                  ),
+                                                );
+                                              });
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'كود التسويق غير متوفر'),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            // Profile and Logout buttons
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.person_outline,
+                                      size: 30, color: redcolor),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AffiliateProfileScreen()),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.logout,
+                                      size: 30, color: redcolor),
+                                  onPressed: () {
+                                    // Call the logout function
+                                    LogoutModel().logout(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Show the available wallet balance using the dynamic data
+                            _buildInfoCard(
+                                '${userProfile.user.income.wallet} ج.م',
+                                'الرصيد المتاح',
+                                Icons.account_balance_wallet_outlined),
+                            const SizedBox(width: 10),
+                            _buildInfoCard(
+                              '${userProfile.user.studentSignups}', // Using dynamic student signups value
+                              'عدد التسجيلات',
+                              Icons.person_add_alt_1_outlined,
+                            ),
+                            const SizedBox(width: 10),
+                            // Show the total income using the dynamic data
+                            _buildInfoCard(
+                                '${userProfile.user.income.income} ج.م',
+                                'الإيرادات الكلية',
+                                Icons.attach_money_outlined),
+                          ],
+                        ),
+
+                        const SizedBox(height: 30),
+                        _buildProgressSection(context),
+                      ],
                     );
-                  }),
-                  _buildGridOption('السحب', Icons.money_off_outlined, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const WithdrawalScreen()),
-                    );
-                  }),
-                  _buildGridOption('فيديوهات مساعده', Icons.play_circle_outline,
-                      () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ExamScreen()),
-                    );
-                  }),
-                  _buildGridOption('هدف اخر', Icons.flag_outlined, () {
-                    // Define action here
-                  }),
-                ],
+                  }
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 30),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  physics: const NeverScrollableScrollPhysics(),
+                  childAspectRatio: 1,
+                  children: [
+                    _buildGridOption('المعاملات', Icons.history_outlined, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TransactionsScreen()),
+                      );
+                    }),
+                    _buildGridOption('السحب', Icons.money_off_outlined, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const WithdrawalScreen()),
+                      );
+                    }),
+                    _buildGridOption(
+                        'فيديوهات مساعده', Icons.play_circle_outline, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ExamScreen()),
+                      );
+                    }),
+                    _buildGridOption('هدف اخر', Icons.flag_outlined, () {
+                      // Define action here
+                    }),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

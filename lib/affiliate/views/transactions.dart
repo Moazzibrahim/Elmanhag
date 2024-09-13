@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../controller/theme/theme_provider.dart';
-import '../../controller/affiliate_provider.dart';
-import '../../models/affiliate_model.dart';
+import '../controller/affiliate_provider.dart';
+import '../models/affiliate_model.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -16,7 +16,7 @@ class TransactionsScreen extends StatefulWidget {
 
 class _TransactionsScreenState extends State<TransactionsScreen>
     with SingleTickerProviderStateMixin {
-  AffiliateDate? affiliateData;
+  AffiliateData? affiliateData;
   bool isLoading = true;
 
   @override
@@ -27,7 +27,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
 
   Future<void> _loadData() async {
     ApiService apiService = ApiService();
-    AffiliateDate? data = await apiService.fetchUserProfile(context);
+    AffiliateData? data = await apiService.fetchUserProfile(context);
 
     setState(() {
       affiliateData = data;
@@ -249,7 +249,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                 ],
               ),
             );
-          // ignore: unnecessary_to_list_in_spreads
+            // ignore: unnecessary_to_list_in_spreads
           }).toList(),
         ],
       ),
@@ -375,14 +375,14 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                 ],
               ),
             );
-          // ignore: unnecessary_to_list_in_spreads
+            // ignore: unnecessary_to_list_in_spreads
           }).toList(),
         ],
       ),
     );
   }
 
-  void _showRejectedReasonDialog(BuildContext context, String rejectedReason) {
+  void _showRejectedReasonDialog(BuildContext context, String? rejectedReason) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -395,7 +395,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           content: Text(
-            rejectedReason.isEmpty ? 'لم يتم توفير سبب' : rejectedReason,
+            rejectedReason ?? 'لم يتم توفير سبب', // Use default value if null
             style: const TextStyle(color: Colors.black87),
           ),
           actions: [

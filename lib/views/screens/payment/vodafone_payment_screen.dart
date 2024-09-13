@@ -144,14 +144,14 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                             color: Colors.black,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'البريد الإلكتروني: ${user.email}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
-                        ),
+                        // const SizedBox(height: 10),
+                        // Text(
+                        //   'البريد الإلكتروني: ${user.email}',
+                        //   style: const TextStyle(
+                        //     fontSize: 18,
+                        //     color: Colors.black,
+                        //   ),
+                        // ),
                         const SizedBox(height: 20),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -208,6 +208,16 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                       ),
                     ),
                     onPressed: () {
+                      if (_image == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(localizations
+                                .translate('You should select a photo first!')),
+                            backgroundColor: redcolor,
+                          ),
+                        );
+                        return; // Exit if no image is selected
+                      }
                       submitPayment();
                       log('price: ${widget.itemsprice}');
                       log('service: ${widget.services}');

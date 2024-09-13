@@ -68,8 +68,8 @@
     "lesson_3": "الدرس 3",
     "menu": "القائمة",
     "home": "الصفحة الرئيسية",
-    "switch to english": "التبديل إلى الإنجليزية",
-    "change_language": " التبديل إلى الإنجليزية",
+    "switch to english": " تغيير اللغة",
+    "change_language": " تغيير اللغة",
     "profile": "الملف الشخصي",
     "Name":"الاسم",
     "education":"نوع التعليم",
@@ -94,7 +94,11 @@
     "cancel":"الغاء",
     "delete":"مسح",
     "account deleted successfully":"تم مسح الاكونت بنجاح",
-    "Failed to delete account":"فشل في مسح الحساب"
+    "Failed to delete account":"فشل في مسح الحساب",
+    "You should select a photo first!":"يجب اختيار صورة !",
+    "instead_of":"بدلا من",
+    "coming_soon":"...قريبا",
+    "Complaints and suggestions":"الشكاوي والمقترحات"
     
 
 }

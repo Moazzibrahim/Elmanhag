@@ -59,7 +59,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                     Center(
                       child: Text(
                         widget.lessonData['name'],
-                        style: const TextStyle(fontSize: 20,color: redcolor),
+                        style: const TextStyle(fontSize: 20, color: redcolor),
                       ),
                     ),
                   ],
@@ -103,7 +103,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                     child: TabBarView(
                       children: [
                         IdeasContent(resources: widget.lessonData['resources']),
-                         HomeWorkWidget(homework: widget.lessonData['homework']),
+                        HomeWorkWidget(homework: widget.lessonData['homework']),
                         BockletScreen(
                             resources: widget.lessonData['resources']),
                       ],

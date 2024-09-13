@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
-import 'package:flutter_application_1/views/parent%20screens/home_parent_screen.dart';
+import 'package:flutter_application_1/views/parent%20screens/choose_son.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -19,7 +19,6 @@ class TokenModel with ChangeNotifier {
     _token = token;
     notifyListeners();
 
-    // Save token in SharedPreferences
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
   }
@@ -128,7 +127,7 @@ class LoginModel with ChangeNotifier {
     }
   }
 
-  void _navigateBasedOnRole(BuildContext context, String role) {
+  void _navigateBasedOnRole(BuildContext context, String role) async {
     if (role == 'student') {
       Navigator.pushReplacement(
         context,
@@ -137,11 +136,19 @@ class LoginModel with ChangeNotifier {
     } else if (role == 'parent') {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeParentScreen()),
+        MaterialPageRoute(builder: (context) => const ChooseSon()),
       );
     } else if (role == 'affilate') {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const AffiliateHomeScreen()));
+      // Save the role and token in SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_role', 'affilate');
+      await prefs.setString(
+          'auth_token', Provider.of<TokenModel>(context, listen: false).token!);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AffiliateHomeScreen()),
+      );
     } else {
       log('Unknown user role: $role');
       _showSnackbar(context, 'Unknown user role');

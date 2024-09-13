@@ -4,10 +4,12 @@ import 'package:flutter_application_1/constants/colors.dart';
 Widget buildTextField({
   required TextEditingController controller,
   required String labelText,
+  TextDirection? textdirection,
   Widget? prefixIcon,
 }) {
   return TextField(
     controller: controller,
+    textDirection: textdirection,
     decoration: InputDecoration(
       labelText: labelText,
       prefixIcon: prefixIcon,
@@ -30,7 +32,8 @@ class PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final String labelText;
 
-  const PasswordField({super.key, required this.controller, required this.labelText});
+  const PasswordField(
+      {super.key, required this.controller, required this.labelText});
 
   @override
   // ignore: library_private_types_in_public_api

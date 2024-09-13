@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // For Clipboard functionality
 import 'package:flutter_application_1/affiliate/views/edit_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/models/affiliate_model.dart';
+import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
 
-import '../../controller/affiliate_provider.dart';
+import '../controller/affiliate_provider.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class AffiliateProfileScreen extends StatelessWidget {
+  const AffiliateProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: FutureBuilder<AffiliateDate?>(
+      body: FutureBuilder<AffiliateData?>(
         future: ApiService().fetchUserProfile(context),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -100,6 +101,14 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   _buildProfileItem('Email: ${user.email}', true),
                   const SizedBox(height: 10),
+                  _buildProfileItem(
+                      'Phone: ${user.phone}', true), // Added phone
+                  const SizedBox(height: 10),
+                  // Display affiliateCode with copy icon, handle nullable value
+                  _buildProfileItemWithCopyIcon(
+                      context,
+                      'Affiliate Code: ${user.affilateCode ?? 'N/A'}',
+                      user.affilateCode),
                 ],
               ),
             );
@@ -133,6 +142,53 @@ class ProfileScreen extends StatelessWidget {
             color: Colors.grey.shade700,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfileItemWithCopyIcon(
+      BuildContext context, String text, String? affiliateCode) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      decoration: BoxDecoration(
+        color: Colors.grey[200], // Use Colors.grey[200] for light grey
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey[300]!, // Use Colors.grey[300] for shadow color
+            offset: const Offset(0, 2),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start, // Align items to start
+        children: [
+          if (affiliateCode !=
+              null) // Only show the copy icon if the code is not null
+            IconButton(
+              icon: const Icon(Icons.copy, color: Colors.red),
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: affiliateCode));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: Colors.green,
+                    content: Text('Affiliate code copied to clipboard!'),
+                  ),
+                );
+              },
+              tooltip: 'Copy Affiliate Code',
+            ),
+          const Spacer(),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700], // Use Colors.grey[700] for text color
+            ),
+          ),
+        ],
       ),
     );
   }
