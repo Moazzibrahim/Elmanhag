@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/parent%20screens/notfications_parent_screen.dart';
@@ -10,7 +11,9 @@ import 'package:provider/provider.dart'; // Import Provider
 class HomeParentScreen extends StatelessWidget {
   final String? childname;
   final String? childcategory;
-  const HomeParentScreen({super.key, this.childcategory, this.childname});
+  final String? imagelnk;
+  const HomeParentScreen(
+      {super.key, this.childcategory, this.childname, this.imagelnk});
 
   @override
   Widget build(BuildContext context) {
@@ -74,24 +77,28 @@ class HomeParentScreen extends StatelessWidget {
                     )
                   ],
                 ),
-                Row(
-                  children: [
-                    Text(
-                      ' ${localizations.translate('welcome')} $childname',
-                      style: const TextStyle(
-                          color: redcolor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const CircleAvatar(
-                      backgroundImage: AssetImage(
-                          'assets/images/tefl.png'), // Replace with actual image asset or network image
-                      radius: 20,
-                    ),
-                  ],
+                Consumer<LoginModel>(
+                  builder: (context, loginProvider, child) {
+                    return Row(
+                      children: [
+                        Text(
+                          ' ${localizations.translate('welcome')} $childname ${loginProvider.name}',
+                          style: const TextStyle(
+                              color: redcolor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              '$imagelnk'), // Replace with actual image asset or network image
+                          radius: 20,
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),

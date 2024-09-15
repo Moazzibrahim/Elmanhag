@@ -98,7 +98,12 @@
     "You should select a photo first!":"يجب اختيار صورة !",
     "instead_of":"بدلا من",
     "coming_soon":"...قريبا",
-    "Complaints and suggestions":"الشكاوي والمقترحات"
+    "Complaints and suggestions":"الشكاوي والمقترحات",
+    "complaints_suggestions": "الاقتراحات والشكاوي",
+    "complaints_suggestions_description": "نحن نقدر ملاحظاتك واسمحوا لنا أن نعرف شكاويك أو اقتراحاتك",
+    "write_complaint_suggestion": "اكتب اقتراحك أو شكوتك هنا",
+    "send": "ارسال",
+    "submit_success_message":"شكوتك او مقترحك تم تسجيلها"
     
 
 }

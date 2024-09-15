@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/parent/get_children_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/parent%20screens/home_parent_screen.dart';
@@ -35,15 +36,19 @@ class _ChooseSonState extends State<ChooseSon> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Center(
-          child: Text(
-            'اهلا بك حسين',
-            style: TextStyle(
-              color: redcolor,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+         title: Consumer<LoginModel>( // Use Consumer to get login data
+          builder: (context, loginProvider, child) {
+              return Center(
+                child: Text(
+                  'اهلا بك ${loginProvider.name}', // Use the logged-in user's name
+                  style: const TextStyle(
+                    color: redcolor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            }
         ),
       ),
       body: Padding(
@@ -109,6 +114,7 @@ class _ChooseSonState extends State<ChooseSon> {
                               childname: selectedChild!.name!,
                               childcategory: selectedChild.category?.name ??
                                   'No Category Available',
+                              imagelnk: selectedChild.imageLink,
                             ),
                           ),
                         );

@@ -40,7 +40,9 @@ class TokenModel with ChangeNotifier {
 // LoginModel with role handling and token saving
 class LoginModel with ChangeNotifier {
   String? _role;
+  String? _name;
   String? get role => _role;
+  String? get name => _name;
   late int _id;
   int get id => _id;
 
@@ -93,6 +95,7 @@ class LoginModel with ChangeNotifier {
 
           final userDetails = responseData['user'] as Map<String, dynamic>;
           int id = userDetails['id'];
+          _name = userDetails['name'];
           Provider.of<LoginModel>(context, listen: false).setId(id);
           _handleUserDetails(context, userDetails);
 
@@ -101,6 +104,7 @@ class LoginModel with ChangeNotifier {
           log("Token: $token");
           log("Role: $_role");
           log("id: $id");
+          log("name: $_name");
 
           return "دخول ناجح";
         } else {

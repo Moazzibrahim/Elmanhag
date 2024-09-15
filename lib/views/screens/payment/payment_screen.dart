@@ -75,20 +75,47 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           const Spacer(flex: 3),
                         ],
                       ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'اختر طريقة الدفع',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      // const SizedBox(height: 16),
+                      // const Text(
+                      //   'اختر طريقة الدفع',
+                      //   style: TextStyle(
+                      //     fontSize: 20,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
                       const SizedBox(height: 16),
                       _buildPaymentOption(0, 'فيزا', 'assets/images/visa.png'),
                       _buildPaymentOption(
                           1, 'فودافون كاش', 'assets/images/vod.png'),
                       _buildPaymentOption(2, 'فوري', 'assets/images/Fawry.png'),
                       const SizedBox(height: 16),
+                      const Text(
+                        'ادخل  المبلغ',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _promoCodeController,
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                hintText: ' المبلغ',
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                errorText: _promoCodeError,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
                       const Text(
                         'ادخل كود الخصم',
                         style: TextStyle(

@@ -96,6 +96,11 @@
   "You should select a photo first!":"You should select a photo first!",
   "instead_of":"instead of",
   "coming_soon":"coming soon",
-  "Complaints and suggestions":"Complaints and suggestions"
+  "Complaints and suggestions":"Complaints and suggestions",
+  "complaints_suggestions": "Complaints and suggestions",
+  "complaints_suggestions_description": "We value your feedback and would love to hear your complaints or suggestions",
+  "write_complaint_suggestion": "Write your complaint or suggestion here",
+  "send": "Send",
+  "submit_success_message": "Your complaint or suggestion is submitted."
 
 }
