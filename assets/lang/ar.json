@@ -97,13 +97,27 @@
     "Failed to delete account":"فشل في مسح الحساب",
     "You should select a photo first!":"يجب اختيار صورة !",
     "instead_of":"بدلا من",
-    "coming_soon":"...قريبا",
+    "coming_soon":"قريبا...",
     "Complaints and suggestions":"الشكاوي والمقترحات",
     "complaints_suggestions": "الاقتراحات والشكاوي",
     "complaints_suggestions_description": "نحن نقدر ملاحظاتك واسمحوا لنا أن نعرف شكاويك أو اقتراحاتك",
     "write_complaint_suggestion": "اكتب اقتراحك أو شكوتك هنا",
     "send": "ارسال",
-    "submit_success_message":"شكوتك او مقترحك تم تسجيلها"
-    
+    "submit_success_message":"شكوتك او مقترحك تم تسجيلها",
+    "welcome_joo": "مرحبًا جو",
+    "welcome_Yousef": "مرحبًا، أحمد",
+    "upload_receipt": "تحميل الإيصال",
+    "upload_from_gallery": "تحميل من المعرض",
+    "take_photo": "التقاط صورة",
+    "subscribe": "اشترك",
+    "subscribe_now": "اشترك الآن",
+    "are_you_sure_delete_account": "هل أنت متأكد أنك تريد حذف حسابك؟",
+    "account_deleted_successfully": "تم حذف الحساب بنجاح",
+    "failed_to_delete_account": "فشل في حذف الحساب",
+    "you_should_select_photo": "يجب أن تختار صورة أولاً!",
+    "light_mode": "الوضع الفاتح",
+    "dark_mode": "الوضع الليلي",
+    "materials_package": "باقة المواد",
+    "materials_description": "انت الان على الباقه المجانيه انتقل الى الباقه المدفوعه للحصول على المميزات المتقدمة"
 
 }

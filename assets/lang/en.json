@@ -95,6 +95,25 @@
   "You should select a photo first!":"You should select a photo first!",
   "instead_of":"instead of",
   "coming_soon":"coming soon",
-  "Complaints and suggestions":"Complaints and suggestions"
-
+  "Complaints and suggestions":"Complaints and suggestions",
+    "welcome_joo": "Welcome Joo",
+    "welcome_Yousef": "Welcome, Ahmed",
+    "upload_receipt": "Upload Receipt",
+    "upload_from_gallery": "Upload from Gallery",
+    "take_photo": "Take Photo",
+    "subscribe": "Subscribe",
+    "subscribe_now": "Subscribe Now",
+    "are_you_sure_delete_account": "Are you sure you want to delete your account?",
+    "account_deleted_successfully": "Account deleted successfully",
+    "failed_to_delete_account": "Failed to delete account",
+    "you_should_select_photo": "You should select a photo first!",
+    "complaints_suggestions": "Complaints and Suggestions" ,
+    "light_mode": "Light Mode",
+  "dark_mode": "Dark Mode",
+  "complaints_suggestions_description": "Please share your complaints or suggestions below.",
+  "write_complaint_suggestion": "Write your complaint or suggestion...",
+  "send": "Send",
+  "submit_success_message": "Your message has been submitted successfully!",
+    "materials_package": "Materials Package",
+    "materials_description": "Get access to exclusive learning materials."
 }
