@@ -7,7 +7,8 @@ import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
-import 'package:flutter_application_1/views/screens/suggestions_screen.dart';
+import 'package:flutter_application_1/views/screens/aa.dart';
+import 'package:flutter_application_1/views/screens/login/login_screen.dart';
 import 'package:flutter_application_1/views/screens/subscriptions/my_subscriptions.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -64,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           CircleAvatar(
-                            backgroundImage: user.image != null
-                                ? NetworkImage(user.image!)
+                            backgroundImage: user.imageLink != null
+                                ? NetworkImage(user.imageLink!)
                                 : null,
                             radius: 40,
                           ),
@@ -142,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (ctx) => const ComplaintsSuggestionsScreen()),
+                        builder: (ctx) => const ComplaintSuggestionScreen()),
                   );
                 },
               ),
