@@ -170,45 +170,6 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
                           children: [
                             const Spacer(),
                             DropdownButtonFormField<String>(
-                              value: selectedCategoryId,
-                              items: categories.map((Category category) {
-                                return DropdownMenuItem<String>(
-                                  value: category.id.toString(),
-                                  child:
-                                      Text(truncateString(category.name, 20)),
-                                );
-                              }).toList(),
-                              decoration: InputDecoration(
-                                labelText: 'Category',
-                                prefixIcon:
-                                    const Icon(Icons.category, color: redcolor),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: redcolor),
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: redcolor),
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                              ),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectedCategoryId = newValue;
-                                  selectedCategoryName = categories
-                                      .firstWhere((category) =>
-                                          category.id.toString() == newValue)
-                                      .name;
-                                });
-                              },
-                              validator: (value) => value == null
-                                  ? 'Please select a category'
-                                  : null,
-                            ),
-                            const SizedBox(height: 15),
-                            DropdownButtonFormField<String>(
                               value: selectedEducationId,
                               items: educations.map((Education education) {
                                 return DropdownMenuItem<String>(
@@ -244,6 +205,45 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
                               },
                               validator: (value) => value == null
                                   ? 'Please select an education'
+                                  : null,
+                            ),
+                            const SizedBox(height: 20),
+                            DropdownButtonFormField<String>(
+                              value: selectedCategoryId,
+                              items: categories.map((Category category) {
+                                return DropdownMenuItem<String>(
+                                  value: category.id.toString(),
+                                  child:
+                                      Text(truncateString(category.name, 20)),
+                                );
+                              }).toList(),
+                              decoration: InputDecoration(
+                                labelText: 'Category',
+                                prefixIcon:
+                                    const Icon(Icons.category, color: redcolor),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(color: redcolor),
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(color: redcolor),
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedCategoryId = newValue;
+                                  selectedCategoryName = categories
+                                      .firstWhere((category) =>
+                                          category.id.toString() == newValue)
+                                      .name;
+                                });
+                              },
+                              validator: (value) => value == null
+                                  ? 'Please select a category'
                                   : null,
                             ),
                             const SizedBox(height: 20),

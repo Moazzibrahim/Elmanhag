@@ -6,19 +6,19 @@ import 'package:flutter_application_1/affiliate/views/transactions.dart';
 import 'package:flutter_application_1/affiliate/views/withdrawal_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
-import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
 import '../../controller/Auth/logout_provider.dart';
 import '../controller/affiliate_provider.dart';
 import '../controller/bouns_provider.dart';
 import '../models/bouns_model.dart';
+import 'guest_screen.dart';
+import 'help_video_screen.dart';
 
 class AffiliateHomeScreen extends StatelessWidget {
   const AffiliateHomeScreen({super.key});
 
   Future<AffiliateData?> _fetchProfile(BuildContext context) {
     final apiService = ApiService();
-    return apiService
-        .fetchUserProfile(context); // Ensure this method exists in ApiService
+    return apiService.fetchUserProfile(context);
   }
 
   Future<BonusResponse?> _fetchBonusData(BuildContext context) {
@@ -151,21 +151,38 @@ class AffiliateHomeScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildInfoCard(
-                                '${userProfile.user.income.wallet} ج.م',
-                                'الرصيد المتاح',
-                                Icons.account_balance_wallet_outlined),
-                            const SizedBox(width: 10),
-                            _buildInfoCard(
-                              '${userProfile.user.studentSignups}',
-                              'عدد التسجيلات',
-                              Icons.person_add_alt_1_outlined,
+                            Expanded(
+                              child: SizedBox(
+                                height: 150,
+                                child: _buildInfoCard(
+                                  '${userProfile.user.income.wallet} ',
+                                  'الرصيد المتاح',
+                                  Icons.account_balance_wallet_outlined,
+                                ),
+                              ),
                             ),
                             const SizedBox(width: 10),
-                            _buildInfoCard(
-                                '${userProfile.user.income.income} ج.م',
-                                'الإيرادات الكلية',
-                                Icons.attach_money_outlined),
+                            Expanded(
+                              child: SizedBox(
+                                height: 150,
+                                child: _buildInfoCard(
+                                  '${userProfile.user.studentSignups}',
+                                  'عدد التسجيلات',
+                                  Icons.person_add_alt_1_outlined,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: SizedBox(
+                                height: 150,
+                                child: _buildInfoCard(
+                                  '${userProfile.user.income.income}',
+                                  'الإيرادات الكلية',
+                                  Icons.attach_money_outlined,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 15),
@@ -223,11 +240,15 @@ class AffiliateHomeScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ExamScreen()),
+                            builder: (context) => const HelpVideosScreen()),
                       );
                     }),
-                    _buildGridOption('هدف اخر', Icons.flag_outlined, () {
-                      // Define action here
+                    _buildGridOption('مناهج', Icons.library_books, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const GuestScreen()),
+                      );
                     }),
                   ],
                 ),
@@ -241,24 +262,17 @@ class AffiliateHomeScreen extends StatelessWidget {
 
   Widget _buildProgressSection(
       BuildContext context, AffiliateBonus bonusData, double progress) {
-    // Check if the bonus data contains any total bonuses
     if (bonusData.totalBonus.isNotEmpty) {
-      // Get the first and second bonus targets
       int firstBonusTarget = bonusData.totalBonus[0].target;
       int secondBonusTarget = bonusData.totalBonus[1].target;
 
-      // Calculate the remaining bundlePaid after the first bonus is completed
+      int combinedTarget = firstBonusTarget + secondBonusTarget;
       int remainingBundlePaid = bonusData.bundlePaid - firstBonusTarget;
-
-      // Ensure remainingBundlePaid is not negative
       if (remainingBundlePaid < 0) {
         remainingBundlePaid = 0;
       }
 
-      // Calculate the progress for the second bonus (remainingBundlePaid / target of second bonus)
       double progressForSecondBonus = remainingBundlePaid / secondBonusTarget;
-
-      // Cap the progress to 100% if it exceeds the second bonus target
       if (progressForSecondBonus > 1.0) {
         progressForSecondBonus = 1.0;
       }
@@ -286,7 +300,6 @@ class AffiliateHomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Add Bonus Title
               Text(
                 bonusData.title,
                 style: const TextStyle(
@@ -296,12 +309,11 @@ class AffiliateHomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              // Display target and bonus reward information
               RichText(
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: 'اكمل الهدف ( ${bonusData.target} ) واحصل على ',
+                      text: 'اكمل الهدف ( $combinedTarget ) واحصل على ',
                       style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                     ),
                     TextSpan(
@@ -319,26 +331,70 @@ class AffiliateHomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 10),
-              Stack(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: LinearProgressIndicator(
-                      value: progressForSecondBonus,
-                      backgroundColor: Colors.grey[400],
-                      color: redcolor,
-                      minHeight: 20,
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey[300],
                     ),
-                  ),
-                  Positioned.fill(
                     child: Center(
                       child: Text(
-                        '${(progressForSecondBonus * 100).toStringAsFixed(1)}%', // Progress in percentage
+                        '${bonusData.bundlePaid}',
                         style: const TextStyle(
-                          color: Colors.white,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: redcolor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: LinearProgressIndicator(
+                            value: progressForSecondBonus,
+                            backgroundColor: Colors.grey[400],
+                            color: redcolor,
+                            minHeight: 20,
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: Center(
+                            child: Text(
+                              '${(progressForSecondBonus * 100).toStringAsFixed(1)}%',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey[300],
+                    ),
+                    child: Center(
+                      child: Text(
+                        '$combinedTarget',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: redcolor,
                         ),
                       ),
                     ),
@@ -350,7 +406,6 @@ class AffiliateHomeScreen extends StatelessWidget {
         ),
       );
     } else {
-      // Fallback for when no total bonuses are present
       return const Text('No bonus data available.');
     }
   }

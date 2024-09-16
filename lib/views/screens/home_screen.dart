@@ -141,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (ctx) => ComplaintsSuggestionsScreen()),
+                        builder: (ctx) => const ComplaintsSuggestionsScreen()),
                   );
                 },
               ),
