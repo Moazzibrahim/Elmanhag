@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/country_provider.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
@@ -20,6 +23,7 @@ class WithdrawalScreen extends StatefulWidget {
 class _WithdrawalScreenState extends State<WithdrawalScreen> {
   int? _selectedPaymentMethodId; // Store payment method ID
   double _walletBalance = 0.0;
+  double? _minPayout; // Store the min payout for the selected method
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -58,11 +62,19 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       return;
     }
 
-    // print({
-    //   'payment_method_affilate_id': _selectedPaymentMethodId,
-    //   'amount': amount,
-    //   'description': description,
-    // });
+    final double parsedAmount = double.tryParse(amount) ?? 0.0;
+
+    // Check if amount exceeds wallet balance
+    if (parsedAmount > _walletBalance) {
+      _showErrorDialog("رصيدك غير كافي لتنفيذ تلك العملية");
+      return;
+    }
+
+    // Check if amount is less than the minimum payout
+    if (_minPayout != null && parsedAmount < _minPayout!) {
+      _showErrorDialog(" يجب تخطي الحد الادني للسحب");
+      return;
+    }
 
     try {
       // Send POST request with data
@@ -74,16 +86,14 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'payment_method_affilate_id':
-              _selectedPaymentMethodId, // Payment method ID
-          'amount': amount, // Amount entered by the user
-          'description': description, // Description entered by the user
+          'payment_method_affilate_id': _selectedPaymentMethodId,
+          'amount': amount,
+          'description': description,
         }),
       );
 
       if (response.statusCode == 200) {
         log(response.body);
-        // ignore: use_build_context_synchronously
         _showProcessingDialog(context); // Show success dialog
       } else {
         _showErrorDialog("Failed to process request.");
@@ -98,7 +108,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Error'),
+          title: const Text('عملية غير ناجحة'),
           content: Text(message),
           actions: <Widget>[
             TextButton(
@@ -141,18 +151,16 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Balance Cards with fetched balance
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   BalanceCard(
-                      amount: '${_walletBalance.toStringAsFixed(2)} ج.م',
-                      label: 'محفظتك'),
+                    amount: '${_walletBalance.toStringAsFixed(2)} ج.م',
+                    label: 'محفظتك',
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
-
-              // Input for amount
               TextField(
                 controller: _amountController,
                 decoration: InputDecoration(
@@ -176,35 +184,40 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 24),
-
-              // Payment Methods
               const Text('طرق السحب',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-
               const SizedBox(height: 16),
-
-              // Payment method options
               if (paymentMethods.isNotEmpty)
                 ...paymentMethods.map((method) {
                   return PaymentMethodOption(
                     label: method.method,
                     logo: method.thumbnail != null
                         ? 'https://bdev.elmanhag.shop/${method.thumbnail}'
-                        : 'assets/images/Fawry.png', // Placeholder for missing image
-                    value: method.id, // Use ID instead of method name
+                        : 'assets/images/Fawry.png',
+                    value: method.id,
                     groupValue: _selectedPaymentMethodId,
                     onChanged: (value) {
                       setState(() {
                         _selectedPaymentMethodId = value;
+                        _minPayout =
+                            method.minPayout.toDouble(); // Set min payout
                       });
                     },
                   );
-                // ignore: unnecessary_to_list_in_spreads
+                  // ignore: unnecessary_to_list_in_spreads
                 }).toList(),
-
-              if (_selectedPaymentMethodId != null) ...[
+              if (_minPayout != null) ...[
                 const SizedBox(height: 16),
-                TextField( 
+                Center(
+                  child: Text(
+                    'الحد الادني للسحب: $_minPayout',
+                    style: const TextStyle(fontSize: 18, color: redcolor),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 24),
+              if (_selectedPaymentMethodId != null)
+                TextField(
                   controller: _descriptionController,
                   decoration: InputDecoration(
                     hintText: 'ادخل البيانات المطلوبة',
@@ -226,17 +239,11 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                   ),
                   keyboardType: TextInputType.text,
                 ),
-              ],
-
               const SizedBox(height: 24),
-
-              // Withdrawal Button
               ElevatedButton(
                 onPressed: _selectedPaymentMethodId != null
-                    ? () {
-                        _submitWithdrawalRequest(); // Trigger the POST request
-                      }
-                    : null, // Disable the button if no payment method is selected
+                    ? _submitWithdrawalRequest
+                    : null,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: redcolor,
@@ -305,7 +312,7 @@ class BalanceCard extends StatelessWidget {
 class PaymentMethodOption extends StatelessWidget {
   final String label;
   final String logo;
-  final int value; // ID instead of method name
+  final int value;
   final int? groupValue;
   final ValueChanged<int?> onChanged;
 
@@ -340,48 +347,16 @@ class PaymentMethodOption extends StatelessWidget {
 void _showProcessingDialog(BuildContext context) {
   showDialog(
     context: context,
-    barrierDismissible: false, // Prevent dismissal by tapping outside
     builder: (BuildContext context) {
       return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: const Text(
-          'طلبك قيد التنفيذ',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Colors.black87,
-          ),
-        ),
-        content: const Row(
-          children: [
-            Icon(Icons.hourglass_empty,
-                color: redcolor, size: 40), // Hourglass icon
-            SizedBox(width: 20),
-            Expanded(
-              child: Text(
-                'برجاء الانتظار سيتم التحويل قريبا',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
-              ),
-            ),
-          ],
-        ),
+        title: const Text('طلبك قيد التنفيذ'),
+        content: const Text('سيتم التحويل قريبا '),
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const AffiliateHomeScreen()));
             },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: redcolor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
             child: const Text('OK'),
           ),
         ],

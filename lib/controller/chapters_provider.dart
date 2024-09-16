@@ -1,13 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/views/screens/curriculum/mycurriculum/sections_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:provider/provider.dart';
 
-Future<void> postSubjectData(String subjectId, BuildContext context) async {
+import '../views/screens/login/login_screen.dart';
+
+Future<void> postSubjectData(
+    String subjectId, String coverPhotoUrl, BuildContext context) async {
   final tokenProvider = Provider.of<TokenModel>(context, listen: false);
   final token = tokenProvider.token;
 
@@ -23,6 +27,18 @@ Future<void> postSubjectData(String subjectId, BuildContext context) async {
   Map<String, String> body = {
     'subject_id': subjectId,
   };
+
+  // Show loading dialog with rotating image indicator
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return const Center(
+        child:
+            RotatingImageIndicator(clockwise: true), // Use your custom widget
+      );
+    },
+  );
 
   // Log the data being posted
   log('Posting data to API:');
@@ -41,28 +57,33 @@ Future<void> postSubjectData(String subjectId, BuildContext context) async {
       var responseData = json.decode(response.body);
       log('Response data: $responseData');
 
-      // Check if the response contains chapters
       if (responseData['chapter'] != null &&
           responseData['chapter'].isNotEmpty) {
-        // Navigate to SectionsScreen with the chapter data
+        // Close the loading dialog
+        Navigator.of(context).pop();
+
+        // Navigate to the SectionsScreen
         Navigator.push(
-          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                SectionsScreen(chapters: responseData['chapter'],
-                      subjectId: subjectId, // Pass the subjectId to SectionsScreen
-),
+            builder: (context) => SectionsScreen(
+              chapters: responseData['chapter'],
+              subjectId: subjectId,
+              coverPhotoUrl: coverPhotoUrl,
+            ),
           ),
         );
       } else {
         log('No chapters found in response.');
+        Navigator.of(context).pop(); // Close the loading dialog
       }
     } else {
       log('Request failed with status: ${response.statusCode}.');
       log(response.body);
+      Navigator.of(context).pop(); // Close the loading dialog
     }
   } catch (e) {
     log('Error occurred: $e');
+    Navigator.of(context).pop(); // Close the loading dialog
   }
 }

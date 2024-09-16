@@ -9,11 +9,10 @@ class BonusResponse {
 
   factory BonusResponse.fromJson(Map<String, dynamic> json) {
     return BonusResponse(
-      success: json['success'],
-      affiliateBonus: AffiliateBonus.fromJson(json['affiliate_bonus']),
+      success: json['success'] ?? '',
+      affiliateBonus: AffiliateBonus.fromJson(json['affiliate_bonus'] ?? {}),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'success': success,
@@ -46,20 +45,21 @@ class AffiliateBonus {
     required this.totalBonus,
     required this.pivot,
   });
-
   factory AffiliateBonus.fromJson(Map<String, dynamic> json) {
     return AffiliateBonus(
-      id: json['id'],
-      title: json['title'],
-      target: json['target'],
-      bonus: json['bonus'],
-      image: json['image'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
-      bundlePaid: json['bundle_paid'],
-      totalBonus: List<TotalBonus>.from(
-          json['total_bonus'].map((item) => TotalBonus.fromJson(item))),
-      pivot: Pivot.fromJson(json['pivot']),
+      id: json['id'] ?? 0,
+      title: json['title'] ?? '',
+      target: json['target'] ?? 0,
+      bonus: json['bonus'] ?? '',
+      image: json['image'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+      bundlePaid: json['bundle_paid'] ?? 0,
+      totalBonus: (json['total_bonus'] as List<dynamic>?)
+              ?.map((item) => TotalBonus.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
+      pivot: Pivot.fromJson(json['pivot'] ?? {}),
     );
   }
 
@@ -97,16 +97,15 @@ class TotalBonus {
     required this.createdAt,
     required this.updatedAt,
   });
-
   factory TotalBonus.fromJson(Map<String, dynamic> json) {
     return TotalBonus(
-      id: json['id'],
-      title: json['title'],
-      target: json['target'],
-      bonus: json['bonus'],
+      id: json['id'] ?? 0,
+      title: json['title'] ?? '',
+      target: json['target'] ?? 0,
+      bonus: json['bonus'] ?? '',
       image: json['image'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
     );
   }
 
@@ -134,11 +133,10 @@ class Pivot {
 
   factory Pivot.fromJson(Map<String, dynamic> json) {
     return Pivot(
-      affiliateId: json['affilate_id'],
-      bonusId: json['bonus_id'],
+      affiliateId: json['affilate_id'] ?? 0,
+      bonusId: json['bonus_id'] ?? 0,
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'affilate_id': affiliateId,

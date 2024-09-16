@@ -103,10 +103,11 @@ class MyCurriculumScreen extends StatelessWidget {
                                 itemCount: subjects.length,
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
-                                    onTap: () async {
-                                      // Send the selected subject's ID to postSubjectData
-                                      await postSubjectData(
+                                    onTap: () {
+                                      postSubjectData(
                                           subjects[index].id.toString(),
+                                          subjects[index].coverPhotoUrl ??
+                                              '', 
                                           context);
                                     },
                                     child: Card(

@@ -107,6 +107,9 @@ class HomeworkMyCirriculam extends StatelessWidget {
                                       // Send the selected subject's ID to postSubjectData
                                       await postSubjectData(
                                           subjects[index].id.toString(),
+                                          subjects[index].coverPhotoUrl ??
+                                              '', // Provide an empty string if it's null
+
                                           context);
                                     },
                                     child: Card(

@@ -3,20 +3,17 @@
 import 'package:flutter/material.dart';
 // ignore: unnecessary_import
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
-import 'package:flutter_application_1/views/screens/aa.dart';
-import 'package:flutter_application_1/views/screens/login/login_screen.dart';
+import 'package:flutter_application_1/views/screens/suggestions_screen.dart';
 import 'package:flutter_application_1/views/screens/subscriptions/my_subscriptions.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/profile/profile_screen.dart';
 import 'package:flutter_application_1/views/widgets/home_grid.dart';
-import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -47,84 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
     final user = userProfileProvider.user;
     final theme = Theme.of(context);
-
-    Future<void> deleteAccount(BuildContext context) async {
-      final url =
-          Uri.parse('https://bdev.elmanhag.shop/student/profile/delete');
-      final token = Provider.of<TokenModel>(context, listen: false).token;
-
-      try {
-        final response = await http.post(
-          url,
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-        );
-
-        if (response.statusCode == 200) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(
-                      localizations.translate('account deleted successfully'))),
-            );
-            Future.delayed(
-              const Duration(seconds: 2),
-              () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                );
-              },
-            );
-            // Navigate to login screen after account deletion
-          }
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(
-                      localizations.translate('Failed to delete account'))),
-            );
-          }
-        }
-      } catch (error) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $error')),
-          );
-        }
-      }
-    }
-
-    Future<void> showDeleteConfirmationDialog(BuildContext parentContext) {
-      return showDialog<void>(
-        context: parentContext,
-        builder: (BuildContext dialogContext) {
-          return AlertDialog(
-            title: Text(localizations.translate('delete_account')),
-            content: Text(localizations
-                .translate('Are you sure you want to delete your account?')),
-            actions: <Widget>[
-              TextButton(
-                child: Text(localizations.translate('cancel')),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop(); // Close the dialog
-                },
-              ),
-              TextButton(
-                child: Text(localizations.translate('delete')),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop(); // Close the dialog
-                  deleteAccount(parentContext); // Use the parent context
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
 
     return WillPopScope(
       onWillPop: () async {
@@ -185,11 +104,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Consumer<ThemeProvider>(
                 builder: (context, themeProvider, child) {
+                  final isDarkMode = themeProvider.isDarkMode;
+                  final themeText = isDarkMode
+                      ? localizations.translate(
+                          'light_mode') // Show 'Light Mode' if currently dark mode
+                      : localizations.translate(
+                          'dark_mode'); // Show 'Dark Mode' if currently light mode
+
                   return ListTile(
-                    leading: Icon(themeProvider.isDarkMode
-                        ? Icons.light_mode
-                        : Icons.dark_mode),
-                    title: Text(localizations.translate("change_theme")),
+                    leading:
+                        Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+                    title: Text(themeText),
                     onTap: () {
                       themeProvider.toggleTheme();
                       Navigator.pop(context); // Close the drawer
@@ -197,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
+
               ListTile(
                 leading: const Icon(Icons.subscriptions),
                 title: Text(localizations.translate('my_subscriptions')),
@@ -213,8 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: Text(
                     '${localizations.translate('Complaints and suggestions')}'),
                 onTap: () {
-                  Navigator.pop(context); // Close the drawer first
-                  // Navigate to the Complaints and Suggestions screen
+                  Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (ctx) => const ComplaintsSuggestionsScreen()),
@@ -234,14 +159,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.delete),
-                title: Text(localizations.translate('delete_account')),
-                onTap: () {
-                  // Get token
-                  showDeleteConfirmationDialog(context);
-                },
-              ),
+              // Remove or comment out this ListTile to exclude account deletion
+              // ListTile(
+              //   leading: const Icon(Icons.delete),
+              //   title: Text(localizations.translate('delete_account')),
+              //   onTap: () {
+              //     // Get token
+              //     showDeleteConfirmationDialog(context);
+              //   },
+              // ),
             ],
           ),
         ),

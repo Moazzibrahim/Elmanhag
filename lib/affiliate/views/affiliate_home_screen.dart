@@ -9,6 +9,8 @@ import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
 import 'package:flutter_application_1/views/screens/Exams/exam_mcq_screen.dart';
 import '../../controller/Auth/logout_provider.dart';
 import '../controller/affiliate_provider.dart';
+import '../controller/bouns_provider.dart';
+import '../models/bouns_model.dart';
 
 class AffiliateHomeScreen extends StatelessWidget {
   const AffiliateHomeScreen({super.key});
@@ -17,6 +19,11 @@ class AffiliateHomeScreen extends StatelessWidget {
     final apiService = ApiService();
     return apiService
         .fetchUserProfile(context); // Ensure this method exists in ApiService
+  }
+
+  Future<BonusResponse?> _fetchBonusData(BuildContext context) {
+    final bonusService = BonusService();
+    return bonusService.fetchBonusData(context); // Fetch bonus data
   }
 
   @override
@@ -47,7 +54,7 @@ class AffiliateHomeScreen extends StatelessWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Header with user image and name
+                        // User Profile Information
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -115,7 +122,6 @@ class AffiliateHomeScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            // Profile and Logout buttons
                             Row(
                               children: [
                                 IconButton(
@@ -134,7 +140,6 @@ class AffiliateHomeScreen extends StatelessWidget {
                                   icon: const Icon(Icons.logout,
                                       size: 30, color: redcolor),
                                   onPressed: () {
-                                    // Call the logout function
                                     LogoutModel().logout(context);
                                   },
                                 ),
@@ -146,41 +151,57 @@ class AffiliateHomeScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Show the available wallet balance using the dynamic data
                             _buildInfoCard(
                                 '${userProfile.user.income.wallet} ج.م',
                                 'الرصيد المتاح',
                                 Icons.account_balance_wallet_outlined),
                             const SizedBox(width: 10),
                             _buildInfoCard(
-                              '${userProfile.user.studentSignups}', // Using dynamic student signups value
+                              '${userProfile.user.studentSignups}',
                               'عدد التسجيلات',
                               Icons.person_add_alt_1_outlined,
                             ),
                             const SizedBox(width: 10),
-                            // Show the total income using the dynamic data
                             _buildInfoCard(
                                 '${userProfile.user.income.income} ج.م',
                                 'الإيرادات الكلية',
                                 Icons.attach_money_outlined),
                           ],
                         ),
-
-                        const SizedBox(height: 30),
-                        _buildProgressSection(context),
+                        const SizedBox(height: 15),
+                        FutureBuilder<BonusResponse?>(
+                          future: _fetchBonusData(context),
+                          builder: (context, bonusSnapshot) {
+                            if (bonusSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (bonusSnapshot.hasError) {
+                              return Text('Error: ${bonusSnapshot.error}');
+                            } else if (!bonusSnapshot.hasData ||
+                                bonusSnapshot.data == null) {
+                              return const Text('No bonus data found.');
+                            } else {
+                              BonusResponse bonusResponse = bonusSnapshot.data!;
+                              AffiliateBonus bonusData =
+                                  bonusResponse.affiliateBonus;
+                              double progress = bonusData.bundlePaid /
+                                  bonusData.target; // Calculate progress
+                              return _buildProgressSection(
+                                  context, bonusData, progress);
+                            }
+                          },
+                        ),
                       ],
                     );
                   }
                 },
               ),
-              const SizedBox(height: 30),
               Expanded(
                 child: GridView.count(
                   crossAxisCount: 2,
                   shrinkWrap: true,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  physics: const NeverScrollableScrollPhysics(),
                   childAspectRatio: 1,
                   children: [
                     _buildGridOption('المعاملات', Icons.history_outlined, () {
@@ -218,81 +239,120 @@ class AffiliateHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressSection(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const RewardsScreen()),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'اكمل الهدف واحصل على ',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                  ),
-                  const TextSpan(
-                    text: '2000 جنيه',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: redcolor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: ' هديه',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: LinearProgressIndicator(
-                    value: 0.55,
-                    backgroundColor: Colors.grey[300],
-                    color: redcolor,
-                    minHeight: 20,
-                  ),
-                ),
-                const Positioned.fill(
-                  child: Center(
-                    child: Text(
-                      '55%',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+  Widget _buildProgressSection(
+      BuildContext context, AffiliateBonus bonusData, double progress) {
+    // Check if the bonus data contains any total bonuses
+    if (bonusData.totalBonus.isNotEmpty) {
+      // Get the first and second bonus targets
+      int firstBonusTarget = bonusData.totalBonus[0].target;
+      int secondBonusTarget = bonusData.totalBonus[1].target;
+
+      // Calculate the remaining bundlePaid after the first bonus is completed
+      int remainingBundlePaid = bonusData.bundlePaid - firstBonusTarget;
+
+      // Ensure remainingBundlePaid is not negative
+      if (remainingBundlePaid < 0) {
+        remainingBundlePaid = 0;
+      }
+
+      // Calculate the progress for the second bonus (remainingBundlePaid / target of second bonus)
+      double progressForSecondBonus = remainingBundlePaid / secondBonusTarget;
+
+      // Cap the progress to 100% if it exceeds the second bonus target
+      if (progressForSecondBonus > 1.0) {
+        progressForSecondBonus = 1.0;
+      }
+
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 5,
             ),
           ],
         ),
-      ),
-    );
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const RewardsScreen()),
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Add Bonus Title
+              Text(
+                bonusData.title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: redcolor,
+                ),
+              ),
+              const SizedBox(height: 10),
+              // Display target and bonus reward information
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'اكمل الهدف ( ${bonusData.target} ) واحصل على ',
+                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                    ),
+                    TextSpan(
+                      text: '${bonusData.bonus} جنيه',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: redcolor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: ' هديه',
+                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 10),
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: LinearProgressIndicator(
+                      value: progressForSecondBonus,
+                      backgroundColor: Colors.grey[400],
+                      color: redcolor,
+                      minHeight: 20,
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: Center(
+                      child: Text(
+                        '${(progressForSecondBonus * 100).toStringAsFixed(1)}%', // Progress in percentage
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      // Fallback for when no total bonuses are present
+      return const Text('No bonus data available.');
+    }
   }
 
   Widget _buildInfoCard(String amount, String description, IconData icon) {
@@ -311,28 +371,24 @@ class AffiliateHomeScreen extends StatelessWidget {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(child: Icon(icon, color: Colors.white, size: 30)),
+            Icon(icon, color: Colors.white, size: 36),
             const SizedBox(height: 8),
-            Center(
-              child: Text(
-                amount,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+            Text(
+              amount,
+              style: const TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 4),
-            Center(
-              child: Text(
-                description,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
-                  fontSize: 14,
-                ),
+            Text(
+              description,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.white,
               ),
             ),
           ],

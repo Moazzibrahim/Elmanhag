@@ -9,6 +9,10 @@ import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/profile/edit_profile.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../controller/Auth/login_provider.dart';
+import '../login/login_screen.dart';
 
 class CustomProfileScreen extends StatefulWidget {
   const CustomProfileScreen({super.key});
@@ -43,6 +47,82 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
     }
   }
 
+  Future<void> _deleteAccount() async {
+    final url = Uri.parse('https://bdev.elmanhag.shop/student/profile/delete');
+    final token = Provider.of<TokenModel>(context, listen: false).token;
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(AppLocalizations.of(context)
+                    .translate('account deleted successfully'))),
+          );
+          Future.delayed(
+            const Duration(seconds: 2),
+            () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            },
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(AppLocalizations.of(context)
+                    .translate('Failed to delete account'))),
+          );
+        }
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $error')),
+        );
+      }
+    }
+  }
+
+  Future<void> _showDeleteConfirmationDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context).translate('delete_account')),
+          content: Text(AppLocalizations.of(context)
+              .translate('Are you sure you want to delete your account?')),
+          actions: <Widget>[
+            TextButton(
+              child: Text(AppLocalizations.of(context).translate('cancel')),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text(AppLocalizations.of(context).translate('delete')),
+              onPressed: () {
+                Navigator.of(dialogContext).pop(); // Close the dialog
+                _deleteAccount(); // Call delete account method
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final userProfileProvider = Provider.of<UserProfileProvider>(context);
@@ -65,7 +145,7 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
             },
           ),
           title: isLoading
-              ? const CircularProgressIndicator()
+              ? const CircularProgressIndicator() 
               : Row(
                   children: [
                     CircleAvatar(
@@ -134,10 +214,41 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
             ),
           ),
         ),
-        body: const TabBarView(
+        body: Column(
           children: [
-            StudentTabContent(),
-            ParentTabContent(),
+            const Expanded(
+              child: TabBarView(
+                children: [
+                  StudentTabContent(),
+                  ParentTabContent(),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white, // Button background color
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(
+                        color: redcolor, width: 2), // Red border
+                  ),
+                  elevation: 0, // No shadow
+                ),
+                onPressed: _showDeleteConfirmationDialog,
+                child: Text(
+                  localizations.translate('delete_account'),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: redcolor, // Text color
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

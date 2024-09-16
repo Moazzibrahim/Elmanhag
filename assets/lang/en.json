@@ -69,9 +69,8 @@
   "lesson_3": "Lesson 3",
   "menu": "Menu",
   "home": "Home",
-  "switch to arabic": "Switch to Arabic",
   "profile": "Profile",
-  "change_language": "Switch to Arabic",
+  "change_language": "change language",
   "logOut":"logout",
   "change_theme":"change theme",
   "my_subscriptions":"my subscriptions",
@@ -96,6 +95,11 @@
   "You should select a photo first!":"You should select a photo first!",
   "instead_of":"instead of",
   "coming_soon":"coming soon",
-  "Complaints and suggestions":"Complaints and suggestions"
+  "Complaints and suggestions":"Complaints and suggestions", "dark_mode": "Dark Mode",
+  "light_mode": "Light Mode",
+  "my_subscriptions": "My Subscriptions",
+  "materials_package": "Materials Package",
+  "materials_description": "You are currently on the free package. Upgrade to the paid package for advanced materials.",
+  "subscribe_now": "Subscribe Now"
 
 }

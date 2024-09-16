@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import '../../../localization/app_localizations.dart';
 import '../payment/subscription_screen.dart';
 
 class MySubscriptions extends StatelessWidget {
@@ -9,6 +10,9 @@ class MySubscriptions extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     bool isDarkMode = theme.brightness == Brightness.dark;
+
+    // Fetch localized strings
+    final localization = AppLocalizations.of(context);
 
     return Scaffold(
       body: Container(
@@ -37,7 +41,7 @@ class MySubscriptions extends StatelessWidget {
               const SizedBox(height: 10),
               Center(
                 child: Text(
-                  "اشتراكاتي",
+                  localization.translate("my_subscriptions"),
                   style: theme.textTheme.headlineSmall?.copyWith(
                     color: redcolor,
                     fontWeight: FontWeight.bold,
@@ -47,24 +51,15 @@ class MySubscriptions extends StatelessWidget {
               const SizedBox(height: 20),
               Expanded(
                 child: ListView(
-                  children: const [
+                  children: [
                     SubscriptionCard(
-                      title: 'باقه المواد',
+                      title: localization.translate("materials_package"),
                       description:
-                          'انت الان على الباقه المجانيه. انتقل إلى الباقه المدفوعه للحصول على المواد المتقدمه.',
-                      buttonText: 'اشترك الآن',
+                          localization.translate("materials_description"),
+                      buttonText: localization.translate("subscribe_now"),
                       imagePath: 'assets/images/materials.png',
                       isPrimary: true,
                     ),
-                    //  SizedBox(height: 16),
-                    //  SubscriptionCard(
-                    //   title: 'باقه حصص اللايف',
-                    //   description:
-                    //       'انت الان على الباقه المجانيه. تمتع بمزايا الباقه المدفوعه الآن.',
-                    //   buttonText: 'انت على الباقه المدفوعه',
-                    //   imagePath: 'assets/images/live_sessions.png',
-                    //   isPrimary: false,
-                    // ),
                   ],
                 ),
               ),

@@ -11,10 +11,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class SectionsScreen extends StatefulWidget {
-  const SectionsScreen(
-      {super.key, required this.chapters, required this.subjectId});
+  const SectionsScreen({
+    super.key,
+    required this.chapters,
+    required this.subjectId,
+    this.coverPhotoUrl, 
+  });
+
   final List<dynamic> chapters;
   final String subjectId;
+  final String? coverPhotoUrl; // Nullable in case it's missing
 
   @override
   // ignore: library_private_types_in_public_api
@@ -73,12 +79,12 @@ class _SectionsScreenState extends State<SectionsScreen> {
                   ],
                 ),
                 SizedBox(height: 20.h),
-                Image.asset(
-                  'assets/images/beaker.png',
-                  width: 150.w,
-                  height: 100.h,
+                Image.network(
+                  widget.coverPhotoUrl ??
+                      'assets/images/beaker.png', // Fallback URL if coverPhotoUrl is null
+                  height: 100,
+                  width: 100,
                 ),
-                SizedBox(height: 20.h),
                 Expanded(
                   child: widget.chapters.isEmpty
                       ? Center(
@@ -199,7 +205,9 @@ class _ChapterTileState extends State<ChapterTile> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => SubscriptionScreen(subjectId: widget.subjectId,),
+                          builder: (context) => SubscriptionScreen(
+                            subjectId: widget.subjectId,
+                          ),
                         ),
                       );
                     },

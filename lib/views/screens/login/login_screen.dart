@@ -7,9 +7,10 @@ import 'package:flutter_application_1/views/screens/login/sign_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:provider/provider.dart';
 
-// Define RotatingImageIndicator widget
 class RotatingImageIndicator extends StatefulWidget {
-  const RotatingImageIndicator({super.key});
+  final bool clockwise; // Add this parameter
+
+  const RotatingImageIndicator({super.key, this.clockwise = true});
 
   @override
   _RotatingImageIndicatorState createState() => _RotatingImageIndicatorState();
@@ -39,8 +40,12 @@ class _RotatingImageIndicatorState extends State<RotatingImageIndicator>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
+        // Change rotation direction based on `clockwise` parameter
+        double angle = widget.clockwise
+            ? _controller.value * 2.0 * 3.14
+            : -_controller.value * 2.0 * 3.14;
         return Transform.rotate(
-          angle: _controller.value * 2.0 * 3.14,
+          angle: angle,
           child: child,
         );
       },
@@ -153,7 +158,8 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 30),
               Center(
                 child: _isLoading
-                    ? const RotatingImageIndicator() // Show loading indicator
+                    ? const RotatingImageIndicator(
+                        clockwise: false) 
                     : ElevatedButton(
                         onPressed: () async {
                           String email = _emailController.text;

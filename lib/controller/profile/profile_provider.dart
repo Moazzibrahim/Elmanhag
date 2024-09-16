@@ -32,7 +32,6 @@ class UserProfileProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        // Parse the response using the UserResponse model
         final userResponse = UserResponse.fromJson(data);
 
         // Set the user data

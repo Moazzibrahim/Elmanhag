@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:developer';
 
@@ -72,13 +74,13 @@ class ApiService with ChangeNotifier {
         // Navigate to HomeScreen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
 
         log('Signup successful. Token: $token');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: Token not found in response')),
+          const SnackBar(content: Text('Error: Token not found in response')),
         );
       }
     } else {
@@ -90,6 +92,7 @@ class ApiService with ChangeNotifier {
     }
   }
 
+  // ignore: unused_element
   static void _showSuccessDialog(BuildContext context) {
     showDialog(
       context: context,

@@ -7,6 +7,7 @@ class RewardsScreen extends StatefulWidget {
   const RewardsScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _RewardsScreenState createState() => _RewardsScreenState();
 }
 
@@ -61,10 +62,10 @@ class _RewardsScreenState extends State<RewardsScreen> {
                 children: [
                   Center(
                     child: Container(
-                      padding: const EdgeInsets.all(20.0), // Increased padding
+                      padding: const EdgeInsets.all(20.0),
                       constraints: const BoxConstraints(
-                        minWidth: 100, // Increased minimum width
-                        minHeight: 100, // Increased minimum height
+                        minWidth: 80,
+                        minHeight: 80,
                       ),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -78,29 +79,28 @@ class _RewardsScreenState extends State<RewardsScreen> {
                         ],
                       ),
                       child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              ' حققت:',
-                              style: TextStyle(
-                                color: Colors.green.shade800,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              '$remainingBundle',
-                              style: TextStyle(
-                                color: Colors.green.shade800,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          '$remainingBundle',
+                          style: TextStyle(
+                            color: Colors.green.shade800,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0), // Space between circle and text
+                  const Center(
+                    child: Text(
+                      'حققت', // The text to display
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign:
+                          TextAlign.center, // Optional: Center-align the text
                     ),
                   ),
                   const SizedBox(
