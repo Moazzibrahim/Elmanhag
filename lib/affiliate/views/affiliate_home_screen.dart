@@ -151,36 +151,30 @@ class AffiliateHomeScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              child: SizedBox(
-                                height: 150,
-                                child: _buildInfoCard(
-                                  '${userProfile.user.income.wallet} ',
-                                  'الرصيد المتاح',
-                                  Icons.account_balance_wallet_outlined,
-                                ),
+                            SizedBox(
+                              height: 150,
+                              child: _buildInfoCard(
+                                '${userProfile.user.income.wallet} ',
+                                'الرصيد المتاح',
+                                Icons.account_balance_wallet_outlined,
                               ),
                             ),
                             const SizedBox(width: 10),
-                            Expanded(
-                              child: SizedBox(
-                                height: 150,
-                                child: _buildInfoCard(
-                                  '${userProfile.user.studentSignups}',
-                                  'عدد التسجيلات',
-                                  Icons.person_add_alt_1_outlined,
-                                ),
+                            SizedBox(
+                              height: 150,
+                              child: _buildInfoCard(
+                                '${userProfile.user.studentSignups}',
+                                'عدد التسجيلات',
+                                Icons.person_add_alt_1_outlined,
                               ),
                             ),
                             const SizedBox(width: 10),
-                            Expanded(
-                              child: SizedBox(
-                                height: 150,
-                                child: _buildInfoCard(
-                                  '${userProfile.user.income.income}',
-                                  'الإيرادات الكلية',
-                                  Icons.attach_money_outlined,
-                                ),
+                            SizedBox(
+                              height: 150,
+                              child: _buildInfoCard(
+                                '${userProfile.user.income.income}',
+                                'الإيرادات الكلية',
+                                Icons.attach_money_outlined,
                               ),
                             ),
                           ],
@@ -411,43 +405,41 @@ class AffiliateHomeScreen extends StatelessWidget {
   }
 
   Widget _buildInfoCard(String amount, String description, IconData icon) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: redcolor,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: redcolor.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: redcolor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: redcolor.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: Colors.white, size: 36),
+          const SizedBox(height: 8),
+          Text(
+            amount,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.white, size: 36),
-            const SizedBox(height: 8),
-            Text(
-              amount,
-              style: const TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            description,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.white,
             ),
-            const SizedBox(height: 4),
-            Text(
-              description,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

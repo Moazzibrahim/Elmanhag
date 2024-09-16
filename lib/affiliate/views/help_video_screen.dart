@@ -30,29 +30,42 @@ class HelpVideosScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
-          itemCount: 5, // Replace with the actual number of videos
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.red.shade100,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: const Center(
-                  child: Text(
-                    'كيفيه تشغيل الابليكشن الطالب؟',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: 5, // Replace with the actual number of videos
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade100,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: const Center(
+                        child: Text(
+                          'كيفيه تشغيل الابليكشن الطالب؟',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+            const Row(
+              children: [
+                SizedBox(width: 10,),
+                Text('ستتوفر الفيديوهات التحديث القادم',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+              ],
+            ),
+            const SizedBox(height: 330,),
+          ],
         ),
       ),
     );

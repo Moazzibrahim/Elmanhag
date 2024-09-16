@@ -134,28 +134,30 @@ class _TransactionsScreenState extends State<TransactionsScreen>
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Total Payout Information
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildTransactionButton(
-                'Total Payout',
-                '${affiliateData!.totalPayout} ج.م',
-                redcolor,
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          const Text(
-            'Payout History:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          _buildTransactionTable(affiliateData!.user.payoutHistory),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Total Payout Information
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildTransactionButton(
+                  'Total Payout',
+                  '${affiliateData!.totalPayout} ج.م',
+                  redcolor,
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'Payout History:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            _buildTransactionTable(affiliateData!.user.payoutHistory),
+          ],
+        ),
       ),
     );
   }
@@ -165,17 +167,19 @@ class _TransactionsScreenState extends State<TransactionsScreen>
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Commission Information
-          const Text(
-            'Commission History:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          _buildCommissionTable(affiliateData!.user.affiliateHistory),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Commission Information
+            const Text(
+              'Commission History:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            _buildCommissionTable(affiliateData!.user.affiliateHistory),
+          ],
+        ),
       ),
     );
   }
