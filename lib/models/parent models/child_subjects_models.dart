@@ -1,20 +1,27 @@
 class SubjectResponsechild {
   List<Subject> subjects;
+  int progress; // Add the progress field
 
-  SubjectResponsechild({required this.subjects});
+  SubjectResponsechild({
+    required this.subjects,
+    required this.progress, // Add to constructor
+  });
 
   factory SubjectResponsechild.fromJson(Map<String, dynamic> json) {
     return SubjectResponsechild(
       subjects: List<Subject>.from(json['subjects'].map((x) => Subject.fromJson(x))),
+      progress: json['progress'], // Parse the progress field
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'subjects': List<dynamic>.from(subjects.map((x) => x.toJson())),
+      'progress': progress, // Include the progress field in toJson
     };
   }
 }
+
 
 class Subject {
   int id;
