@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/parent/get_children_subjects.dart';
-import 'package:flutter_application_1/views/parent%20screens/scheduele_screen.dart';
+import 'package:flutter_application_1/views/parent%20screens/progress_history.dart';
 import 'package:provider/provider.dart';
 
 class StudentAllSubjectsProgressScreen extends StatelessWidget {
@@ -100,7 +100,7 @@ class StudentAllSubjectsProgressScreen extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ScheduleScreen()));
+                                            const StudyProgressScreen()));
                               },
                               child: Card(
                                 color: theme.scaffoldBackgroundColor,
