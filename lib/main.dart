@@ -6,6 +6,7 @@ import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/bundle/get_bundle_data.dart';
 import 'package:flutter_application_1/controller/notification_helper.dart';
 import 'package:flutter_application_1/controller/parent/get_children_provider.dart';
+import 'package:flutter_application_1/controller/parent/get_children_subjects.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -33,6 +34,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => GetBundleData()),
         ChangeNotifierProvider(create: (_) => ApiService()),
         ChangeNotifierProvider(create: (_) => GetChildrenProvider()),
+        ChangeNotifierProvider(create: (_) => GetChildrenSubjects()),
       ],
       child: const MyApp(),
     ),

@@ -141,7 +141,7 @@ class HomeParentScreen extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            const Expanded(child: HomeParentGrid()),
+             Expanded(child: HomeParentGrid(selchid: childid,)),
           ],
         ),
       ),
