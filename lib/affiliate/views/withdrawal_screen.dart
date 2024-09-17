@@ -94,7 +94,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
 
       if (response.statusCode == 200) {
         log(response.body);
-        _showProcessingDialog(context); // Show success dialog
+        _showProcessingDialog(context);
       } else {
         _showErrorDialog("Failed to process request.");
       }
@@ -191,9 +191,9 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                 ...paymentMethods.map((method) {
                   return PaymentMethodOption(
                     label: method.method,
-                    logo: method.thumbnail != null
-                        ? 'https://bdev.elmanhag.shop/${method.thumbnail}'
-                        : 'assets/images/Fawry.png',
+                    // logo: method.thumbnail != null
+                    //     ? 'https://bdev.elmanhag.shop/${method.thumbnail}'
+                    //     : 'assets/images/vod.png',
                     value: method.id,
                     groupValue: _selectedPaymentMethodId,
                     onChanged: (value) {
@@ -220,7 +220,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                 TextField(
                   controller: _descriptionController,
                   decoration: InputDecoration(
-                    hintText: 'ادخل البيانات المطلوبة',
+                    hintText: 'ادخل الرقم الذي تريد التحويل عليه ',
                     hintStyle: TextStyle(color: Colors.grey.shade600),
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 15, horizontal: 12),
@@ -311,7 +311,6 @@ class BalanceCard extends StatelessWidget {
 
 class PaymentMethodOption extends StatelessWidget {
   final String label;
-  final String logo;
   final int value;
   final int? groupValue;
   final ValueChanged<int?> onChanged;
@@ -319,7 +318,6 @@ class PaymentMethodOption extends StatelessWidget {
   const PaymentMethodOption({
     super.key,
     required this.label,
-    required this.logo,
     required this.value,
     required this.groupValue,
     required this.onChanged,
@@ -329,14 +327,6 @@ class PaymentMethodOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return RadioListTile<int>(
       title: Text(label),
-      secondary: Image.network(
-        logo,
-        width: 50,
-        height: 50,
-        errorBuilder: (context, error, stackTrace) {
-          return Image.asset('assets/images/Fawry.png', width: 50, height: 50);
-        },
-      ),
       value: value,
       groupValue: groupValue,
       onChanged: onChanged,
