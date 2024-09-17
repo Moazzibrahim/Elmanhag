@@ -75,7 +75,7 @@ class HomeParentGrid extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const StudentProgressScreen(),
+                  builder: (context) => const MarketingScreen(),
                 ),
               );
             }
