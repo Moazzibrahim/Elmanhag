@@ -67,19 +67,10 @@ class HomeParentGrid extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>  MarketingScreen(),
+                  builder: (context) => MarketingScreen(),
                 ),
               );
             }
-              if (texts[index] == 'التقدم الدراسي') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MarketingScreen(),
-                ),
-              );
-            }
-
           },
           child: Card(
             color: Colors.white,
