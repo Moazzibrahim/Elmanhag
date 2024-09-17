@@ -6,7 +6,8 @@ class ChildrenResponse {
   factory ChildrenResponse.fromJson(Map<String, dynamic> json) {
     return ChildrenResponse(
       children: json['childreen'] != null
-          ? List<Child>.from(json['childreen'].map((child) => Child.fromJson(child)))
+          ? List<Child>.from(
+              json['childreen'].map((child) => Child.fromJson(child)))
           : null,
     );
   }
@@ -44,6 +45,9 @@ class Child {
   String? updatedAt;
   String? imageLink;
   Category? category;
+  Education? education;
+  String? country;
+  String? city;
 
   Child({
     this.id,
@@ -69,6 +73,9 @@ class Child {
     this.updatedAt,
     this.imageLink,
     this.category,
+    this.education,
+    this.country,
+    this.city
   });
 
   factory Child.fromJson(Map<String, dynamic> json) {
@@ -95,7 +102,13 @@ class Child {
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
       imageLink: json['image_link'],
-      category: json['category'] != null ? Category.fromJson(json['category']) : null,
+      category:
+          json['category'] != null ? Category.fromJson(json['category']) : null,
+      education: json['education'] != null
+          ? Education.fromJson(json['education'])
+          : null,
+      country: json['country'],
+      city: json['city']
     );
   }
 
@@ -124,6 +137,9 @@ class Child {
       'updated_at': updatedAt,
       'image_link': imageLink,
       'category': category?.toJson(),
+      'education': education?.toJson(),
+      'country': country,
+      'city':city
     };
   }
 }
@@ -180,6 +196,33 @@ class Category {
       'created_at': createdAt,
       'updated_at': updatedAt,
       'thumbnail_link': thumbnailLink,
+    };
+  }
+}
+
+class Education {
+  int? id;
+  String? name;
+  String? createdAt;
+  String? updatedAt;
+
+  Education({this.id, this.name, this.createdAt, this.updatedAt});
+
+  factory Education.fromJson(Map<String, dynamic> json) {
+    return Education(
+      id: json['id'],
+      name: json['name'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
     };
   }
 }

@@ -4,16 +4,34 @@ import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/parent%20screens/notfications_parent_screen.dart';
+import 'package:flutter_application_1/views/parent%20screens/profile/profile_parent_screen.dart';
 import 'package:flutter_application_1/views/parent%20widgets/home_parent_grid.dart';
-import 'package:flutter_application_1/views/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart'; // Import Provider
 
 class HomeParentScreen extends StatelessWidget {
   final String? childname;
   final String? childcategory;
   final String? imagelnk;
+  final String? phonechild;
+  final String? emailchild;
+  final String? childeducation;
+  final String? childcountry;
+  final String? childcity;
+  final String? parentname;
+  final int? childid;
+
   const HomeParentScreen(
-      {super.key, this.childcategory, this.childname, this.imagelnk});
+      {super.key,
+      this.childcategory,
+      this.childname,
+      this.imagelnk,
+      this.childcity,
+      this.childcountry,
+      this.childeducation,
+      this.emailchild,
+      this.phonechild,
+      this.parentname,
+      this.childid});
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +52,20 @@ class HomeParentScreen extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () async {
-                        // Invoke the logout function
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const CustomProfileScreen()));
+                                builder: (context) => CustomProfileParentScreen(
+                                      childcategory: childcategory,
+                                      childcity: childcity,
+                                      childcountry: childcountry,
+                                      childeducation: childeducation,
+                                      childname: childname,
+                                      emailchild: emailchild,
+                                      imagelnk: imagelnk,
+                                      phonechild: phonechild,
+                                      parentname: parentname,
+                                    )));
                       },
                       child: const Icon(
                         Icons.person, // Replace with logout icon
@@ -66,8 +92,9 @@ class HomeParentScreen extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) =>
-                                const NotficationsParentScreen()));
+                            builder: (ctx) => NotificationsParentScreen(
+                                  childId: childid,
+                                )));
                       },
                       borderRadius: BorderRadius.circular(20),
                       child: const Icon(
@@ -82,7 +109,7 @@ class HomeParentScreen extends StatelessWidget {
                     return Row(
                       children: [
                         Text(
-                          ' ${localizations.translate('welcome')} $childname ${loginProvider.name}',
+                          ' ${localizations.translate('welcome')} $childname ',
                           style: const TextStyle(
                               color: redcolor,
                               fontSize: 18,

@@ -41,8 +41,12 @@ class TokenModel with ChangeNotifier {
 class LoginModel with ChangeNotifier {
   String? _role;
   String? _name;
+  String? _phone;
+  String? _email;
   String? get role => _role;
   String? get name => _name;
+  String? get phone => _phone;
+  String? get email => _email;
   late int _id;
   int get id => _id;
 
@@ -96,6 +100,8 @@ class LoginModel with ChangeNotifier {
           final userDetails = responseData['user'] as Map<String, dynamic>;
           int id = userDetails['id'];
           _name = userDetails['name'];
+          _phone = userDetails['phone'];
+          _email = userDetails['email'];
           Provider.of<LoginModel>(context, listen: false).setId(id);
           _handleUserDetails(context, userDetails);
 

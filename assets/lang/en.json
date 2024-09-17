@@ -115,5 +115,7 @@
   "send": "Send",
   "submit_success_message": "Your message has been submitted successfully!",
     "materials_package": "Materials Package",
-    "materials_description": "Get access to exclusive learning materials."
+    "materials_description": "Get access to exclusive learning materials.",
+    "notifications":"notifications",
+    "You do not have any notifications":"You do not have any notifications"
 }

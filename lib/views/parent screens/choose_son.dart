@@ -36,20 +36,19 @@ class _ChooseSonState extends State<ChooseSon> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
-         title: Consumer<LoginModel>( // Use Consumer to get login data
-          builder: (context, loginProvider, child) {
-              return Center(
-                child: Text(
-                  'اهلا بك ${loginProvider.name}', // Use the logged-in user's name
-                  style: const TextStyle(
-                    color: redcolor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              );
-            }
-        ),
+        title: Consumer<LoginModel>(// Use Consumer to get login data
+            builder: (context, loginProvider, child) {
+          return Center(
+            child: Text(
+              'اهلا بك ${loginProvider.name}', // Use the logged-in user's name
+              style: const TextStyle(
+                color: redcolor,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -102,37 +101,48 @@ class _ChooseSonState extends State<ChooseSon> {
                 ),
                 if (selectedIndex !=
                     null) // Show the button only if a card is selected
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final selectedChild = children[selectedIndex!];
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomeParentScreen(
-                              childname: selectedChild!.name!,
-                              childcategory: selectedChild.category?.name ??
-                                  'No Category Available',
-                              imagelnk: selectedChild.imageLink,
+                  Consumer<LoginModel>(
+                    builder: (context, loginprovider, child) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final selectedChild = children[selectedIndex!];
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeParentScreen(
+                                  childname: selectedChild!.name!,
+                                  childcategory: selectedChild.category?.name ??
+                                      'No Category Available',
+                                  imagelnk: selectedChild.imageLink,
+                                  childcity: selectedChild.city,
+                                  childcountry: selectedChild.country,
+                                  childeducation: selectedChild.education?.name,
+                                  emailchild: selectedChild.email,
+                                  phonechild: selectedChild.phone,
+                                  parentname: loginprovider.name,
+                                  childid: selectedChild.id,
+                                ),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 80, vertical: 16),
+                            backgroundColor: redcolor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 80, vertical: 16),
-                        backgroundColor: redcolor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          child: Text(
+                            localizations.translate('next'),
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.white),
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        localizations.translate('next'),
-                        style:
-                            const TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                    ),
+                      );
+                    },
                   ),
               ],
             );

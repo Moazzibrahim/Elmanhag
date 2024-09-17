@@ -32,7 +32,7 @@ class _IdeasContentState extends State<IdeasContent> {
     if (videoResources.isNotEmpty) {
       controller
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..loadRequest(Uri.parse(videoResources[viewedVideoIndex]['file']));
+        ..loadRequest(Uri.parse(videoResources[viewedVideoIndex]['file_link']));
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showNoVideosDialog();
