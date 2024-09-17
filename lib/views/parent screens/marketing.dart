@@ -173,7 +173,7 @@ class ActionButton extends StatelessWidget {
       onPressed: onPressed,
       child: Text(
         title,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white, fontSize: 18),
       ),
     );
   }
@@ -186,10 +186,10 @@ class CommissionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Commissions'),
+        title: const Text('العمولات'),
       ),
       body: const Center(
-        child: Text('Commissions Screen'),
+        child: Text('العمولات'),
       ),
     );
   }
@@ -202,10 +202,10 @@ class ReferralLinksScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Referral Links'),
+        title: const Text('روابط الاحالة '),
       ),
       body: const Center(
-        child: Text('Referral Links Screen'),
+        child: Text('روابط الاحالة'),
       ),
     );
   }
