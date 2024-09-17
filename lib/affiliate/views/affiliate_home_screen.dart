@@ -229,21 +229,22 @@ class AffiliateHomeScreen extends StatelessWidget {
                             builder: (context) => const WithdrawalScreen()),
                       );
                     }),
-                    _buildGridOption(
-                        'فيديوهات مساعده', Icons.play_circle_outline, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HelpVideosScreen()),
-                      );
-                    }),
-                    _buildGridOption('مناهج', Icons.library_books, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const GuestScreen()),
-                      );
-                    }),
+                    // _buildGridOption(
+                    //     'فيديوهات مساعده', Icons.play_circle_outline, () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const HelpVideosScreen()),
+                    //   );
+                    // }),
+                    // _buildGridOption('مناهج', Icons.library_books, () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const GuestScreen()),
+                    //   );
+                    // }
+                    // ),
                   ],
                 ),
               ),

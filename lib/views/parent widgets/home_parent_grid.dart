@@ -38,7 +38,6 @@ class HomeParentGrid extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             if (texts[index] == 'تقدم الطالب') {
-              // Navigate to the StudentProgressScreen when 'تقدم الطالب' is tapped
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -72,6 +71,15 @@ class HomeParentGrid extends StatelessWidget {
                 ),
               );
             }
+              if (texts[index] == 'التقدم الدراسي') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const StudentProgressScreen(),
+                ),
+              );
+            }
+
           },
           child: Card(
             color: Colors.white,

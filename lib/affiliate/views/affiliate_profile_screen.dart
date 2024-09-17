@@ -83,17 +83,17 @@ class AffiliateProfileScreen extends StatelessWidget {
                         ],
                       ),
                       const Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const EditaffilateProfileScreen()));
-                        },
-                        icon: const Icon(Icons.edit, color: redcolor),
-                        tooltip: 'Edit Profile',
-                      ),
+                      // IconButton(
+                      //   onPressed: () {
+                      //     Navigator.push(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //             builder: (context) =>
+                      //                 const EditaffilateProfileScreen()));
+                      //   },
+                      //   icon: const Icon(Icons.edit, color: redcolor),
+                      //   tooltip: 'Edit Profile',
+                      // ),
                     ],
                   ),
                   const SizedBox(height: 20),
