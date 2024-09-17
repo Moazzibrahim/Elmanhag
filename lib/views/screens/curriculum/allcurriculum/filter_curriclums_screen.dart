@@ -99,7 +99,12 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
           } else {
             throw Exception('Unexpected response format');
           }
-        } else {
+        }else if(response.statusCode == 403){
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('ستتوفر التجربة التحديث القادم')),
+          );
+        } 
+        else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: ${response.statusCode}')),
           );
