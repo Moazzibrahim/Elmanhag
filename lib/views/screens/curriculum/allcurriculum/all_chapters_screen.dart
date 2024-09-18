@@ -1,9 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_application_1/models/lessons_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'dart:convert';
+
+import '../video_screen.dart'; // For encoding the JSON data
 
 class ChaptersScreen extends StatelessWidget {
   final List<Chapter> chapters;
@@ -18,7 +25,6 @@ class ChaptersScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background
           Positioned.fill(
             child: isDarkMode
                 ? Image.asset(
@@ -45,7 +51,7 @@ class ChaptersScreen extends StatelessWidget {
                     ),
                     const Spacer(flex: 2),
                     Text(
-                      'Chapters',
+                      'الوحدات',
                       style: TextStyle(
                         color: redcolor,
                         fontSize: 25.sp,
@@ -102,6 +108,51 @@ class ChapterTile extends StatefulWidget {
 
 class _ChapterTileState extends State<ChapterTile> {
   bool _isExpanded = false;
+  Future<void> _sendLesson(Lesson lesson) async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final String? token = tokenProvider.token;
+    final url = 'https://bdev.elmanhag.shop/affilate/chapter/lesson/view';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'lesson_id': lesson.id, // Assuming lesson has an 'id' field
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        log(response.body);
+        final data = jsonDecode(response.body);
+
+        if (data['success'] != null) {
+          final lessonData = data['lesson'];
+          print('Lesson sent successfully');
+
+          // Navigate to LessonsVideos screen with lessonData
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LessonsVideos(
+                lessonData: lessonData,
+              ),
+            ),
+          );
+        }
+      } else {
+        // Handle error
+        print('Failed to send lesson: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle network error
+      print('Error sending lesson: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +199,8 @@ class _ChapterTileState extends State<ChapterTile> {
                 style: TextStyle(fontSize: 16.sp, color: redcolor),
               ),
               onTap: () {
-                // Handle tap action here
+                _sendLesson(
+                    lesson); // Call the function when a lesson is tapped
               },
               contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
               visualDensity: VisualDensity.compact,

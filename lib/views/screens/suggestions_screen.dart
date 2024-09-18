@@ -1,9 +1,87 @@
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'dart:convert'; // For JSON encoding/decoding
 import '../../constants/colors.dart';
+import '../../controller/Auth/login_provider.dart';
 
-class ComplaintsSuggestionsScreen extends StatelessWidget {
+class ComplaintsSuggestionsScreen extends StatefulWidget {
   const ComplaintsSuggestionsScreen({super.key});
+
+  @override
+  _ComplaintsSuggestionsScreenState createState() =>
+      _ComplaintsSuggestionsScreenState();
+}
+
+class _ComplaintsSuggestionsScreenState
+    extends State<ComplaintsSuggestionsScreen> {
+  final TextEditingController _complaintController = TextEditingController();
+  bool _isLoading = false;
+  Future<void> submitComplaint() async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final String? token = tokenProvider.token;
+
+    final String complaint = _complaintController.text.trim();
+
+    if (complaint.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('الرجاء كتابة اقتراحك أو شكواك')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://bdev.elmanhag.shop/student/complaint/store'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'complaint': complaint,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print(response.body);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('تم الإرسال'),
+              content: const Text('تم إرسال طلبكuoi بنجاح. شكرًا لملاحظاتك.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: const Text('موافق'),
+                ),
+              ],
+            );
+          },
+        );
+        _complaintController.clear(); // Clear the text field
+      } else {
+        print(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('حدث خطأ. حاول مرة أخرى')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('فشل في الاتصال بالخادم')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +117,12 @@ class ComplaintsSuggestionsScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                height: 1.5, // Increases line spacing
+                height: 1.5,
               ),
             ),
             const SizedBox(height: 40),
             TextField(
+              controller: _complaintController,
               decoration: InputDecoration(
                 hintText: 'اكتب اقتراحك او شكوكك هنا',
                 hintStyle: TextStyle(color: Colors.grey[400]),
@@ -64,24 +143,24 @@ class ComplaintsSuggestionsScreen extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  // Handle button press
-                },
+                onPressed: _isLoading ? null : submitComplaint,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: redcolor, // Background color
+                  backgroundColor: redcolor,
                   elevation: 5,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                child: const Text(
-                  'ارسال',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        'ارسال',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ),
           ],

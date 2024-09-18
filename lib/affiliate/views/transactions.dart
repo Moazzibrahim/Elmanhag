@@ -40,7 +40,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     final isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return DefaultTabController(
-      length: 2, // Number of tabs
+      length: 2,
       child: Scaffold(
         body: Container(
           decoration: isDarkMode
@@ -143,7 +143,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildTransactionButton(
-                  'Total Payout',
+                  ' جميع المسحوبات',
                   '${affiliateData!.totalPayout} ج.م',
                   redcolor,
                 ),
@@ -151,7 +151,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
             ),
             const SizedBox(height: 32),
             const Text(
-              'Payout History:',
+              'المسحوبات السابقة:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -171,9 +171,8 @@ class _TransactionsScreenState extends State<TransactionsScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Commission Information
             const Text(
-              'Commission History:',
+              'جميع العمولات :',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -184,7 +183,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     );
   }
 
-// Commission Table
   Widget _buildCommissionTable(List<AffiliateHistory> affiliateHistory) {
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -253,7 +251,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                 ],
               ),
             );
-            // ignore: unnecessary_to_list_in_spreads
           }).toList(),
         ],
       ),
@@ -313,17 +310,29 @@ class _TransactionsScreenState extends State<TransactionsScreen>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Expanded(
-                  child: Center(
-                      child: Text('التاريخ',
-                          style: TextStyle(fontWeight: FontWeight.bold)))),
+                child: Center(
+                  child: Text(
+                    'التاريخ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Center(
-                      child: Text('المبلغ',
-                          style: TextStyle(fontWeight: FontWeight.bold)))),
+                child: Center(
+                  child: Text(
+                    'المبلغ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
               Expanded(
-                  child: Center(
-                      child: Text('الحالة',
-                          style: TextStyle(fontWeight: FontWeight.bold)))),
+                child: Center(
+                  child: Text(
+                    'الحالة',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
             ],
           ),
           const Divider(),

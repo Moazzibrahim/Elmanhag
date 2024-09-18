@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For Clipboard functionality
-import 'package:flutter_application_1/affiliate/views/edit_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
 
@@ -97,18 +96,20 @@ class AffiliateProfileScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  _buildProfileItem('Name: ${user.name}', true),
-                  const SizedBox(height: 10),
-                  _buildProfileItem('Email: ${user.email}', true),
+                  _buildProfileItem('الاسم: ${user.name}', true),
+                  // const SizedBox(height: 10),
+                  // _buildProfileItem('Email: ${user.email}', true),
                   const SizedBox(height: 10),
                   _buildProfileItem(
-                      'Phone: ${user.phone}', true), // Added phone
+                      'رقم الهاتف: ${user.phone}', true), // Added phone
                   const SizedBox(height: 10),
-                  // Display affiliateCode with copy icon, handle nullable value
-                  _buildProfileItemWithCopyIcon(
-                      context,
-                      'Affiliate Code: ${user.affilateCode ?? 'N/A'}',
-                      user.affilateCode),
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: _buildProfileItemWithCopyIcon(
+                        context,
+                        ' كود التسويق: ${user.affilateCode ?? 'N/A'}',
+                        user.affilateCode),
+                  ),
                 ],
               ),
             );
