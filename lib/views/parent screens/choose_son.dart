@@ -116,8 +116,8 @@ class _ChooseSonState extends State<ChooseSon> {
                                   childcategory: selectedChild.category?.name ??
                                       'No Category Available',
                                   imagelnk: selectedChild.imageLink,
-                                  childcity: selectedChild.city,
-                                  childcountry: selectedChild.country,
+                                  childcity: selectedChild.city!.name,
+                                  childcountry: selectedChild.country!.name,
                                   childeducation: selectedChild.education?.name,
                                   emailchild: selectedChild.email,
                                   phonechild: selectedChild.phone,

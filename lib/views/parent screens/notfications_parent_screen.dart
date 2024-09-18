@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/notification_helper.dart';
-import 'package:flutter_application_1/views/widgets/leading_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,30 +16,44 @@ class NotificationsParentScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Notifications', style: TextStyle(color: redcolor)),
-        leading: const LeadingIcon(),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: redcolor),
+        ),
       ),
       body: FutureBuilder(
         future: fetchSubjectsNotifications(context),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
           } else if (snapshot.hasData) {
             final data = snapshot.data;
-
             if (data is Map<String, dynamic>) {
-              List<dynamic> oldHomework = data['old_homework'] ?? [];
+              List<dynamic> oldHomework = [];
+              if (data['old_homework'] is Map<String, dynamic>) {
+                Map<String, dynamic> oldHomeworkMap = data['old_homework'] ?? {};
+                oldHomework = oldHomeworkMap.values.toList();
+              } else if (data['old_homework'] is List) {
+                oldHomework = data['old_homework'] ?? [];
+              }
+
               List<dynamic> dueHomework = data['due_homework'] ?? [];
 
               if (oldHomework.isEmpty && dueHomework.isEmpty) {
-                return const Center(child: Text('No notifications'));
+                return const Center(
+                  child: Text('No notifications'),
+                );
               } else {
-                // Trigger local notifications
                 if (dueHomework.isNotEmpty) {
                   for (var homework in dueHomework) {
                     NotificationHelper.showNotification(
-                      homework['id'], // Unique ID for the notification
+                      homework['id'],
                       'Upcoming Homework',
                       '${homework['title']} is due on ${homework['due_date']}',
                     );
@@ -59,24 +71,35 @@ class NotificationsParentScreen extends StatelessWidget {
                 }
 
                 return ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
                   itemCount: oldHomework.length + dueHomework.length,
                   itemBuilder: (context, index) {
                     if (index < oldHomework.length) {
                       final homework = oldHomework[index];
-                      return ListTile(
-                        title: Text('Missed Homework: ${homework['title']}'),
-                        subtitle: Text(
-                          'Due date: ${homework['due_date']} (Missed)',
-                          style: const TextStyle(color: Colors.red),
+                      return Card(
+                        elevation: 4,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading: const Icon(Icons.cancel, color: Colors.red),
+                          title: Text('Missed Homework: ${homework['title']} ${homework['subject']['name']}'),
+                          subtitle: Text(
+                            'Due date: ${homework['due_date']}',
+                            style: const TextStyle(color: Colors.red),
+                          ),
                         ),
                       );
                     } else {
                       final homework = dueHomework[index - oldHomework.length];
-                      return ListTile(
-                        title: Text('Upcoming Homework: ${homework['title']}'),
-                        subtitle: Text(
-                          'Due date: ${homework['due_date']} (Upcoming)',
-                          style: const TextStyle(color: Colors.green),
+                      return Card(
+                        elevation: 4,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading: const Icon(Icons.event_available, color: Colors.green),
+                          title: Text('Upcoming Homework: ${homework['title']}'),
+                          subtitle: Text(
+                            'Due date: ${homework['due_date']}',
+                            style: const TextStyle(color: Colors.green),
+                          ),
                         ),
                       );
                     }
@@ -84,10 +107,14 @@ class NotificationsParentScreen extends StatelessWidget {
                 );
               }
             } else {
-              return const Center(child: Text('Unexpected data format'));
+              return const Center(
+                child: Text('Unexpected data format'),
+              );
             }
           } else {
-            return const Center(child: Text('No Data Available'));
+            return const Center(
+              child: Text('No Data Available'),
+            );
           }
         },
       ),
@@ -95,7 +122,8 @@ class NotificationsParentScreen extends StatelessWidget {
   }
 
   Future<dynamic> fetchSubjectsNotifications(BuildContext context) async {
-    final String url = 'https://bdev.elmanhag.shop/parent/notification?student_id=$childId';
+    final String url =
+        'https://bdev.elmanhag.shop/parent/notification?student_id=$childId';
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final String? token = tokenProvider.token;
 
@@ -112,7 +140,8 @@ class NotificationsParentScreen extends StatelessWidget {
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        throw Exception('Failed to load subjects. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load subjects. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error fetching subjects: $e');
