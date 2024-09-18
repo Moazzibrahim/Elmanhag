@@ -24,30 +24,11 @@ class MarketingScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
-          children: [
-            const InfoCard(),
-            const SizedBox(height: 20),
-            const ChartCard(),
-            const SizedBox(height: 10),
-            ActionButton(
-              title: 'العمولات',
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CommissionsScreen()));
-              },
-            ),
-            const SizedBox(height: 10),
-            ActionButton(
-              title: 'روابط الإحالة',
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ReferralLinksScreen()));
-              },
-            ),
+          children: const [
+            InfoCard(),
+            SizedBox(height: 20),
+            ChartCard(),
+            SizedBox(height: 10),
           ],
         ),
       ),
@@ -179,34 +160,4 @@ class ActionButton extends StatelessWidget {
   }
 }
 
-class CommissionsScreen extends StatelessWidget {
-  const CommissionsScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('العمولات'),
-      ),
-      body: const Center(
-        child: Text('العمولات'),
-      ),
-    );
-  }
-}
-
-class ReferralLinksScreen extends StatelessWidget {
-  const ReferralLinksScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('روابط الاحالة '),
-      ),
-      body: const Center(
-        child: Text('روابط الاحالة'),
-      ),
-    );
-  }
-}

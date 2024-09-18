@@ -6,7 +6,7 @@ class NotificationHelper {
 
   static Future<void> initialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings("@mipmap/amin2");
 
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
@@ -18,7 +18,7 @@ class NotificationHelper {
       int id, String title, String body) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('channel_id', 'channel_name',
-            importance: Importance.max, priority: Priority.high);
+            importance: Importance.max, priority: Priority.high,icon: "@mipmap/amin2");
     const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
     await _notificationsPlugin.show(id, title, body, platformChannelSpecifics);

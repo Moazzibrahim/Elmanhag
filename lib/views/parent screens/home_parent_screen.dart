@@ -7,6 +7,8 @@ import 'package:flutter_application_1/views/parent%20screens/notfications_parent
 import 'package:flutter_application_1/views/parent%20screens/profile/profile_parent_screen.dart';
 import 'package:flutter_application_1/views/parent%20widgets/home_parent_grid.dart';
 import 'package:provider/provider.dart'; // Import Provider
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomeParentScreen extends StatelessWidget {
   final String? childname;
@@ -36,6 +38,7 @@ class HomeParentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -89,19 +92,75 @@ class HomeParentScreen extends StatelessWidget {
                     const SizedBox(
                       width: 10,
                     ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => NotificationsParentScreen(
-                                  childId: childid,
-                                )));
+                    FutureBuilder<int>(
+                      future: _fetchNotificationCount(context),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Icon(Icons.notifications_outlined,
+                              color: redcolor);
+                        } else if (snapshot.hasError) {
+                          return const Icon(Icons.notifications_outlined,
+                              color: redcolor);
+                        } else if (snapshot.hasData && snapshot.data! > 0) {
+                          return Stack(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (ctx) =>
+                                          NotificationsParentScreen(
+                                            childId: childid,
+                                          )));
+                                },
+                                icon: const Icon(
+                                  Icons.notifications_outlined,
+                                  color: redcolor,
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 18,
+                                    minHeight: 18,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '${snapshot.data}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return IconButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (ctx) => NotificationsParentScreen(
+                                        childId: childid,
+                                      )));
+                            },
+                            icon: const Icon(
+                              Icons.notifications_outlined,
+                              color: redcolor,
+                            ),
+                          );
+                        }
                       },
-                      borderRadius: BorderRadius.circular(20),
-                      child: const Icon(
-                        Icons.notifications_outlined,
-                        color: redcolor,
-                      ),
-                    )
+                    ),
                   ],
                 ),
                 Consumer<LoginModel>(
@@ -141,10 +200,43 @@ class HomeParentScreen extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-             Expanded(child: HomeParentGrid(selchid: childid,)),
+            Expanded(
+                child: HomeParentGrid(
+              selchid: childid,
+            )),
           ],
         ),
       ),
     );
+  }
+
+  Future<int> _fetchNotificationCount(BuildContext context) async {
+    final String url =
+        'https://bdev.elmanhag.shop/parent/notification?student_id=$childid';
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final String? token = tokenProvider.token;
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        int oldHomeworkCount = data['old_homework']?.length ?? 0;
+        int dueHomeworkCount = data['due_homework']?.length ?? 0;
+        return oldHomeworkCount + dueHomeworkCount;
+      } else {
+        throw Exception(
+            'Failed to load subjects. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching subjects: $e');
+    }
   }
 }

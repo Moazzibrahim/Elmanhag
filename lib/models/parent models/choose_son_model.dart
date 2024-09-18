@@ -1,3 +1,5 @@
+
+
 class ChildrenResponse {
   List<Child?>? children;
 
@@ -46,8 +48,8 @@ class Child {
   String? imageLink;
   Category? category;
   Education? education;
-  String? country;
-  String? city;
+  Country? country;
+  City? city;
 
   Child({
     this.id,
@@ -107,8 +109,8 @@ class Child {
       education: json['education'] != null
           ? Education.fromJson(json['education'])
           : null,
-      country: json['country'],
-      city: json['city']
+        country: json['country'] != null ? Country.fromJson(json['country']) : null,  // New mapping for country
+      city: json['city'] != null ? City.fromJson(json['city']) : null,
     );
   }
 
@@ -138,8 +140,49 @@ class Child {
       'image_link': imageLink,
       'category': category?.toJson(),
       'education': education?.toJson(),
-      'country': country,
-      'city':city
+       'country': country?.toJson(),  // Serializing country as an object
+      'city': city?.toJson(),
+    };
+  }
+}
+class Country {
+  int? id;
+  String? name;
+
+  Country({this.id, this.name});
+
+  factory Country.fromJson(Map<String, dynamic> json) {
+    return Country(
+      id: json['id'],
+      name: json['name'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
+}
+
+class City {
+  int? id;
+  String? name;
+
+  City({this.id, this.name});
+
+  factory City.fromJson(Map<String, dynamic> json) {
+    return City(
+      id: json['id'],
+      name: json['name'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
     };
   }
 }

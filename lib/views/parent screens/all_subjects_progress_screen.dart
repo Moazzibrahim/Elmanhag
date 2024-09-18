@@ -100,7 +100,9 @@ class StudentAllSubjectsProgressScreen extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const StudyProgressScreen()));
+                                            StudyProgressScreen(
+                                              sttidd: stid,
+                                            )));
                               },
                               child: Card(
                                 color: theme.scaffoldBackgroundColor,

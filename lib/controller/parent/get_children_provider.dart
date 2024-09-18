@@ -34,7 +34,7 @@ class GetChildrenProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
         _childrenResponse = ChildrenResponse.fromJson(jsonResponse);
-        log('done');
+        log('Children data loaded successfully');
       } else {
         _errorMessage = 'Failed to load children data';
         log('${response.statusCode}');
