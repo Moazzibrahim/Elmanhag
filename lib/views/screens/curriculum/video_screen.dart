@@ -58,8 +58,10 @@ class _LessonsVideosState extends State<LessonsVideos> {
                     ),
                     Center(
                       child: Text(
-                        widget.lessonData['name'],
-                        style: const TextStyle(fontSize: 20, color: redcolor),
+                        widget.lessonData['name'].length > 25
+                            ? widget.lessonData['name'].substring(0, 25) + '...'
+                            : widget.lessonData['name'],
+                        style: const TextStyle(fontSize: 17, color: redcolor),
                       ),
                     ),
                   ],

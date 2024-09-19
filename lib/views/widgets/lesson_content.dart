@@ -118,26 +118,12 @@ class _IdeasContentState extends State<IdeasContent> {
                   ),
                 ),
               ),
-            const SizedBox(height: 10),
-            const Row(
-              children: [
-                SizedBox(width: 20),
-                Text(
-                  'الوحده الاولى الدرس الثانى',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                SizedBox(width: 10),
-              ],
-            ),
             const SizedBox(height: 15),
             const Row(
               children: [
                 SizedBox(width: 20),
                 CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/logo.png'),
+                  backgroundImage: AssetImage('assets/images/amin2.png'),
                 ),
                 SizedBox(width: 10),
                 Text('المنهج', style: TextStyle(fontSize: 16)),
@@ -257,11 +243,6 @@ class _IdeasContentState extends State<IdeasContent> {
                               videoResources[index]['title'],
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'مستر احمد الباشا',
-                              style: TextStyle(fontSize: 14),
                             ),
                             const SizedBox(height: 10),
                             Text(
