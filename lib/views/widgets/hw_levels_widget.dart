@@ -89,10 +89,11 @@ class HomeWorkWidgetState extends State<HomeWorkWidget> {
           context,
           MaterialPageRoute(
             builder: (context) => HomeworkMcqScreen(
-              homeworkResponse: homeworkResponse,
-            ),
+                homeworkResponse: homeworkResponse,
+                hwid: widget.homework.first['id']),
           ),
         );
+        log("hwid: ${widget.homework.first['id']}");
       } else {
         print('Failed to send Homework ID: ${response.statusCode}');
       }

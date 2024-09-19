@@ -10,9 +10,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
 
 class HomeworkMcqScreen extends StatefulWidget {
+  final int? hwid;
   final HomeworkResponse? homeworkResponse;
 
-  const HomeworkMcqScreen({super.key, this.homeworkResponse});
+  const HomeworkMcqScreen({super.key, this.homeworkResponse,this.hwid});
 
   @override
   State<HomeworkMcqScreen> createState() => _HomeworkMcqScreenState();
