@@ -218,11 +218,19 @@ class _HomeworkMcqScreenState extends State<HomeworkMcqScreen> {
         bool isCorrect = true;
 
         // Compare user answers with true answers
-        for (int i = 0; i < _controllers.length; i++) {
-          if (i >= parsedTrueAnswers.length ||
-              _controllers[i].text.trim() != parsedTrueAnswers[i].trim()) {
-            isCorrect = false;
-            break;
+        List<String> userAnswers = [];
+        for (var controller in _controllers) {
+          userAnswers.add(controller.text.trim());
+        }
+
+        if (userAnswers.length != parsedTrueAnswers.length) {
+          isCorrect = false;
+        } else {
+          for (int i = 0; i < userAnswers.length; i++) {
+            if (userAnswers[i] != parsedTrueAnswers[i]) {
+              isCorrect = false;
+              break;
+            }
           }
         }
 
@@ -235,11 +243,9 @@ class _HomeworkMcqScreenState extends State<HomeworkMcqScreen> {
         }
       }
     }
-
     int correctAnswersCount = correctQuestions.length;
     int totalQuestions = questionGroup?.questions?.length ?? 0;
     log('H.W submitted with $correctAnswersCount correct answers and ${totalQuestions - correctAnswersCount} incorrect answers.');
-
     // Show result dialog
     showResultDialog(context, correctAnswersCount, totalQuestions);
   }
@@ -512,51 +518,17 @@ class _HomeworkMcqScreenState extends State<HomeworkMcqScreen> {
     return Wrap(
       spacing: 10.0,
       children: shuffledAnswers.map((answer) {
-        return Draggable<String>(
-          data: answer.answer ?? '',
-          feedback: Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.blueGrey,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Text(
-                answer.answer ?? '',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ),
+        return Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.blueGrey,
+            borderRadius: BorderRadius.circular(8.0),
           ),
-          childWhenDragging: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.blueGrey.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Text(
-              answer.answer ?? '',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.blueGrey,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Text(
-              answer.answer ?? '',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
+          child: Text(
+            answer.answer ?? '',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
             ),
           ),
         );
