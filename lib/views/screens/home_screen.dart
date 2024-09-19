@@ -202,8 +202,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Row(
                                         children: [
                                           CircleAvatar(
-                                            backgroundImage: user?.image != null
-                                                ? NetworkImage(user!.image!)
+                                            backgroundImage: user?.imageLink !=
+                                                    null
+                                                ? NetworkImage(user!.imageLink!)
                                                 : null,
                                             radius: 20,
                                           ),

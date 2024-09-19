@@ -19,12 +19,14 @@ class VodafonePaymentScreen extends StatefulWidget {
   final int itemidsub;
   final String itemsprice;
   final String services;
+  final int? paymentmtethodid;
   const VodafonePaymentScreen(
       {super.key,
       required this.itemids,
       required this.itemidsub,
       required this.itemsprice,
-      required this.services});
+      required this.services,
+      this.paymentmtethodid});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -262,8 +264,8 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
           widget.itemsprice.toString(); // Replace with the actual amount
       request.fields['service'] =
           widget.services.toString(); // Replace with the actual service
-      request.fields['payment_method_id'] =
-          1.toString(); // Replace with the actual payment method ID
+      request.fields['payment_method_id'] = widget.paymentmtethodid
+          .toString(); // Replace with the actual payment method ID
       if (widget.itemidsub == 0) {
         request.fields['bundle_id'] =
             widget.itemids.toString(); // Pass the bundle ID
@@ -278,6 +280,7 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
           _image!.path,
         ),
       );
+      log("pay id:${widget.paymentmtethodid}");
 
       final response = await request.send();
 
