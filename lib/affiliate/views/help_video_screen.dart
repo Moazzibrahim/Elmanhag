@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_application_1/affiliate/views/video_affiliate.dart';
+import '../controller/videos_affiliate_provider.dart';
+import '../models/videos_affiliate_model.dart';
 import '../../constants/colors.dart';
 
 class HelpVideosScreen extends StatelessWidget {
@@ -14,7 +16,6 @@ class HelpVideosScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: redcolor),
           onPressed: () {
-            // Action for back button
             Navigator.pop(context);
           },
         ),
@@ -30,42 +31,78 @@ class HelpVideosScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5, // Replace with the actual number of videos
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.red.shade100,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      child: const Center(
-                        child: Text(
-                          'كيفيه تشغيل الابليكشن الطالب؟',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
-                          ),
+        child: FutureBuilder<List<AffiliateGroupVideo>>(
+          future: fetchAffiliateGroupVideos(context),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<AffiliateGroupVideo>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text('No videos available'));
+            } else {
+              List<AffiliateGroupVideo> affiliateGroupVideos = snapshot.data!;
+              return ListView(
+                children: affiliateGroupVideos.map((group) {
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12.0),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ExpansionTile(
+                      tilePadding: EdgeInsets.all(16),
+                      title: Text(
+                        group.name,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
+                      leading: Icon(
+                        Icons.video_library,
+                        color: redcolor,
+                      ),
+                      children: group.affiliateVideos.isNotEmpty
+                          ? group.affiliateVideos.map((video) {
+                              return ListTile(
+                                leading: Icon(
+                                  Icons.play_circle_fill,
+                                  color: redcolor,
+                                ),
+                                title: Text(
+                                  video.title,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 4.0),
+                                onTap: () {
+                                  // Navigate to the video player screen
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => VideoPlayerScreen(
+                                          videoUrl: video.videoLink),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList()
+                          : [
+                              ListTile(
+                                  title: Text(
+                                      'No videos available for this group'))
+                            ],
                     ),
                   );
-                },
-              ),
-            ),
-            const Row(
-              children: [
-                SizedBox(width: 10,),
-                Text('ستتوفر الفيديوهات التحديث القادم',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-              ],
-            ),
-            const SizedBox(height: 330,),
-          ],
+                }).toList(),
+              );
+            }
+          },
         ),
       ),
     );

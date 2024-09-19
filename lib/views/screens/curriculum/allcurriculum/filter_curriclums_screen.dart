@@ -80,7 +80,9 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
             'education_id': selectedEducationId!,
           }),
         );
-
+        print(selectedEducationId);
+        print(selectedCategoryId);
+ 
         print('Response status: ${response.statusCode}');
         print('Response body: ${response.body}');
 
@@ -99,12 +101,11 @@ class _FilterCurriculumsScreenState extends State<FilterCurriculumsScreen> {
           } else {
             throw Exception('Unexpected response format');
           }
-        }else if(response.statusCode == 403){
+        } else if (response.statusCode == 403) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('ستتوفر التجربة التحديث القادم')),
           );
-        } 
-        else {
+        } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: ${response.statusCode}')),
           );

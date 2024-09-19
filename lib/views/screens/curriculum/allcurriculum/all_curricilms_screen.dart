@@ -19,10 +19,10 @@ class AllCurriculumsScreen extends StatelessWidget {
 
   Future<void> fetchAndNavigate(BuildContext context, int subjectId) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    final token = tokenProvider.token; // Retrieve the token from the provider
+    final token = tokenProvider.token; 
 
     final url =
-        Uri.parse('https://bdev.elmanhag.shop/student/subject/chapter/view');
+        Uri.parse('https://bdev.elmanhag.shop/affilate/subject/chapter/view');
 
     try {
       final response = await http.post(
@@ -30,7 +30,7 @@ class AllCurriculumsScreen extends StatelessWidget {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': 'Bearer $token', // Include the token in the headers
+          'Authorization': 'Bearer $token', 
         },
         body: jsonEncode({'subject_id': subjectId}),
       );
@@ -46,7 +46,6 @@ class AllCurriculumsScreen extends StatelessWidget {
             .toList();
 
         Navigator.push(
-          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => ChaptersScreen(chapters: chapters),
