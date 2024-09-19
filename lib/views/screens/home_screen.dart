@@ -6,6 +6,7 @@ import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
+import 'package:flutter_application_1/views/screens/curriculum/allcurriculum/filter_curriclums_screen.dart';
 import 'package:flutter_application_1/views/screens/subscriptions/my_subscriptions.dart';
 import 'package:flutter_application_1/views/screens/suggestions_screen.dart';
 import 'package:provider/provider.dart';
@@ -130,6 +131,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (ctx) => const MySubscriptions()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.book),
+                title: Text(
+                    AppLocalizations.of(context).translate('all_curriculums')),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FilterCurriculumsScreen()),
                   );
                 },
               ),
@@ -299,7 +312,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Row(
                                       children: [
                                         CircleAvatar(
-                                          backgroundImage: user?.imageLink != null
+                                          backgroundImage: user?.imageLink !=
+                                                  null
                                               ? NetworkImage(user!.imageLink!)
                                               : null,
                                           radius: 20,
