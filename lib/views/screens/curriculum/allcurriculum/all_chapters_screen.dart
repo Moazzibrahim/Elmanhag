@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -111,7 +113,7 @@ class _ChapterTileState extends State<ChapterTile> {
   Future<void> _sendLesson(Lesson lesson) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final String? token = tokenProvider.token;
-    final url = 'https://bdev.elmanhag.shop/affilate/chapter/lesson/view';
+    final url = '';
 
     try {
       final response = await http.post(
@@ -132,9 +134,8 @@ class _ChapterTileState extends State<ChapterTile> {
 
         if (data['success'] != null) {
           final lessonData = data['lesson'];
-          print('Lesson sent successfully');
+          log('Lesson sent successfully');
 
-          // Navigate to LessonsVideos screen with lessonData
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -143,14 +144,16 @@ class _ChapterTileState extends State<ChapterTile> {
               ),
             ),
           );
+        }else{
+          showLessonNotPaidDialog(context);
         }
       } else {
         // Handle error
-        print('Failed to send lesson: ${response.statusCode}');
+        log('Failed to send lesson: ${response.statusCode}');
       }
     } catch (error) {
       // Handle network error
-      print('Error sending lesson: $error');
+      log('Error sending lesson: $error');
     }
   }
 
@@ -210,4 +213,23 @@ class _ChapterTileState extends State<ChapterTile> {
       ),
     );
   }
+}
+void showLessonNotPaidDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Lesson Not Paid'),
+        content: const Text('You need to pay for this lesson to access it.'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

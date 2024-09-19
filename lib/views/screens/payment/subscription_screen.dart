@@ -128,7 +128,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              ' ${localizations.translate('welcome')} ${user!.name} ${user.studentJob!.job}',
+                              ' ${localizations.translate('welcome')} ${user!.name} ${user.studentJob != null? user.studentJob!.job : ''}',
                               style: const TextStyle(
                                 color: redcolor,
                                 fontSize: 18,
