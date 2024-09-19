@@ -130,36 +130,6 @@ class _IdeasContentState extends State<IdeasContent> {
               ],
             ),
             const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                for (int i = 0; i < 5; i++)
-                  GestureDetector(
-                    onTap: () {
-                      updateRating(i + 1);
-                    },
-                    child: Icon(
-                      i < rating ? Icons.star : Icons.star_border_outlined,
-                      color: Colors.redAccent[700],
-                      size: 28,
-                    ),
-                  ),
-                const SizedBox(width: 5),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromARGB(255, 194, 193, 193)),
-                  child: const Row(
-                    children: [
-                      Text('Report'),
-                      Icon(Icons.flag_outlined),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 15),
             if (videoResources.isNotEmpty)
               Row(
                 children: [
