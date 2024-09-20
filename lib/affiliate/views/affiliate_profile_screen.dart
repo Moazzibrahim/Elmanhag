@@ -2,11 +2,69 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For Clipboard functionality
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart'; // For TokenModel
 
+import '../../controller/Auth/login_provider.dart';
+import '../../views/screens/login/login_screen.dart';
 import '../controller/affiliate_provider.dart';
 
-class AffiliateProfileScreen extends StatelessWidget {
+class AffiliateProfileScreen extends StatefulWidget {
   const AffiliateProfileScreen({super.key});
+
+  @override
+  _AffiliateProfileScreenState createState() => _AffiliateProfileScreenState();
+}
+
+class _AffiliateProfileScreenState extends State<AffiliateProfileScreen> {
+  Future<void> _deleteAccount() async {
+    final url = Uri.parse('https://bdev.elmanhag.shop/affilate/profile/delete');
+    final token = Provider.of<TokenModel>(context, listen: false).token;
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(AppLocalizations.of(context)
+                    .translate('account deleted successfully'))),
+          );
+          Future.delayed(
+            const Duration(seconds: 1),
+            () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            },
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(AppLocalizations.of(context)
+                    .translate('Failed to delete account'))),
+          );
+        }
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $error')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,26 +140,12 @@ class AffiliateProfileScreen extends StatelessWidget {
                         ],
                       ),
                       const Spacer(),
-                      // IconButton(
-                      //   onPressed: () {
-                      //     Navigator.push(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //             builder: (context) =>
-                      //                 const EditaffilateProfileScreen()));
-                      //   },
-                      //   icon: const Icon(Icons.edit, color: redcolor),
-                      //   tooltip: 'Edit Profile',
-                      // ),
                     ],
                   ),
                   const SizedBox(height: 20),
                   _buildProfileItem('الاسم: ${user.name}', true),
-                  // const SizedBox(height: 10),
-                  // _buildProfileItem('Email: ${user.email}', true),
                   const SizedBox(height: 10),
-                  _buildProfileItem(
-                      'رقم الهاتف: ${user.phone}', true), // Added phone
+                  _buildProfileItem('رقم الهاتف: ${user.phone}', true),
                   const SizedBox(height: 10),
                   Directionality(
                     textDirection: TextDirection.ltr,
@@ -109,6 +153,25 @@ class AffiliateProfileScreen extends StatelessWidget {
                         context,
                         ' كود التسويق: ${user.affilateCode ?? 'N/A'}',
                         user.affilateCode),
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: _deleteAccount,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 30),
+                    ),
+                    child: const Text(
+                      'Delete Account',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -152,21 +215,20 @@ class AffiliateProfileScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
-        color: Colors.grey[200], // Use Colors.grey[200] for light grey
+        color: Colors.grey[200],
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey[300]!, // Use Colors.grey[300] for shadow color
+            color: Colors.grey[300]!,
             offset: const Offset(0, 2),
             blurRadius: 4,
           ),
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start, // Align items to start
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          if (affiliateCode !=
-              null) // Only show the copy icon if the code is not null
+          if (affiliateCode != null)
             IconButton(
               icon: const Icon(Icons.copy, color: Colors.red),
               onPressed: () {
@@ -186,7 +248,7 @@ class AffiliateProfileScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[700], // Use Colors.grey[700] for text color
+              color: Colors.grey[700],
             ),
           ),
         ],

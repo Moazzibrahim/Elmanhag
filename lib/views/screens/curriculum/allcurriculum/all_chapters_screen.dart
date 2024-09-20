@@ -113,7 +113,7 @@ class _ChapterTileState extends State<ChapterTile> {
   Future<void> _sendLesson(Lesson lesson) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final String? token = tokenProvider.token;
-    final url = '';
+    final url = 'https://bdev.elmanhag.shop/affilate/chapter/lesson/view';
 
     try {
       final response = await http.post(
@@ -144,7 +144,7 @@ class _ChapterTileState extends State<ChapterTile> {
               ),
             ),
           );
-        }else{
+        } else {
           showLessonNotPaidDialog(context);
         }
       } else {
@@ -214,13 +214,14 @@ class _ChapterTileState extends State<ChapterTile> {
     );
   }
 }
+
 void showLessonNotPaidDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Lesson Not Paid'),
-        content: const Text('You need to pay for this lesson to access it.'),
+        title: const Text('الدرس غير مجاني'),
+        content: const Text('غير مسموح لك بمشاهدة هذا الدرس'),
         actions: <Widget>[
           TextButton(
             child: const Text('OK'),
