@@ -237,13 +237,13 @@ class AffiliateHomeScreen extends StatelessWidget {
                             builder: (context) => const HelpVideosScreen()),
                       );
                     }),
-                    _buildGridOption('مناهج', Icons.library_books, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const GuestScreen()),
-                      );
-                    }),
+                    // _buildGridOption('مناهج', Icons.library_books, () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const GuestScreen()),
+                    //   );
+                    // }),
                   ],
                 ),
               ),
