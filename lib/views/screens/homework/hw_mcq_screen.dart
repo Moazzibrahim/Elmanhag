@@ -1,19 +1,22 @@
-// ignore_for_file: unused_element, deprecated_member_use
+// ignore_for_file: unused_element, deprecated_member_use, avoid_print
 
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/models/hw_questions_model.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class HomeworkMcqScreen extends StatefulWidget {
   final int? hwid;
   final HomeworkResponse? homeworkResponse;
 
-  const HomeworkMcqScreen({super.key, this.homeworkResponse,this.hwid});
+  const HomeworkMcqScreen({super.key, this.homeworkResponse, this.hwid});
 
   @override
   State<HomeworkMcqScreen> createState() => _HomeworkMcqScreenState();
@@ -249,6 +252,7 @@ class _HomeworkMcqScreenState extends State<HomeworkMcqScreen> {
     log('H.W submitted with $correctAnswersCount correct answers and ${totalQuestions - correctAnswersCount} incorrect answers.');
     // Show result dialog
     showResultDialog(context, correctAnswersCount, totalQuestions);
+    sendscore(context, correctAnswersCount);
   }
 
   Widget _buildQuestionContent(Question? question) {
@@ -660,6 +664,46 @@ class _HomeworkMcqScreenState extends State<HomeworkMcqScreen> {
         ),
       ],
     );
+  }
+
+  bool _isLoading = false;
+  String _errorMessage = '';
+  bool get isLoading => _isLoading;
+  String get errorMessage => _errorMessage;
+  Future<void> sendscore(BuildContext context, int correctAnswers) async {
+    _isLoading = true;
+    _errorMessage = '';
+
+    const url = 'https://bdev.elmanhag.shop/student/homework/correct';
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final String? token = tokenProvider.token;
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({
+          'homework_id': widget.hwid,
+          'score': correctAnswers, // Use the correctAnswers parameter here
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        print("$jsonData");
+        // Handle response data
+      } else {
+        _errorMessage = 'Failed to post score';
+      }
+    } catch (e) {
+      _errorMessage = 'An error occurred: $e';
+    }
+
+    _isLoading = false;
   }
 }
 

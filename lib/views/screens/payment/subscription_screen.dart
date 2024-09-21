@@ -66,7 +66,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             description: bundle.description,
             coverPhoto: bundle.coverPhoto,
             expiredDate: bundle.expiredDate,
-            discount: bundle.discount,
+            discount: (bundle.discounts?.isNotEmpty ?? false) ? bundle.discounts!.first.amount : 0,
             type: 'bundle',
           )),
       ...(widget.subjectId == null
@@ -296,7 +296,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             description: bundle.description,
             coverPhoto: bundle.coverPhoto,
             expiredDate: bundle.expiredDate,
-            discount: bundle.discount,
+            discount: (bundle.discounts?.isNotEmpty ?? false) ? bundle.discounts!.first.amount : 0,
             type: 'bundle',
           )),
       ...(widget.subjectId == null
