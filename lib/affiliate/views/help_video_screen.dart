@@ -36,11 +36,11 @@ class HelpVideosScreen extends StatelessWidget {
           builder: (BuildContext context,
               AsyncSnapshot<List<AffiliateGroupVideo>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text('No videos available'));
+              return const Center(child: Text('No videos available'));
             } else {
               List<AffiliateGroupVideo> affiliateGroupVideos = snapshot.data!;
               return ListView(
@@ -52,34 +52,34 @@ class HelpVideosScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ExpansionTile(
-                      tilePadding: EdgeInsets.all(16),
+                      tilePadding: const EdgeInsets.all(16),
                       title: Text(
                         group.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      leading: Icon(
+                      leading: const Icon(
                         Icons.video_library,
                         color: redcolor,
                       ),
                       children: group.affiliateVideos.isNotEmpty
                           ? group.affiliateVideos.map((video) {
                               return ListTile(
-                                leading: Icon(
+                                leading: const Icon(
                                   Icons.play_circle_fill,
                                   color: redcolor,
                                 ),
                                 title: Text(
                                   video.title,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.black,
                                   ),
                                 ),
                                 contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 4.0),
+                                    const EdgeInsets.symmetric(horizontal: 4.0),
                                 onTap: () {
                                   // Navigate to the video player screen
                                   Navigator.push(
@@ -93,7 +93,7 @@ class HelpVideosScreen extends StatelessWidget {
                               );
                             }).toList()
                           : [
-                              ListTile(
+                              const ListTile(
                                   title: Text(
                                       'No videos available for this group'))
                             ],

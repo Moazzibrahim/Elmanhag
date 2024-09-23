@@ -5,7 +5,6 @@ import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/notification_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-
 class NotificationsParentScreen extends StatelessWidget {
   final int? childId;
   const NotificationsParentScreen({super.key, this.childId});
@@ -50,6 +49,7 @@ class NotificationsParentScreen extends StatelessWidget {
                   child: Text('No notifications'),
                 );
               } else {
+                // Notify for upcoming homework
                 if (dueHomework.isNotEmpty) {
                   for (var homework in dueHomework) {
                     NotificationHelper.showNotification(
@@ -60,6 +60,7 @@ class NotificationsParentScreen extends StatelessWidget {
                   }
                 }
 
+                // Notify for missed homework
                 if (oldHomework.isNotEmpty) {
                   for (var homework in oldHomework) {
                     NotificationHelper.showNotification(
@@ -140,8 +141,7 @@ class NotificationsParentScreen extends StatelessWidget {
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        throw Exception(
-            'Failed to load subjects. Status code: ${response.statusCode}');
+        throw Exception('Failed to load subjects. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error fetching subjects: $e');

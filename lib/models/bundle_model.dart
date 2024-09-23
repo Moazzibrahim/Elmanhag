@@ -38,7 +38,6 @@ class Bundle {
   final int? id;
   final String? name;
   final double? price;
-  final double? discount;
   final String? tags;
   final String? thumbnail;
   final String? coverPhoto;
@@ -58,7 +57,6 @@ class Bundle {
     this.id,
     this.name,
     this.price,
-    this.discount,
     this.tags,
     this.thumbnail,
     this.coverPhoto,
@@ -80,7 +78,6 @@ class Bundle {
       id: json['id'],
       name: json['name'],
       price: json['price']?.toDouble(),
-      discount: json['price_discount']?.toDouble(),
       tags: json['tags'],
       thumbnail: json['thumbnail'],
       coverPhoto: json['cover_photo'],
@@ -111,7 +108,6 @@ class Bundle {
       'id': id,
       'name': name,
       'price': price,
-      'price_discount': discount,
       'tags': tags,
       'thumbnail': thumbnail,
       'cover_photo': coverPhoto,
