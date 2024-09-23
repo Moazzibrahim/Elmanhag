@@ -66,7 +66,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             description: bundle.description,
             coverPhoto: bundle.coverPhoto,
             expiredDate: bundle.expiredDate,
-            discount: (bundle.discounts?.isNotEmpty ?? false) ? bundle.discounts!.first.amount : 0,
+            discount: (bundle.discounts?.isNotEmpty ?? false)
+                ? bundle.discounts!.first.amount
+                : 0,
             type: 'bundle',
           )),
       ...(widget.subjectId == null
@@ -128,7 +130,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              ' ${localizations.translate('welcome')} ${user!.name} ${user.studentJob != null? user.studentJob!.job : ''}',
+                              ' ${localizations.translate('welcome')} ${user!.name} ${user.studentJob != null ? user.studentJob!.job : ''}',
                               style: const TextStyle(
                                 color: redcolor,
                                 fontSize: 18,
@@ -296,7 +298,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             description: bundle.description,
             coverPhoto: bundle.coverPhoto,
             expiredDate: bundle.expiredDate,
-            discount: (bundle.discounts?.isNotEmpty ?? false) ? bundle.discounts!.first.amount : 0,
+            discount: (bundle.discounts?.isNotEmpty ?? false)
+                ? bundle.discounts!.first.amount
+                : 0,
             type: 'bundle',
           )),
       ...(widget.subjectId == null
@@ -309,7 +313,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 expiredDate: subject.expiredDate,
                 discount: subject.discounts?.isNotEmpty ?? false
                     ? subject.discounts!.first.amount
-                    : 0, // Use the first discount amount if available
+                    : 0,
                 type: 'subject',
               ))
           : filteredSubject.map((subject) => BundleSubjectItem(
@@ -321,7 +325,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 expiredDate: subject.expiredDate,
                 discount: subject.discounts?.isNotEmpty ?? false
                     ? subject.discounts!.first.amount
-                    : 0, // Use the first discount amount if available
+                    : 0,
                 type: 'subject',
               ))),
     ];
@@ -364,30 +368,44 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              if (discountAsInt > 0)
+
+              // Check if discount exists, otherwise show only the price
+              if (discountAsInt > 0) ...[
                 Text(
-                  '$discountAsInt', // Display discount percentage
+                  '$discountAsInt L.E', // Display discount percentage
                   style: const TextStyle(
                     color: redcolor,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              const SizedBox(height: 8),
-              Text(
-                localizations.translate('instead_of'),
-                style: const TextStyle(color: redcolor),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '$priceAsInt',
-                style: const TextStyle(
-                  color: redcolor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.lineThrough,
+                const SizedBox(height: 8),
+                Text(
+                  localizations.translate('instead_of'),
+                  style: const TextStyle(color: redcolor),
                 ),
-              ),
+                const SizedBox(height: 8),
+                Text(
+                  '$priceAsInt L.E',
+                  style: const TextStyle(
+                    color: redcolor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
+              ] else ...[
+                // Show the price only
+                Text(
+                  '$priceAsInt L.E',
+                  style: const TextStyle(
+                    color: redcolor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+
               const SizedBox(height: 8),
               const Divider(
                 color: redcolor,
