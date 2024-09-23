@@ -7,7 +7,6 @@ class RewardsScreen extends StatefulWidget {
   const RewardsScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _RewardsScreenState createState() => _RewardsScreenState();
 }
 
@@ -17,7 +16,6 @@ class _RewardsScreenState extends State<RewardsScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch the bonus data when the screen initializes
     bonusResponseFuture = BonusService().fetchBonusData(context);
   }
 
@@ -55,57 +53,26 @@ class _RewardsScreenState extends State<RewardsScreen> {
             } else if (snapshot.hasData && snapshot.data != null) {
               final affiliateBonus = snapshot.data!.affiliateBonus;
               int remainingBundle = affiliateBonus.bundlePaid;
-              int cumulativeTarget = 0; // Cumulative target starts from 0
+              int cumulativeTarget = 0;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(20.0),
-                      constraints: const BoxConstraints(
-                        minWidth: 80,
-                        minHeight: 80,
-                      ),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color.fromARGB(255, 242, 242, 243),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade400,
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          '$remainingBundle',
-                          style: TextStyle(
-                            color: Colors.green.shade800,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
+                  _buildAchievementCard(remainingBundle),
+                  const SizedBox(
+                    height: 5,
                   ),
-                  const SizedBox(height: 8.0), // Space between circle and text
                   const Center(
                     child: Text(
-                      'حققت', // The text to display
+                      'حققت',
                       style: TextStyle(
-                        color: Colors.green,
-                        fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: redcolor,
                       ),
-                      textAlign:
-                          TextAlign.center, // Optional: Center-align the text
                     ),
                   ),
-                  const SizedBox(
-                      height:
-                          16.0), // Add some space between the circle and the ListView
+                  const SizedBox(height: 16.0),
                   Expanded(
                     child: ListView.builder(
                       itemCount: affiliateBonus.totalBonus.length,
@@ -113,17 +80,14 @@ class _RewardsScreenState extends State<RewardsScreen> {
                         final bonus = affiliateBonus.totalBonus[index];
                         double progress;
 
-                        cumulativeTarget +=
-                            bonus.target; // Accumulate the target
-
+                        cumulativeTarget += bonus.target;
                         if (remainingBundle >= bonus.target) {
                           progress = 1.0;
                           remainingBundle -= bonus.target;
                         } else {
                           progress =
                               (remainingBundle / bonus.target).clamp(0.0, 1.0);
-                          remainingBundle =
-                              0; // No more bundle left after partial
+                          remainingBundle = 0;
                         }
 
                         return Column(
@@ -132,8 +96,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                               level: bonus.title,
                               reward: bonus.bonus,
                               progress: progress,
-                              target:
-                                  cumulativeTarget, // Pass cumulative target here
+                              target: cumulativeTarget,
                             ),
                             const SizedBox(height: 20),
                           ],
@@ -147,6 +110,45 @@ class _RewardsScreenState extends State<RewardsScreen> {
               return const Center(child: Text('No data available'));
             }
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAchievementCard(int remainingBundle) {
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.3,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: redcolor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: redcolor.withOpacity(0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.done_outline_sharp,
+                  color: Colors.white, size: 36),
+              const SizedBox(height: 8),
+              Text(
+                '$remainingBundle',
+                style: const TextStyle(
+                  fontSize: 28,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+            ],
+          ),
         ),
       ),
     );
@@ -169,71 +171,80 @@ class RewardLevel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          level,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          'حقق $target واحصل علي مكافاة  $reward',
-          style: TextStyle(
-            color: Colors.grey[800],
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 10),
-        Stack(
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: LinearProgressIndicator(
-                value: progress,
-                backgroundColor: Colors.grey[300],
-                color: progress == 1.0
-                    ? Colors.green
-                    : redcolor, // Green when 100%
-                minHeight: 20,
+            Text(
+              level,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Positioned.fill(
-              child: Center(
-                child: progress == 1.0
-                    ? const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.check, color: Colors.white, size: 16),
-                          SizedBox(width: 5),
-                          Text(
-                            'تم الحصول عليها',
-                            style: TextStyle(
+            const SizedBox(height: 5),
+            Text(
+              'حقق $target واحصل علي مكافاة  $reward',
+              style: TextStyle(
+                color: Colors.grey[800],
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      progress == 1.0 ? Colors.green : redcolor,
+                    ),
+                    minHeight: 20,
+                  ),
+                ),
+                Positioned.fill(
+                  child: Center(
+                    child: progress == 1.0
+                        ? const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check, color: Colors.white, size: 16),
+                              SizedBox(width: 5),
+                              Text(
+                                'تم الحصول عليها',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            '${(progress * 100).toInt()}%',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      )
-                    : Text(
-                        '${(progress * 100).toInt()}%',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-              ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 }

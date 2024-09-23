@@ -1,4 +1,4 @@
-package com.elmanhag.student
+package com.elmanhag.aff
 
 import io.flutter.embedding.android.FlutterActivity
 

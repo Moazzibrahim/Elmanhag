@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for clipboard functionality
 import 'package:flutter_application_1/affiliate/views/affiliate_profile_screen.dart';
@@ -10,7 +12,6 @@ import '../../controller/Auth/logout_provider.dart';
 import '../controller/affiliate_provider.dart';
 import '../controller/bouns_provider.dart';
 import '../models/bouns_model.dart';
-import 'guest_screen.dart';
 import 'help_video_screen.dart';
 
 class AffiliateHomeScreen extends StatelessWidget {
@@ -28,14 +29,11 @@ class AffiliateHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return Future.value(false); // Prevent back navigation
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -196,57 +194,54 @@ class AffiliateHomeScreen extends StatelessWidget {
                               AffiliateBonus bonusData =
                                   bonusResponse.affiliateBonus;
                               double progress = bonusData.bundlePaid /
-                                  bonusData.target; // Calculate progress
+                                  bonusData.target;
                               return _buildProgressSection(
                                   context, bonusData, progress);
                             }
                           },
                         ),
+                        const SizedBox(height: 10),
                       ],
                     );
                   }
                 },
               ),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1,
-                  children: [
-                    _buildGridOption('المعاملات', Icons.history_outlined, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const TransactionsScreen()),
-                      );
-                    }),
-                    _buildGridOption('السحب', Icons.money_off_outlined, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const WithdrawalScreen()),
-                      );
-                    }),
-                    _buildGridOption(
-                        'فيديوهات مساعده', Icons.play_circle_outline, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HelpVideosScreen()),
-                      );
-                    }),
-                    // _buildGridOption('مناهج', Icons.library_books, () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => const GuestScreen()),
-                    //   );
-                    // }),
-                  ],
-                ),
-              ),
+              Column(
+                children: [
+          GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(), 
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1,
+              children: [
+                _buildGridOption('المعاملات', Icons.history_outlined, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const TransactionsScreen()),
+          );
+                }),
+                _buildGridOption('السحب', Icons.money_off_outlined, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const WithdrawalScreen()),
+          );
+                }),
+                _buildGridOption('فيديوهات مساعده', Icons.play_circle_outline, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const HelpVideosScreen()),
+          );
+                }),
+              ],
+          ),
+                ],
+              )
+              
             ],
           ),
         ),
@@ -284,119 +279,127 @@ class AffiliateHomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const RewardsScreen()),
-            );
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                bonusData.title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: redcolor,
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              bonusData.title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: redcolor,
               ),
-              const SizedBox(height: 10),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'اكمل الهدف ( $combinedTarget ) واحصل على ',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                    ),
-                    TextSpan(
-                      text: '${bonusData.bonus} جنيه',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: redcolor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' هديه',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+            const SizedBox(height: 10),
+            RichText(
+              text: TextSpan(
                 children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey[300],
-                    ),
-                    child: Center(
-                      child: Text(
-                        '${bonusData.bundlePaid}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: redcolor,
-                        ),
-                      ),
+                  TextSpan(
+                    text: 'اكمل الهدف ( $combinedTarget ) واحصل على ',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                  ),
+                  TextSpan(
+                    text: '${bonusData.bonus} جنيه',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: redcolor,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: LinearProgressIndicator(
-                            value: progressForSecondBonus,
-                            backgroundColor: Colors.grey[400],
-                            color: redcolor,
-                            minHeight: 20,
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: Center(
-                            child: Text(
-                              '${(progressForSecondBonus * 100).toStringAsFixed(1)}%',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey[300],
-                    ),
-                    child: Center(
-                      child: Text(
-                        '$combinedTarget',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: redcolor,
-                        ),
-                      ),
-                    ),
+                  TextSpan(
+                    text: ' هديه',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[300],
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${bonusData.bundlePaid}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: redcolor,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: LinearProgressIndicator(
+                          value: progressForSecondBonus,
+                          backgroundColor: Colors.grey[400],
+                          color: redcolor,
+                          minHeight: 20,
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Center(
+                          child: Text(
+                            '${(progressForSecondBonus * 100).toStringAsFixed(1)}%',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[300],
+                  ),
+                  child: Center(
+                    child: Text(
+                      '$combinedTarget',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: redcolor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: (){
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx)=> const RewardsScreen())
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: redcolor,
+                    foregroundColor: Colors.white
+                  ),
+                child: const Text('تابع تقدمك',style: TextStyle(fontSize: 18),))
+              ],
+            )
+          ],
         ),
       );
     } else {
