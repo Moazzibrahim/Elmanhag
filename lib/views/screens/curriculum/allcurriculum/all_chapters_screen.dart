@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
@@ -104,7 +102,6 @@ class ChapterTile extends StatefulWidget {
   final List<Lesson> lessons;
 
   @override
-  // ignore: library_private_types_in_public_api
   _ChapterTileState createState() => _ChapterTileState();
 }
 
@@ -113,7 +110,7 @@ class _ChapterTileState extends State<ChapterTile> {
   Future<void> _sendLesson(Lesson lesson) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final String? token = tokenProvider.token;
-    final url = 'https://bdev.elmanhag.shop/affilate/chapter/lesson/view';
+    const url = 'https://bdev.elmanhag.shop/affilate/chapter/lesson/view';
 
     try {
       final response = await http.post(
@@ -124,7 +121,7 @@ class _ChapterTileState extends State<ChapterTile> {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'lesson_id': lesson.id, // Assuming lesson has an 'id' field
+          'lesson_id': lesson.id,
         }),
       );
 
@@ -221,7 +218,7 @@ void showLessonNotPaidDialog(BuildContext context) {
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text('الدرس غير مجاني'),
-        content: const Text('غير مسموح لك بمشاهدة هذا الدرس'),
+        content: const Text('عذرا يبدو ان هذا الدرس غير متاح لك'),
         actions: <Widget>[
           TextButton(
             child: const Text('OK'),

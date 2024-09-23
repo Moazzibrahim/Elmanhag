@@ -10,7 +10,6 @@ import '../../controller/Auth/logout_provider.dart';
 import '../controller/affiliate_provider.dart';
 import '../controller/bouns_provider.dart';
 import '../models/bouns_model.dart';
-import 'guest_screen.dart';
 import 'help_video_screen.dart';
 
 class AffiliateHomeScreen extends StatelessWidget {

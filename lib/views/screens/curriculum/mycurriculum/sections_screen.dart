@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter_application_1/views/screens/curriculum/video_screen.dart';
@@ -15,12 +17,12 @@ class SectionsScreen extends StatefulWidget {
     super.key,
     required this.chapters,
     required this.subjectId,
-    this.coverPhotoUrl, 
+    this.coverPhotoUrl,
   });
 
   final List<dynamic> chapters;
   final String subjectId;
-  final String? coverPhotoUrl; // Nullable in case it's missing
+  final String? coverPhotoUrl;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -80,8 +82,7 @@ class _SectionsScreenState extends State<SectionsScreen> {
                 ),
                 SizedBox(height: 20.h),
                 Image.network(
-                  widget.coverPhotoUrl ??
-                      'assets/images/beaker.png', // Fallback URL if coverPhotoUrl is null
+                  widget.coverPhotoUrl ?? 'assets/images/beaker.png',
                   height: 100,
                   width: 100,
                 ),
@@ -121,12 +122,12 @@ class ChapterTile extends StatefulWidget {
     super.key,
     required this.chapter,
     required this.lessons,
-    required this.subjectId, // Add subjectId
+    required this.subjectId, 
   });
 
   final dynamic chapter;
   final List<dynamic> lessons;
-  final String subjectId; // Add this
+  final String subjectId; 
 
   @override
   // ignore: library_private_types_in_public_api
@@ -162,18 +163,63 @@ class _ChapterTileState extends State<ChapterTile> {
       if (response.statusCode == 200) {
         var responseData = json.decode(response.body);
         log('Response data: $responseData');
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) =>
-                LessonsVideos(lessonData: responseData['lesson']),
-          ),
-        );
+
+        if (responseData['faield'] ==
+            'This Material for This Lesson is Closed') {
+          // Show dialog to the user
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                content: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'عفوا هذا الدرس غير متاح حالبا.سوف يتوفر لاحقا',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'موافق',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  LessonsVideos(lessonData: responseData['lesson']),
+            ),
+          );
+        }
       } else if (response.statusCode == 400) {
         var responseData = json.decode(response.body);
         if (responseData['faield'] == 'This Lesson Unpaid') {
           showDialog(
-            // ignore: use_build_context_synchronously
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
@@ -212,7 +258,7 @@ class _ChapterTileState extends State<ChapterTile> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: redcolor,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 12),
                       shape: RoundedRectangleBorder(
@@ -231,156 +277,6 @@ class _ChapterTileState extends State<ChapterTile> {
           );
         } else {
           log('Unexpected response: $responseData');
-        }
-      } else if (response.statusCode == 403) {
-        var responseData = json.decode(response.body);
-        if (responseData['faield'] ==
-            'You Can\'t Take This Lesson cause Don\'t end homework Before Lesson') {
-          showDialog(
-            // ignore: use_build_context_synchronously
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                content: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text(
-                    'لا يمكنك أخذ هذا الدرس لأنك لم تنهِ الواجب قبل الدرس.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close the dialog
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Button color
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'موافق',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          log('Request failed with status: ${response.statusCode}.');
-          log(response.body);
-        }
-      } else if (response.statusCode == 404) {
-        var responseData = json.decode(response.body);
-        if (responseData['not_found'] ==
-            'Not Found homeWork for previous lesson.') {
-          showDialog(
-            // ignore: use_build_context_synchronously
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                content: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text(
-                    'لم يتم العثور على الواجب المنزلي للدرس السابق.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close the dialog
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Button color
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'موافق',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          log('Request failed with status: ${response.statusCode}.');
-          log(response.body);
-        }
-      } else if (response.statusCode == 500) {
-        var responseData = json.decode(response.body);
-        if (responseData['lesson_not_solved'] ==
-            'The previous lesson was not solved.') {
-          showDialog(
-            // ignore: use_build_context_synchronously
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                content: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text(
-                    'لم يتم حل الدرس السابق.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close the dialog
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Button color
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'موافق',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          log('Request failed with status: ${response.statusCode}.');
-          log(response.body);
         }
       } else {
         log('Request failed with status: ${response.statusCode}.');
