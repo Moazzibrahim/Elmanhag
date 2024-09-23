@@ -1,7 +1,3 @@
-// ignore_for_file: avoid_print
-
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
@@ -16,10 +12,9 @@ class AllCurriculumsScreen extends StatelessWidget {
   final List<Subject> subjects;
 
   const AllCurriculumsScreen({super.key, required this.subjects});
-
-  Future<void> fetchAndNavigate(BuildContext context, int subjectId) async {
+  Future<void> fetchAndNavigate(BuildContext context, Subject subject) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    final token = tokenProvider.token; 
+    final token = tokenProvider.token;
 
     final url =
         Uri.parse('https://bdev.elmanhag.shop/affilate/subject/chapter/view');
@@ -30,16 +25,12 @@ class AllCurriculumsScreen extends StatelessWidget {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': 'Bearer $token', 
+          'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({'subject_id': subjectId}),
+        body: jsonEncode({'subject_id': subject.id}),
       );
-      print(url);
-      print(subjectId);
 
       if (response.statusCode == 200) {
-        log(response.statusCode.toString());
-        log(response.body);
         final responseData = jsonDecode(response.body);
         final List<Chapter> chapters = (responseData['chapter'] as List)
             .map((chapterJson) => Chapter.fromJson(chapterJson))
@@ -48,15 +39,16 @@ class AllCurriculumsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChaptersScreen(chapters: chapters),
+            builder: (context) => ChaptersScreen(
+              chapters: chapters,
+              coverPhotoUrl: subject.coverPhotoUrl, // Pass the coverPhotoUrl
+            ),
           ),
         );
       } else {
-        // Handle error response
         print('Failed to load chapters. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle any errors
       print('An error occurred: $e');
     }
   }
@@ -124,8 +116,7 @@ class AllCurriculumsScreen extends StatelessWidget {
                     itemCount: subjects.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () =>
-                            fetchAndNavigate(context, subjects[index].id),
+                        onTap: () => fetchAndNavigate(context, subjects[index]),
                         child: Card(
                           color: theme.scaffoldBackgroundColor,
                           elevation: 3,
