@@ -122,12 +122,12 @@ class ChapterTile extends StatefulWidget {
     super.key,
     required this.chapter,
     required this.lessons,
-    required this.subjectId, 
+    required this.subjectId,
   });
 
   final dynamic chapter;
   final List<dynamic> lessons;
-  final String subjectId; 
+  final String subjectId;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -267,6 +267,55 @@ class _ChapterTileState extends State<ChapterTile> {
                     ),
                     child: const Text(
                       'اشترك الان',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          log('Unexpected response: $responseData');
+        }
+      } else if (response.statusCode == 500) {
+        var responseData = json.decode(response.body);
+        if (responseData['lesson_not_solved'] ==
+            'The previous lesson was not solved.') {
+          // Show dialog to the user when the previous lesson was not solved
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                content: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'يجب عليك حل الدرس السابق قبل المتابعة.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'موافق',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),

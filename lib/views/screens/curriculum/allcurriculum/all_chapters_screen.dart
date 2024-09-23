@@ -14,8 +14,9 @@ import '../video_screen.dart'; // For encoding the JSON data
 
 class ChaptersScreen extends StatelessWidget {
   final List<Chapter> chapters;
+  final String? coverPhotoUrl; // Add this
 
-  const ChaptersScreen({super.key, required this.chapters});
+  const ChaptersScreen({super.key, required this.chapters, this.coverPhotoUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +63,18 @@ class ChaptersScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 20.h),
-                Image.asset(
-                  'assets/images/beaker.png',
-                  width: 150.w,
-                  height: 100.h,
-                ),
-                SizedBox(height: 20.h),
+                // Display the subject image or fallback to default
+                coverPhotoUrl != null && coverPhotoUrl!.isNotEmpty
+                    ? Image.network(
+                        coverPhotoUrl!,
+                        width: 150.w,
+                        height: 100.h,
+                      )
+                    : Image.asset(
+                        'assets/images/beaker.png',
+                        width: 150.w,
+                        height: 100.h,
+                      ),
                 Expanded(
                   child: chapters.isEmpty
                       ? Center(

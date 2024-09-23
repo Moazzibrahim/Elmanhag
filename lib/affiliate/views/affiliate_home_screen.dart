@@ -157,7 +157,6 @@ class AffiliateHomeScreen extends StatelessWidget {
                                 Icons.account_balance_wallet_outlined,
                               ),
                             ),
-                            const SizedBox(width: 10),
                             SizedBox(
                               height: 150,
                               child: _buildInfoCard(
@@ -166,7 +165,6 @@ class AffiliateHomeScreen extends StatelessWidget {
                                 Icons.person_add_alt_1_outlined,
                               ),
                             ),
-                            const SizedBox(width: 10),
                             SizedBox(
                               height: 150,
                               child: _buildInfoCard(
@@ -193,8 +191,8 @@ class AffiliateHomeScreen extends StatelessWidget {
                               BonusResponse bonusResponse = bonusSnapshot.data!;
                               AffiliateBonus bonusData =
                                   bonusResponse.affiliateBonus;
-                              double progress = bonusData.bundlePaid /
-                                  bonusData.target;
+                              double progress =
+                                  bonusData.bundlePaid / bonusData.target;
                               return _buildProgressSection(
                                   context, bonusData, progress);
                             }
@@ -208,40 +206,40 @@ class AffiliateHomeScreen extends StatelessWidget {
               ),
               Column(
                 children: [
-          GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(), 
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 1,
-              children: [
-                _buildGridOption('المعاملات', Icons.history_outlined, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const TransactionsScreen()),
-          );
-                }),
-                _buildGridOption('السحب', Icons.money_off_outlined, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const WithdrawalScreen()),
-          );
-                }),
-                _buildGridOption('فيديوهات مساعده', Icons.play_circle_outline, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const HelpVideosScreen()),
-          );
-                }),
-              ],
-          ),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 1,
+                    children: [
+                      _buildGridOption('المعاملات', Icons.history_outlined, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const TransactionsScreen()),
+                        );
+                      }),
+                      _buildGridOption('السحب', Icons.money_off_outlined, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const WithdrawalScreen()),
+                        );
+                      }),
+                      _buildGridOption(
+                          'فيديوهات مساعده', Icons.play_circle_outline, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HelpVideosScreen()),
+                        );
+                      }),
+                    ],
+                  ),
                 ],
               )
-              
             ],
           ),
         ),
@@ -387,16 +385,17 @@ class AffiliateHomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: (){
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx)=> const RewardsScreen())
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: redcolor,
-                    foregroundColor: Colors.white
-                  ),
-                child: const Text('تابع تقدمك',style: TextStyle(fontSize: 18),))
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const RewardsScreen()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: redcolor,
+                        foregroundColor: Colors.white),
+                    child: const Text(
+                      'تابع تقدمك',
+                      style: TextStyle(fontSize: 18),
+                    ))
               ],
             )
           ],
@@ -409,7 +408,7 @@ class AffiliateHomeScreen extends StatelessWidget {
 
   Widget _buildInfoCard(String amount, String description, IconData icon) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: redcolor,
         borderRadius: BorderRadius.circular(16),
