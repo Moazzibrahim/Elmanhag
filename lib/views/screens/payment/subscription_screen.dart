@@ -150,7 +150,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       ),
                       CircleAvatar(
                         radius: 20,
-                        backgroundImage: NetworkImage('${user.image}'),
+                        backgroundImage: NetworkImage('${user.imageLink}'),
                       ),
                     ],
                   ),
