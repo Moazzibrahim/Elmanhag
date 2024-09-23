@@ -98,30 +98,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           ...provider.paymentMethods.map((paymentMethod) =>
                               _buildPaymentOption(
                                   paymentMethod.id, paymentMethod)),
-                          const SizedBox(height: 16),
-                          const Text(
-                            'ادخل  المبلغ',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _promoCodeController,
-                                  decoration: InputDecoration(
-                                    border: const OutlineInputBorder(),
-                                    hintText: ' المبلغ',
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0),
-                                    errorText: _promoCodeError,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('المبلغ: ${widget.itemprice}',style: const TextStyle(fontSize: 20),),
+                            ) 
                           ),
                           const SizedBox(height: 16),
                           const Text(
