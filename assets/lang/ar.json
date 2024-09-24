@@ -121,6 +121,15 @@
     "materials_description": "انت الان على الباقه المجانيه انتقل الى الباقه المدفوعه للحصول على المميزات المتقدمة",
     "notifications":"اشعارات",
     "You do not have any notifications":"ليس لديك اي اشعارات",
-    "all_curriculums": "كل المناهج"
+    "all_curriculums": "كل المناهج",
+    "payment_methods":"طرق الدفع",
+    "choose payment methods":"اختر طريقة الدفع",
+    "enter_promo_code":"ادخل كود الخصم",
+    "apply":"تطبيق",
+    "promo_code":"كود الخصم",
+    "you must enter promo code":"يرجى إدخال كود الخص",
+    "promo code is applied successfully":"كود الخصم تم تطبيقه",
+    "invalid promo code":"كود الخصم غير صحيح",
+    "you must choose payment method":"يرجى اختيار طريقة الدفع"
 
 }

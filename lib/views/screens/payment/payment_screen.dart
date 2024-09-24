@@ -1,9 +1,10 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, avoid_print
 
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/payment/payment_methods_provider.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/models/payment_methods_model.dart';
 import 'package:flutter_application_1/views/screens/payment/fawry_payment_screen.dart';
 import 'package:flutter_application_1/views/screens/payment/visa_payment_screen.dart';
@@ -12,18 +13,19 @@ import 'package:provider/provider.dart';
 
 class PaymentScreen extends StatefulWidget {
   final int itemidbundle;
-  final String itemprice;
+  final String? itemprice;
   final String itemservice;
   final int itemidsubject;
+  final int? itemdiscount;
   const PaymentScreen(
       {super.key,
       required this.itemidbundle,
       required this.itemidsubject,
-      required this.itemprice,
-      required this.itemservice});
+      this.itemprice,
+      required this.itemservice,
+      this.itemdiscount});
 
   @override
-  // ignore: library_private_types_in_public_api
   _PaymentScreenState createState() => _PaymentScreenState();
 }
 
@@ -31,9 +33,31 @@ class _PaymentScreenState extends State<PaymentScreen> {
   int _selectedIndex = -1; // Initialize with -1 (none selected)
   final TextEditingController _promoCodeController = TextEditingController();
   String? _promoCodeError;
+  int? itemPriceAsInt; // Variable to store converted price
+
   @override
   void initState() {
     super.initState();
+
+    // Check if the item price is not null and not empty
+    if (widget.itemprice != null && widget.itemprice!.isNotEmpty) {
+      String cleanedPrice = widget.itemprice!.trim();
+
+      // Attempt to parse the price as a double
+      double? itemPriceAsDouble = double.tryParse(cleanedPrice);
+
+      if (itemPriceAsDouble != null) {
+        // Convert to int by rounding or truncating, depending on your requirement
+        itemPriceAsInt =
+            itemPriceAsDouble.round(); // Or use .toInt() for truncating
+        print('Parsed Item Price as Integer: $itemPriceAsInt');
+      } else {
+        print('Failed to parse price as double: $cleanedPrice');
+      }
+    } else {
+      print('Item price is null or empty');
+    }
+
     Future.microtask(() {
       Provider.of<PaymentMethodsProvider>(context, listen: false)
           .fetchPaymentMethods(context);
@@ -44,6 +68,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
+    final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       body: Stack(
@@ -83,9 +108,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 },
                               ),
                               const Spacer(flex: 2),
-                              const Text(
-                                'طرق الدفع',
-                                style: TextStyle(
+                              Text(
+                                ' ${localizations.translate('payment_methods')}',
+                                style: const TextStyle(
                                   color: redcolor,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -95,19 +120,65 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
+                          Column(
+                            children: [
+                              if (widget.itemdiscount != null)
+                                Row(
+                                  children: [
+                                    Text(
+                                      "${widget.itemdiscount} EGP",
+                                      style: const TextStyle(
+                                          color: redcolor, fontSize: 20),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      localizations.translate('instead_of'),
+                                      style: const TextStyle(fontSize: 20),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "$itemPriceAsInt EGP",
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          decoration:
+                                              TextDecoration.lineThrough),
+                                    ),
+                                  ],
+                                )
+                              else
+                                Row(
+                                  children: [
+                                    // Display item price as integer if available
+                                    Text(
+                                      "$itemPriceAsInt EGP",
+                                      style: const TextStyle(
+                                          fontSize: 20, color: redcolor),
+                                    ),
+                                  ],
+                                ),
+                              // Continue with the rest of your widgets here...
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            localizations.translate('choose payment methods'),
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
                           ...provider.paymentMethods.map((paymentMethod) =>
                               _buildPaymentOption(
                                   paymentMethod.id, paymentMethod)),
-                          Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('المبلغ: ${widget.itemprice}',style: const TextStyle(fontSize: 20),),
-                            ) 
-                          ),
                           const SizedBox(height: 16),
-                          const Text(
-                            'ادخل كود الخصم',
-                            style: TextStyle(
+                          Text(
+                            ' ${localizations.translate('enter_promo_code')}',
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -120,7 +191,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   controller: _promoCodeController,
                                   decoration: InputDecoration(
                                     border: const OutlineInputBorder(),
-                                    hintText: 'كود الخصم',
+                                    hintText:
+                                        ' ${localizations.translate('promo_code')}',
                                     contentPadding: const EdgeInsets.symmetric(
                                         horizontal: 16.0),
                                     errorText: _promoCodeError,
@@ -133,8 +205,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: redcolor,
                                 ),
-                                child: const Text('تطبيق',
-                                    style: TextStyle(color: Colors.white)),
+                                child: Text(localizations.translate('apply'),
+                                    style:
+                                        const TextStyle(color: Colors.white)),
                               ),
                             ],
                           ),
@@ -156,9 +229,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   ),
                                   elevation: 5,
                                 ),
-                                child: const Text(
-                                  'التالي',
-                                  style: TextStyle(
+                                child: Text(
+                                  localizations.translate('next'),
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -181,12 +254,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   void _applyPromoCode() {
+    final localizations = AppLocalizations.of(context);
     final promoCode = _promoCodeController.text;
 
     // Sample validation logic for promo code
     if (promoCode.isEmpty) {
       setState(() {
-        _promoCodeError = 'يرجى إدخال كود الخصم';
+        _promoCodeError = localizations.translate('you must enter promo code');
       });
       return;
     }
@@ -195,26 +269,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
     // For now, we'll just simulate success and failure
     if (promoCode == 'VALIDCODE') {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('كود الخصم تم تطبيقه')),
+        SnackBar(
+            content: Text(
+                '  ${localizations.translate('promo code is applied successfully')} ')),
       );
       setState(() {
         _promoCodeError = null;
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('كود الخصم غير صحيح')),
+        SnackBar(
+            content: Text(localizations.translate('invalid promo code'))),
       );
       setState(() {
-        _promoCodeError = 'كود الخصم غير صحيح';
+        _promoCodeError = ' ${localizations.translate('invalid promo code')}';
       });
     }
   }
 
   void _navigateToSelectedScreen() {
+    final localizations = AppLocalizations.of(context);
     if (_selectedIndex == -1) {
       // If no payment method is selected, show a message or prevent navigation
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('يرجى اختيار طريقة الدفع')),
+        SnackBar(
+            content: Text(
+                localizations.translate('you must choose payment method'))),
       );
       return;
     }
@@ -230,7 +310,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           MaterialPageRoute(
             builder: (ctx) => VodafonePaymentScreen(
               itemids: widget.itemidbundle,
-              itemsprice: widget.itemprice,
+              itemsprice: widget.itemprice!,
               services: widget.itemservice,
               itemidsub: widget.itemidsubject,
               paymentmtethodid:
