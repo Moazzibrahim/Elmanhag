@@ -130,6 +130,7 @@
     "you must enter promo code":"يرجى إدخال كود الخص",
     "promo code is applied successfully":"كود الخصم تم تطبيقه",
     "invalid promo code":"كود الخصم غير صحيح",
-    "you must choose payment method":"يرجى اختيار طريقة الدفع"
+    "you must choose payment method":"يرجى اختيار طريقة الدفع",
+    "new price":"السعر الجديد"
 
 }
