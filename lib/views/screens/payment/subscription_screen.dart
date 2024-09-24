@@ -360,7 +360,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               // Check if discount exists, otherwise show only the price
               if (discountAsInt > 0) ...[
                 Text(
-                  '$discountAsInt EGP', // Display discount percentage
+                  '${priceAsInt - discountAsInt} EGP', // Display discount percentage
                   style: const TextStyle(
                     color: redcolor,
                     fontSize: 16,

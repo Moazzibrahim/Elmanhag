@@ -199,9 +199,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "${widget.itemdiscount} EGP",
+                                      "${(itemPriceAsInt! - widget.itemdiscount!).toString()} EGP",
                                       style: const TextStyle(
-                                          color: redcolor, fontSize: 20),
+                                        color: redcolor,
+                                        fontSize: 20,
+                                      ),
                                     ),
                                     const SizedBox(width: 10),
                                     Text(
