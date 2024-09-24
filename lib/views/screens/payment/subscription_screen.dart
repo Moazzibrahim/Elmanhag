@@ -201,64 +201,52 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: selectedCardIndex != -1
-                      ? () {
-                          final selectedItem = combinedList[selectedCardIndex];
-                          selectedItemPrice = selectedItem.price ?? '0';
-                          service = selectedItem.type == 'bundle'
-                              ? 'Bundle'
-                              : 'Subject';
-                          if (selectedItem.type == 'bundle') {
-                            bundleid = selectedItem.id!;
-                            subid = 0;
-                          } else {
-                            subid = selectedItem.id!;
-                            bundleid = 0;
-                          }
-                          log('bundle id: $bundleid');
-                          log('subid:$subid');
-                          log('service: $service');
-                          log('price: $selectedItemPrice');
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PaymentScreen(
-                                itemidbundle: bundleid,
-                                itemidsubject: subid,
-                                itemprice: selectedItemPrice,
-                                itemservice: service,
-                              ),
-                            ),
-                          );
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: redcolor,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text(
-                    localizations.translate('next'),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.bottomCenter,
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(16.0),
+          //     child: SizedBox(
+          //       width: double.infinity,
+          //       child: ElevatedButton(
+          //         onPressed: selectedCardIndex != -1
+          //             ? () {
+          //                 final selectedItem = combinedList[selectedCardIndex];
+          //                 selectedItemPrice = selectedItem.price ?? '0';
+          //                 service = selectedItem.type == 'bundle'
+          //                     ? 'Bundle'
+          //                     : 'Subject';
+          //                 if (selectedItem.type == 'bundle') {
+          //                   bundleid = selectedItem.id!;
+          //                   subid = 0;
+          //                 } else {
+          //                   subid = selectedItem.id!;
+          //                   bundleid = 0;
+          //                 }
+          //                 log('bundle id: $bundleid');
+          //                 log('subid:$subid');
+          //                 log('service: $service');
+          //                 log('price: $selectedItemPrice');
+          //               }
+          //             : null,
+          //         style: ElevatedButton.styleFrom(
+          //           backgroundColor: redcolor,
+          //           padding: const EdgeInsets.symmetric(vertical: 16),
+          //           shape: RoundedRectangleBorder(
+          //             borderRadius: BorderRadius.circular(12),
+          //           ),
+          //         ),
+          //         child: Text(
+          //           localizations.translate('next'),
+          //           style: const TextStyle(
+          //             fontSize: 18,
+          //             fontWeight: FontWeight.bold,
+          //             color: Colors.white,
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -372,7 +360,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               // Check if discount exists, otherwise show only the price
               if (discountAsInt > 0) ...[
                 Text(
-                  '$discountAsInt L.E', // Display discount percentage
+                  '$discountAsInt EGP', // Display discount percentage
                   style: const TextStyle(
                     color: redcolor,
                     fontSize: 16,
@@ -386,7 +374,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '$priceAsInt L.E',
+                  '$priceAsInt EGP',
                   style: const TextStyle(
                     color: redcolor,
                     fontSize: 16,
@@ -397,7 +385,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               ] else ...[
                 // Show the price only
                 Text(
-                  '$priceAsInt L.E',
+                  '$priceAsInt EGP',
                   style: const TextStyle(
                     color: redcolor,
                     fontSize: 16,
@@ -442,18 +430,32 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             log('subid:$subid');
                             log('service: $service');
                             log('price: $selectedItemPrice');
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PaymentScreen(
-                                  itemidbundle: bundleid,
-                                  itemidsubject: subid,
-                                  itemprice: selectedItemPrice,
-                                  itemservice: service,
+                            if (discountAsInt > 0) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PaymentScreen(
+                                    itemidbundle: bundleid,
+                                    itemidsubject: subid,
+                                    itemprice: selectedItemPrice,
+                                    itemservice: service,
+                                    itemdiscount: discountAsInt,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PaymentScreen(
+                                    itemidbundle: bundleid,
+                                    itemidsubject: subid,
+                                    itemprice: selectedItemPrice,
+                                    itemservice: service,
+                                  ),
+                                ),
+                              );
+                            }
                           }
                         : null,
                     child: Text(

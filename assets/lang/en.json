@@ -2,6 +2,7 @@
     "title": "ELMANHAG",
     "welcome": "Welcome",
     "email": "Email",
+    "Name":"name",
     "password": "Password",
     "forgot_password": "Forgot Password?",
     "login": "Login",
@@ -118,5 +119,13 @@
     "materials_description": "Get access to exclusive learning materials.",
     "notifications":"notifications",
     "all_curriculums": "All Curriculums",
-    "You do not have any notifications":"You do not have any notifications"
+    "You do not have any notifications":"You do not have any notifications",
+    "payment_methods":"payment methods",
+    "choose payment methods":"choose payment methods",
+    "enter_promo_code":"enter promo code",
+    "apply":"apply",
+    "promo_code":"promo code",
+    "you must enter promo code":"you must enter promo code",
+    "invalid promo code":"invalid promo code",
+    "you must choose payment method":"you must choose payment method"
 }
