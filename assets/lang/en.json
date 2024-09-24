@@ -127,5 +127,6 @@
     "promo_code":"promo code",
     "you must enter promo code":"you must enter promo code",
     "invalid promo code":"invalid promo code",
-    "you must choose payment method":"you must choose payment method"
+    "you must choose payment method":"you must choose payment method",
+    "new price":"new price"
 }

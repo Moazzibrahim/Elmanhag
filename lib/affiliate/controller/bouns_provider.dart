@@ -1,7 +1,4 @@
-// ignore_for_file: avoid_print
-
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../controller/Auth/login_provider.dart';
@@ -12,7 +9,7 @@ class BonusService {
   final String apiUrl =
       "https://bdev.elmanhag.shop/affilate/bonus/view"; // Replace with your API URL
 
-  Future<BonusResponse?> fetchBonusData(BuildContext context) async {
+  Future<BonusResponse> fetchBonusData(BuildContext context) async {
     // Get the token from TokenModel
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final String? token = tokenProvider.token;
@@ -31,12 +28,10 @@ class BonusService {
         final data = json.decode(response.body);
         return BonusResponse.fromJson(data);
       } else {
-        print("Failed to load data: ${response.statusCode}");
-        return null;
+        throw Exception("Failed to load data: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error occurred: $e");
-      return null;
+      throw Exception("Error occurred: $e");
     }
   }
 }
