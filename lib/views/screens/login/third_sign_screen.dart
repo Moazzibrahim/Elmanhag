@@ -56,6 +56,13 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
   final _formKey =
       GlobalKey<FormState>(); // Add a global key for the Form widget
 
+  // Create a FocusNode for the parent phone text field
+  final FocusNode _parentPhoneFocusNode = FocusNode();
+  final FocusNode _parentEmailFocusNode = FocusNode();
+
+  bool _showPhoneHint = false; // State variable to toggle hint display
+  bool _showEmailHint = false; // State variable to toggle email hint display
+
   @override
   void initState() {
     super.initState();
@@ -74,6 +81,18 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
         _parentEmailController.text = "$parentPhone@elmanhag.com";
       }
     });
+
+    _parentPhoneFocusNode.addListener(() {
+      setState(() {
+        _showPhoneHint = _parentPhoneFocusNode.hasFocus;
+      });
+    });
+
+    _parentEmailFocusNode.addListener(() {
+      setState(() {
+        _showEmailHint = _parentEmailFocusNode.hasFocus;
+      });
+    });
   }
 
   @override
@@ -84,6 +103,9 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
     _parentPasswordController.dispose();
     _parentConfirmPasswordController.dispose();
     _affilateController.dispose();
+    _parentPhoneFocusNode.dispose(); // Don't forget to dispose the FocusNode
+    _parentEmailFocusNode.dispose(); // Dispose the FocusNode
+
     super.dispose();
   }
 
@@ -126,10 +148,16 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
                 prefixIcon: const Icon(Icons.person, color: redcolor),
               ),
               const SizedBox(height: 15),
+
+              // Parent Phone TextField with hint functionality
               buildTextFormField(
                 controller: _parentPhoneController,
                 labelText: 'رقم هاتف ولي الامر',
                 prefixIcon: const Icon(Icons.phone, color: redcolor),
+                focusNode: _parentPhoneFocusNode, // Attach the FocusNode
+                hintText: _showPhoneHint
+                    ? 'الرجاء إدخال رقم هاتف مختلف عن رقم الطالب'
+                    : null, // Conditionally show hint
                 validator: (value) {
                   final RegExp phoneRegExp = RegExp(r'^[0-9]{11}$');
                   if (value == null || value.isEmpty) {
@@ -145,6 +173,10 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
                 controller: _parentEmailController,
                 labelText: 'ايميل ولي الامر',
                 prefixIcon: const Icon(Icons.email, color: redcolor),
+                focusNode: _parentEmailFocusNode, // Attach the FocusNode
+                hintText: _showEmailHint
+                    ? 'الرجاء إدخال ايميل مختلف عن ايميل الطالب'
+                    : null, // Conditionally show hint
                 textdirection: TextDirection.ltr, // Make the email LTR
                 validator: (value) {
                   final RegExp emailRegExp =
@@ -241,6 +273,24 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
                                 backgroundColor: redcolor,
                               ),
                             );
+                          } else if (_parentPhoneController.text ==
+                              widget.phone) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'رقم هاتف ولي الامر يجب أن يكون مختلفاً عن رقم الطالب'),
+                                backgroundColor: redcolor,
+                              ),
+                            );
+                          } else if (_parentEmailController.text ==
+                              widget.email) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'ايميل ولي الامر يجب أن يكون مختلفاً عن ايميل الطالب'),
+                                backgroundColor: redcolor,
+                              ),
+                            );
                           } else {
                             await ApiService.signUp(
                               name: widget.name,
@@ -276,7 +326,7 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
                         ),
                       ),
                       child: const Text(
-                        'تسجيل',
+                        'التالي',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -284,19 +334,6 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
                 ),
               ),
               const SizedBox(height: 30),
-              const Divider(color: Colors.grey),
-              const SizedBox(height: 20),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    'لديك حساب؟ تسجيل الدخول',
-                    style: TextStyle(fontSize: 18, color: redcolor),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -307,15 +344,19 @@ class _ThirdSignUpState extends State<ThirdSignUp> {
   Widget buildTextFormField({
     required TextEditingController controller,
     required String labelText,
+    String? hintText,
     required Icon prefixIcon,
+    FocusNode? focusNode,
     TextDirection? textdirection,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
       textDirection: textdirection,
       decoration: InputDecoration(
         labelText: labelText,
+        hintText: hintText, // Hint text will show when available
         prefixIcon: prefixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30.0),

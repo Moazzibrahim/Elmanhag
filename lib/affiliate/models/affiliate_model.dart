@@ -25,6 +25,7 @@ class AffiliateData {
     };
   }
 }
+
 class User {
   final int id;
   final String name;
@@ -150,11 +151,10 @@ class User {
   }
 }
 
-
 class Income {
   final int id;
-  final int income;
-  final int wallet;
+  final double income;
+  final double wallet;
   final int affiliateId;
   final String createdAt;
   final String updatedAt;
@@ -171,8 +171,12 @@ class Income {
   factory Income.fromJson(Map<String, dynamic> json) {
     return Income(
       id: json['id'] ?? 0,
-      income: json['income'] ?? 0,
-      wallet: json['wallet'] ?? 0,
+      income: (json['income'] is int)
+          ? (json['income'] as int).toDouble()
+          : json['income'] ?? 0.0,
+      wallet: (json['wallet'] is int)
+          ? (json['wallet'] as int).toDouble()
+          : json['wallet'] ?? 0.0,
       affiliateId: json['affiliate_id'] ?? 0,
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
