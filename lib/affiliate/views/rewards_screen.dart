@@ -16,6 +16,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
   @override
   void initState() {
     super.initState();
+    // Fetch bonus data from the API using BonusService
     bonusResponseFuture = BonusService().fetchBonusData(context);
   }
 
@@ -41,78 +42,88 @@ class _RewardsScreenState extends State<RewardsScreen> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder<BonusResponse?>(
-          future: bonusResponseFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (snapshot.hasData && snapshot.data != null) {
-              final affiliateBonus = snapshot.data!.affiliateBonus;
-              int remainingBundle = affiliateBonus.bundlePaid;
-              int cumulativeTarget = 0;
+      body: FutureBuilder<BonusResponse?>(
+        future: bonusResponseFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Error fetching data'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('No data available'));
+          }
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildAchievementCard(remainingBundle),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  const Center(
-                    child: Text(
-                      'حققت',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: redcolor,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: affiliateBonus.totalBonus.length,
-                      itemBuilder: (context, index) {
-                        final bonus = affiliateBonus.totalBonus[index];
-                        double progress;
+          // BonusResponse data
+          final bonusData = snapshot.data!;
+          final bundlePaid = bonusData.bundlePaid;
+          final bonuses = bonusData.bonus;
 
-                        cumulativeTarget += bonus.target;
-                        if (remainingBundle >= bonus.target) {
-                          progress = 1.0;
-                          remainingBundle -= bonus.target;
-                        } else {
-                          progress =
-                              (remainingBundle / bonus.target).clamp(0.0, 1.0);
-                          remainingBundle = 0;
-                        }
-
-                        return Column(
-                          children: [
-                            RewardLevel(
-                              level: bonus.title,
-                              reward: bonus.bonus,
-                              progress: progress,
-                              target: cumulativeTarget,
-                            ),
-                            const SizedBox(height: 20),
-                          ],
-                        );
-                      },
-                    ),
+          return Column(
+            children: [
+              _buildAchievementCard(bundlePaid),
+              const SizedBox(height: 5),
+              const Center(
+                child: Text(
+                  'حققت',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    color: redcolor,
                   ),
-                ],
-              );
-            } else {
-              return const Center(child: Text('No data available'));
-            }
-          },
-        ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: bonuses.length,
+                  itemBuilder: (context, index) {
+                    final totalBonus = bonuses[index];
+
+                    // Calculate cumulative target
+                    final cumulativeTarget =
+                        _calculateCumulativeTarget(bonuses, index);
+
+                    // Calculate progress based on target and bundlePaid
+                    double progress = bundlePaid / cumulativeTarget;
+
+                    // Ensure the previous target is fully completed before proceeding to the next
+                    if (index > 0) {
+                      // Calculate progress of the previous bonus
+                      final previousCumulativeTarget =
+                          _calculateCumulativeTarget(bonuses, index - 1);
+                      double previousProgress =
+                          bundlePaid / previousCumulativeTarget;
+
+                      // If previous bonus progress is less than 100%, set current progress to 0
+                      if (previousProgress < 1.0) {
+                        progress = 0;
+                      }
+                    }
+
+                    if (progress > 1.0) progress = 1.0;
+
+                    return RewardLevel(
+                      level: totalBonus.title,
+                      reward: totalBonus.bonus,
+                      progress: progress,
+                      target: cumulativeTarget,
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
+  }
+
+  // Method to calculate the cumulative target up to the current bonus
+  int _calculateCumulativeTarget(List<TotalBonus> bonuses, int index) {
+    int cumulativeTarget = 0;
+    for (int i = 0; i <= index; i++) {
+      cumulativeTarget += bonuses[i].target;
+    }
+    return cumulativeTarget;
   }
 
   Widget _buildAchievementCard(int remainingBundle) {
@@ -191,7 +202,7 @@ class RewardLevel extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Text(
-              'حقق $target واحصل علي مكافاة  $reward',
+              'حقق $target واحصل علي مكافاة $reward',
               style: TextStyle(
                 color: Colors.grey[800],
                 fontSize: 16,
@@ -214,34 +225,19 @@ class RewardLevel extends StatelessWidget {
                 ),
                 Positioned.fill(
                   child: Center(
-                    child: progress == 1.0
-                        ? const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.check, color: Colors.white, size: 16),
-                              SizedBox(width: 5),
-                              Text(
-                                'تم الحصول عليها',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Text(
-                            '${(progress * 100).toInt()}%',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                    child: Text(
+                      '${(progress * 100).toInt()}%',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 8),
           ],
         ),
       ),
