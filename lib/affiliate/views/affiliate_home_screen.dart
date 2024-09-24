@@ -8,6 +8,7 @@ import 'package:flutter_application_1/affiliate/views/transactions.dart';
 import 'package:flutter_application_1/affiliate/views/withdrawal_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
+import 'package:flutter_application_1/views/screens/curriculum/allcurriculum/filter_curriclums_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../controller/Auth/logout_provider.dart';
 import '../controller/affiliate_provider.dart';
@@ -153,7 +154,14 @@ class AffiliateHomeScreen extends StatelessWidget {
                             SizedBox(
                               height: 135.h,
                               child: GestureDetector(
-                                onTap: (){},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const WithdrawalScreen()),
+                                  );
+                                },
                                 child: _buildInfoCard(
                                   '${userProfile.user.income.wallet} ',
                                   'الرصيد المتاح',
@@ -164,7 +172,14 @@ class AffiliateHomeScreen extends StatelessWidget {
                             SizedBox(
                               height: 135.h,
                               child: GestureDetector(
-                                onTap: (){},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const TransactionsScreen()),
+                                  );
+                                },
                                 child: _buildInfoCard(
                                   '${userProfile.user.studentSignups}',
                                   'عدد التسجيلات',
@@ -175,7 +190,14 @@ class AffiliateHomeScreen extends StatelessWidget {
                             SizedBox(
                               height: 135.h,
                               child: GestureDetector(
-                                onTap: (){},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const TransactionsScreen()),
+                                  );
+                                },
                                 child: _buildInfoCard(
                                   '${userProfile.user.income.income}',
                                   'الإيرادات الكلية',
@@ -243,6 +265,14 @@ class AffiliateHomeScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => const HelpVideosScreen()),
+                        );
+                      }),
+                      _buildGridOption('المناهج', Icons.book, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const FilterCurriculumsScreen()),
                         );
                       }),
                     ],

@@ -145,7 +145,7 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
             },
           ),
           title: isLoading
-              ? const CircularProgressIndicator() 
+              ? const CircularProgressIndicator()
               : Row(
                   children: [
                     CircleAvatar(
@@ -345,13 +345,13 @@ class ParentTabContent extends StatelessWidget {
                 ),
                 InfoCard(
                   text:
-                      '${localizations.translate('parent_phone')}: ${user?.parent!.phone ?? 'N/A'}',
+                      '${localizations.translate('parent_phone')}: ${user?.parent?.phone ?? 'N/A'}',
                   icon: Icons.phone,
                   isDarkMode: isDarkMode,
                 ),
                 InfoCard(
                   text:
-                      '${localizations.translate('parent_email')}: ${user?.parent!.email ?? 'N/A'}',
+                      '${localizations.translate('parent_email')}: ${user?.parent?.email ?? 'N/A'}',
                   icon: Icons.email,
                   isDarkMode: isDarkMode,
                 ),
@@ -367,23 +367,20 @@ class InfoCard extends StatelessWidget {
   final bool isDarkMode;
 
   const InfoCard({
+    Key? key,
     required this.text,
     required this.icon,
     required this.isDarkMode,
-    super.key,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: isDarkMode ? Colors.black : Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+      color: isDarkMode ? Colors.grey[900] : Colors.white,
+      margin: const EdgeInsets.symmetric(vertical: 10),
       child: ListTile(
         leading: Icon(icon, color: redcolor),
-        title: Text(
-          text,
-          style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
-        ),
+        title: Text(text),
       ),
     );
   }

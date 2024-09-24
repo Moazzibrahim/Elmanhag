@@ -84,9 +84,10 @@ class ChaptersScreen extends StatelessWidget {
                           ),
                         )
                       : ListView.builder(
-                          itemCount: chapters.length,
+                          itemCount: 1, // Show only the first chapter
                           itemBuilder: (context, index) {
-                            final chapter = chapters[index];
+                            final chapter =
+                                chapters[0]; // Access the first chapter
                             return ChapterTile(
                               chapter: chapter,
                               lessons: chapter.lessons,
