@@ -3,6 +3,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/payment/payment_methods_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/models/payment_methods_model.dart';
@@ -10,6 +11,8 @@ import 'package:flutter_application_1/views/screens/payment/fawry_payment_screen
 import 'package:flutter_application_1/views/screens/payment/visa_payment_screen.dart';
 import 'package:flutter_application_1/views/screens/payment/vodafone_payment_screen.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class PaymentScreen extends StatefulWidget {
   final int itemidbundle;
@@ -34,6 +37,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   final TextEditingController _promoCodeController = TextEditingController();
   String? _promoCodeError;
   int? itemPriceAsInt; // Variable to store converted price
+  int newprice = 0;
+  bool isapplied = false;
 
   @override
   void initState() {
@@ -69,6 +74,74 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
     final localizations = AppLocalizations.of(context);
+
+    Future<void> applyPromoCode() async {
+      final localizations = AppLocalizations.of(context);
+      final promoCode = _promoCodeController.text;
+      final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+      final String? token = tokenProvider.token;
+
+      // Determine the appropriate id based on the service
+      final id = widget.itemservice == 'Subject'
+          ? widget.itemidsubject
+          : widget.itemidbundle;
+
+      // Determine the appropriate price
+      final price = widget.itemdiscount ?? widget.itemprice;
+
+      try {
+        final response = await http.post(
+          Uri.parse("https://bdev.elmanhag.shop/student/promoCode"),
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            "type": widget.itemservice, // Either 'Subject' or 'Bundle'
+            "id": id, // Send the correct id based on service type
+            "code": promoCode, // Promo code entered by the user
+            "price": price, // Send the discount or item price
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          log("Promo code applied successfully: ${response.body}");
+          var responseData = json.decode(response.body);
+          setState(() {
+            newprice = responseData['price'];
+            isapplied = true;
+          });
+
+          log("new price: $newprice");
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Promo code applied successfully"),
+            backgroundColor: Colors.green,
+          ));
+        } else {
+          log("Error applying promo code: ${response.statusCode}");
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Wrong promo code"),
+            backgroundColor: redcolor,
+          ));
+        }
+      } catch (e) {
+        log("Exception occurred: $e");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Wrong promo code"),
+          backgroundColor: redcolor,
+        ));
+      }
+
+      // Validate if the promo code is empty
+      if (promoCode.isEmpty) {
+        setState(() {
+          _promoCodeError =
+              localizations.translate('you must enter promo code');
+        });
+        return;
+      }
+    }
 
     return Scaffold(
       body: Stack(
@@ -201,7 +274,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                               const SizedBox(width: 8),
                               ElevatedButton(
-                                onPressed: _applyPromoCode,
+                                onPressed: applyPromoCode,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: redcolor,
                                 ),
@@ -211,6 +284,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                             ],
                           ),
+                          const SizedBox(
+                            height: 14,
+                          ),
+                          if (isapplied)
+                            Text(
+                                "${localizations.translate('new price')}: $newprice EGP ",
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green)),
                           const SizedBox(height: 180),
                           Align(
                             alignment: Alignment.bottomCenter,
@@ -253,51 +336,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  void _applyPromoCode() {
-    final localizations = AppLocalizations.of(context);
-    final promoCode = _promoCodeController.text;
-
-    // Sample validation logic for promo code
-    if (promoCode.isEmpty) {
-      setState(() {
-        _promoCodeError = localizations.translate('you must enter promo code');
-      });
-      return;
-    }
-
-    // Here you would typically call an API or service to validate the promo code
-    // For now, we'll just simulate success and failure
-    if (promoCode == 'VALIDCODE') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                '  ${localizations.translate('promo code is applied successfully')} ')),
-      );
-      setState(() {
-        _promoCodeError = null;
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(localizations.translate('invalid promo code'))),
-      );
-      setState(() {
-        _promoCodeError = ' ${localizations.translate('invalid promo code')}';
-      });
-    }
-  }
-
   void _navigateToSelectedScreen() {
     final localizations = AppLocalizations.of(context);
     if (_selectedIndex == -1) {
       // If no payment method is selected, show a message or prevent navigation
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(
-                localizations.translate('you must choose payment method'))),
+          content:
+              Text(localizations.translate('you must choose payment method')),
+        ),
       );
       return;
     }
+
+    // Determine the price to send: use new price if the promo code was applied, otherwise use the original price
+    final priceToSend =
+        newprice != -1 ? newprice.toString() : widget.itemprice!;
 
     switch (_selectedIndex) {
       case 0:
@@ -310,7 +364,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           MaterialPageRoute(
             builder: (ctx) => VodafonePaymentScreen(
               itemids: widget.itemidbundle,
-              itemsprice: widget.itemprice!,
+              itemsprice: priceToSend, // Send the correct price
               services: widget.itemservice,
               itemidsub: widget.itemidsubject,
               paymentmtethodid:
