@@ -1,22 +1,34 @@
 class BonusResponse {
   String success;
   AffiliateBonus affiliateBonus;
+  int bundlePaid;
+  List<TotalBonus> bonus;
 
   BonusResponse({
     required this.success,
     required this.affiliateBonus,
+    required this.bundlePaid,
+    required this.bonus,
   });
 
   factory BonusResponse.fromJson(Map<String, dynamic> json) {
     return BonusResponse(
       success: json['success'] ?? '',
       affiliateBonus: AffiliateBonus.fromJson(json['affiliate_bonus'] ?? {}),
+      bundlePaid: json['bundle_paid'] ?? 0,
+      bonus: (json['bonus'] as List<dynamic>?)
+              ?.map((item) => TotalBonus.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
       'success': success,
       'affiliate_bonus': affiliateBonus.toJson(),
+      'bundle_paid': bundlePaid,
+      'bonus': bonus.map((item) => item.toJson()).toList(),
     };
   }
 }
@@ -26,11 +38,9 @@ class AffiliateBonus {
   String title;
   int target;
   String bonus;
-  String image;
+  String? image;
   String createdAt;
   String updatedAt;
-  int bundlePaid;
-  List<TotalBonus> totalBonus;
   Pivot pivot;
 
   AffiliateBonus({
@@ -38,13 +48,12 @@ class AffiliateBonus {
     required this.title,
     required this.target,
     required this.bonus,
-    required this.image,
+    this.image,
     required this.createdAt,
     required this.updatedAt,
-    required this.bundlePaid,
-    required this.totalBonus,
     required this.pivot,
   });
+
   factory AffiliateBonus.fromJson(Map<String, dynamic> json) {
     return AffiliateBonus(
       id: json['id'] ?? 0,
@@ -54,11 +63,6 @@ class AffiliateBonus {
       image: json['image'] ?? '',
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      bundlePaid: json['bundle_paid'] ?? 0,
-      totalBonus: (json['total_bonus'] as List<dynamic>?)
-              ?.map((item) => TotalBonus.fromJson(item as Map<String, dynamic>))
-              .toList() ??
-          [],
       pivot: Pivot.fromJson(json['pivot'] ?? {}),
     );
   }
@@ -72,8 +76,6 @@ class AffiliateBonus {
       'image': image,
       'created_at': createdAt,
       'updated_at': updatedAt,
-      'bundle_paid': bundlePaid,
-      'total_bonus': totalBonus.map((item) => item.toJson()).toList(),
       'pivot': pivot.toJson(),
     };
   }
@@ -97,6 +99,7 @@ class TotalBonus {
     required this.createdAt,
     required this.updatedAt,
   });
+
   factory TotalBonus.fromJson(Map<String, dynamic> json) {
     return TotalBonus(
       id: json['id'] ?? 0,
@@ -137,6 +140,7 @@ class Pivot {
       bonusId: json['bonus_id'] ?? 0,
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
       'affilate_id': affiliateId,
