@@ -16,7 +16,6 @@ class _RewardsScreenState extends State<RewardsScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch bonus data from the API using BonusService
     bonusResponseFuture = BonusService().fetchBonusData(context);
   }
 
@@ -53,7 +52,6 @@ class _RewardsScreenState extends State<RewardsScreen> {
             return const Center(child: Text('No data available'));
           }
 
-          // BonusResponse data
           final bonusData = snapshot.data!;
           final bundlePaid = bonusData.bundlePaid;
           final bonuses = bonusData.bonus;
@@ -77,35 +75,27 @@ class _RewardsScreenState extends State<RewardsScreen> {
                   itemCount: bonuses.length,
                   itemBuilder: (context, index) {
                     final totalBonus = bonuses[index];
+                    final target = totalBonus.target;
 
-                    // Calculate cumulative target
-                    final cumulativeTarget =
-                        _calculateCumulativeTarget(bonuses, index);
+                    // Calculate progress
+                    double progress = bundlePaid / target;
+                    if (progress > 1.0) progress = 1.0;
 
-                    // Calculate progress based on target and bundlePaid
-                    double progress = bundlePaid / cumulativeTarget;
-
-                    // Ensure the previous target is fully completed before proceeding to the next
+                    // Reset progress to 0 if previous levels are not achieved
                     if (index > 0) {
-                      // Calculate progress of the previous bonus
-                      final previousCumulativeTarget =
-                          _calculateCumulativeTarget(bonuses, index - 1);
-                      double previousProgress =
-                          bundlePaid / previousCumulativeTarget;
+                      final previousTarget = bonuses[index - 1].target;
+                      double previousProgress = bundlePaid / previousTarget;
 
-                      // If previous bonus progress is less than 100%, set current progress to 0
                       if (previousProgress < 1.0) {
                         progress = 0;
                       }
                     }
 
-                    if (progress > 1.0) progress = 1.0;
-
                     return RewardLevel(
                       level: totalBonus.title,
                       reward: totalBonus.bonus,
                       progress: progress,
-                      target: cumulativeTarget,
+                      target: target,
                     );
                   },
                 ),
@@ -115,15 +105,6 @@ class _RewardsScreenState extends State<RewardsScreen> {
         },
       ),
     );
-  }
-
-  // Method to calculate the cumulative target up to the current bonus
-  int _calculateCumulativeTarget(List<TotalBonus> bonuses, int index) {
-    int cumulativeTarget = 0;
-    for (int i = 0; i <= index; i++) {
-      cumulativeTarget += bonuses[i].target;
-    }
-    return cumulativeTarget;
   }
 
   Widget _buildAchievementCard(int remainingBundle) {
@@ -237,7 +218,7 @@ class RewardLevel extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 8), 
           ],
         ),
       ),

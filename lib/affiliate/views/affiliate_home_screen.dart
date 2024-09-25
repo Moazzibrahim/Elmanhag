@@ -277,7 +277,6 @@ class AffiliateHomeScreen extends StatelessWidget {
                       }),
                     ],
                   ),
-                  const SizedBox(height: 20,)
                 ],
               ),
             ],
@@ -289,6 +288,8 @@ class AffiliateHomeScreen extends StatelessWidget {
 
   Widget _buildProgressSection(BonusResponse bonusData) {
     double progress = bonusData.bundlePaid / bonusData.affiliateBonus.target;
+
+    String progressPercentage = (progress * 100).toStringAsFixed(1);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -306,11 +307,13 @@ class AffiliateHomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Align(
+          Align(
             alignment: Alignment.topRight,
             child: Text(
-              'Bonus Two',
-              style: TextStyle(
+              bonusData
+                  .affiliateBonus.title, // Use the title from the bonus data
+
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: redcolor,
@@ -318,14 +321,15 @@ class AffiliateHomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          // Arabic Text Section
+          // Updated Text Section
           Text.rich(
             TextSpan(
               text: 'اكمل الهدف (',
               style: const TextStyle(fontSize: 14, color: Colors.black),
               children: [
                 TextSpan(
-                  text: '${bonusData.affiliateBonus.target}',
+                  text: bonusData.affiliateBonus.target
+                      .toString(), // Total target (current + previous)
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -335,16 +339,17 @@ class AffiliateHomeScreen extends StatelessWidget {
                   text: ') واحصل على ',
                   style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
-                const TextSpan(
-                  text: 'iphone',
-                  style: TextStyle(
+                // Replace 'iphone' with the current bonus title
+                TextSpan(
+                  text: bonusData.affiliateBonus.bonus, // Display bonus title
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: redcolor,
                   ),
                 ),
                 const TextSpan(
-                  text: ' جنيه هديه',
+                  text: '  هدية',
                   style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
               ],
@@ -355,22 +360,39 @@ class AffiliateHomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildCircularIndicator(
-                bonusData.bundlePaid.toString(),
+                bonusData.bundlePaid.toString(), // Show remaining paid value
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: LinearProgressIndicator(
-                    borderRadius: const BorderRadius.all(Radius.circular(30)),
-                    value: progress,
-                    backgroundColor: Colors.grey[300],
-                    color: redcolor,
-                    minHeight: 20,
-                  ),
+                child: Stack(
+                  alignment: Alignment
+                      .center, // Align the text at the center of the bar
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: LinearProgressIndicator(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(30)),
+                        value: progress, // Updated progress value
+                        backgroundColor: Colors.grey[300],
+                        color: redcolor,
+                        minHeight: 20,
+                      ),
+                    ),
+                    Text(
+                      '$progressPercentage%', // Display the progress percentage
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors
+                            .white, // Ensure contrast over the progress bar
+                      ),
+                    ),
+                  ],
                 ),
               ),
               _buildCircularIndicator(
-                bonusData.affiliateBonus.target.toString(),
+                bonusData.affiliateBonus.target
+                    .toString(), // Show current bonus target
               ),
             ],
           ),
@@ -401,7 +423,7 @@ class AffiliateHomeScreen extends StatelessWidget {
 
   Widget _buildInfoCard(String amount, String description, IconData icon) {
     return Container(
-      padding:  EdgeInsets.symmetric(horizontal: 8.w),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: redcolor,
         borderRadius: BorderRadius.circular(16),
