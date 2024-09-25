@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';// for date formatting
-
+import 'package:flutter/material.dart';
+import 'package:flutter_application_1/constants/colors.dart'; // for date formatting
 
 class LiveSessionsScreen extends StatelessWidget {
   const LiveSessionsScreen({super.key});
@@ -24,7 +24,8 @@ class LiveSessionsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'حصص لايف',
-          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: redcolor, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
         actions: [
@@ -34,7 +35,7 @@ class LiveSessionsScreen extends StatelessWidget {
           ),
         ],
         backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.red),
+        iconTheme: const IconThemeData(color: redcolor),
         elevation: 0,
       ),
       body: Column(
@@ -46,15 +47,15 @@ class LiveSessionsScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.red),
+                  icon: const Icon(Icons.arrow_back_ios, color: redcolor),
                   onPressed: () {},
                 ),
                 const Text(
-                  'مارس 2024',
+                  'سبتمبر 2024',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios, color: Colors.red),
+                  icon: const Icon(Icons.arrow_forward_ios, color: redcolor),
                   onPressed: () {},
                 ),
               ],
@@ -62,13 +63,14 @@ class LiveSessionsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           // Date Picker with Day Names
-          Container(
+          SizedBox(
             height: 70, // Increased height to accommodate day names
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: 31, // Assuming a month with 31 days
               itemBuilder: (context, index) {
-                DateTime currentDate = DateTime(2024, 3, index + 1); // Mock March 2024
+                DateTime currentDate =
+                    DateTime(2024, 9, index ); // Mock March 2024
                 String dayName = getDayName(currentDate);
 
                 return GestureDetector(
@@ -87,9 +89,11 @@ class LiveSessionsScreen extends StatelessWidget {
                         width: 40,
                         margin: const EdgeInsets.symmetric(horizontal: 5),
                         decoration: BoxDecoration(
-                          color: index == 2 ? Colors.red : Colors.white, // Highlight selected day
+                          color: index == 2
+                              ? redcolor
+                              : Colors.white, // Highlight selected day
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.red),
+                          border: Border.all(color: redcolor),
                         ),
                         alignment: Alignment.center,
                         child: Text(
@@ -110,12 +114,11 @@ class LiveSessionsScreen extends StatelessWidget {
             child: ListView.builder(
               itemCount: 5, // Number of live sessions
               itemBuilder: (context, index) {
-                return SessionCard(
+                return const SessionCard(
                   time: '01:00 م - 02:00 م',
                   teacher: 'أحمد علي',
                   subject: 'ماده اللغه العربيه',
                   sessionType: 'درس انا مميز',
-                  imageUrl: 'https://via.placeholder.com/150', // Replace with actual image
                 );
               },
             ),
@@ -131,14 +134,13 @@ class SessionCard extends StatelessWidget {
   final String teacher;
   final String subject;
   final String sessionType;
-  final String imageUrl;
 
-  SessionCard({
+  const SessionCard({
+    super.key,
     required this.time,
     required this.teacher,
     required this.subject,
     required this.sessionType,
-    required this.imageUrl,
   });
 
   @override
@@ -147,11 +149,14 @@ class SessionCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: Image.network(imageUrl, width: 50, height: 50, fit: BoxFit.cover),
+        leading: SizedBox(
+          child: Image.asset(
+            "assets/images/side.png",
+          ),
         ),
-        title: Text(time, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+        title: Text(time,
+            style:
+                const TextStyle(color: redcolor, fontWeight: FontWeight.bold)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -160,7 +165,7 @@ class SessionCard extends StatelessWidget {
             Text(sessionType, style: const TextStyle(color: Colors.grey)),
           ],
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.red),
+        trailing: Image.asset("assets/images/livei.png"),
       ),
     );
   }

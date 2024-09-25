@@ -1,7 +1,7 @@
 class MainModel {
   final List<Bundle>? bundles;
   final List<Subject>? subjects;
-  final List<dynamic>? live;
+  final List<LiveClass>? live; // Change dynamic to List<LiveClass>
 
   MainModel({
     this.bundles,
@@ -21,7 +21,11 @@ class MainModel {
               .map((item) => Subject.fromJson(item))
               .toList()
           : null,
-      live: json['live'] as List<dynamic>?,
+      live: json['live'] != null
+          ? (json['live'] as List)
+              .map((item) => LiveClass.fromJson(item))
+              .toList()
+          : null,
     );
   }
 
@@ -29,7 +33,9 @@ class MainModel {
     return {
       'bundles': bundles?.map((bundle) => bundle.toJson()).toList(),
       'subjects': subjects?.map((subject) => subject.toJson()).toList(),
-      'live': live,
+      'live': live
+          ?.map((liveClass) => liveClass.toJson())
+          .toList(), // Use LiveClass
     };
   }
 }
@@ -367,6 +373,79 @@ class Chapter {
       'thumbnail': thumbnaill,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
+    };
+  }
+}
+
+class LiveClass {
+  final int? id;
+  final String? name;
+  final String? link;
+  final String? from;
+  final String? to;
+  final String? date;
+  final String? day;
+  final int? teacherId;
+  final int? subjectId;
+  final int? categoryId;
+  final int? educationId;
+  final int? paid;
+  final double? price;
+  final int?
+      included; // Note: "included" might be a typo in the data; ensure it's correct
+
+  LiveClass({
+    this.id,
+    this.name,
+    this.link,
+    this.from,
+    this.to,
+    this.date,
+    this.day,
+    this.teacherId,
+    this.subjectId,
+    this.categoryId,
+    this.educationId,
+    this.paid,
+    this.price,
+    this.included,
+  });
+
+  factory LiveClass.fromJson(Map<String, dynamic> json) {
+    return LiveClass(
+      id: json['id'],
+      name: json['name'],
+      link: json['link'],
+      from: json['from'],
+      to: json['to'],
+      date: json['date'],
+      day: json['day'],
+      teacherId: json['teacher_id'],
+      subjectId: json['subject_id'],
+      categoryId: json['category_id'],
+      educationId: json['education_id'],
+      paid: json['paid'],
+      price: json['price']?.toDouble(),
+      included: json['inculded'], // Ensure this matches your API response
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'link': link,
+      'from': from,
+      'to': to,
+      'date': date,
+      'day': day,
+      'teacher_id': teacherId,
+      'subject_id': subjectId,
+      'category_id': categoryId,
+      'education_id': educationId,
+      'paid': paid,
+      'price': price,
+      'inculded': included, // Ensure this matches your API response
     };
   }
 }
