@@ -340,6 +340,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   void _navigateToSelectedScreen() {
     final localizations = AppLocalizations.of(context);
+    String priceToSend;
     if (_selectedIndex == -1) {
       // If no payment method is selected, show a message or prevent navigation
       ScaffoldMessenger.of(context).showSnackBar(
@@ -350,10 +351,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
       );
       return;
     }
+    if (isapplied) {
+      priceToSend =
+          newprice.toString(); // If promo code is applied, return new price
+    } else if (widget.itemdiscount != null && widget.itemdiscount! > 0) {
+      // If there's a discount, calculate the price after discount
+      priceToSend= (itemPriceAsInt! - widget.itemdiscount!).toString();
+    } else {
+      // If no discount, return the original item price
+      priceToSend= widget.itemprice!;
+    }
 
     // Determine the price to send: use new price if the promo code was applied, otherwise use the original price
-    final priceToSend =
-        newprice != -1 ? newprice.toString() : widget.itemprice!;
+    // final priceToSend =
+    //     newprice != -1 ? newprice.toString() : widget.itemprice!;
 
     switch (_selectedIndex) {
       case 0:

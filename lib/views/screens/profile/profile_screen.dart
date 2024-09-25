@@ -149,6 +149,7 @@ class _CustomProfileScreenState extends State<CustomProfileScreen> {
               : Row(
                   children: [
                     CircleAvatar(
+                      
                       backgroundImage: NetworkImage(
                           user!.imageLink ?? 'https://example.com/default.png'),
                       radius: 20,

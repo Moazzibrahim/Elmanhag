@@ -159,63 +159,11 @@ class _ChapterTileState extends State<ChapterTile> {
         headers: headers,
         body: json.encode(body),
       );
-
+      log(response.body);
+      log(response.statusCode.toString());
       if (response.statusCode == 200) {
         var responseData = json.decode(response.body);
         log('Response data: $responseData');
-
-        if (responseData['faield'] ==
-            'This Material for This Lesson is Closed') {
-          // Show dialog to the user
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                content: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text(
-                    'عفوا هذا الدرس غير متاح حالبا.سوف يتوفر لاحقا',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: redcolor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'موافق',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  LessonsVideos(lessonData: responseData['lesson']),
-            ),
-          );
-        }
       } else if (response.statusCode == 400) {
         var responseData = json.decode(response.body);
         if (responseData['faield'] == 'This Lesson Unpaid') {
@@ -277,6 +225,58 @@ class _ChapterTileState extends State<ChapterTile> {
           );
         } else {
           log('Unexpected response: $responseData');
+        }
+        if (responseData['faield'] ==
+            'This Material for This Lesson is Closed') {
+          // Show dialog to the user
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                content: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'عفوا هذا الدرس غير متاح حالبا.سوف يتوفر لاحقا',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: redcolor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'موافق',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  LessonsVideos(lessonData: responseData['lesson']),
+            ),
+          );
         }
       } else if (response.statusCode == 500) {
         var responseData = json.decode(response.body);
