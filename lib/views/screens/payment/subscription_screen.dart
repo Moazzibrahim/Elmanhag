@@ -264,7 +264,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     required Color color,
     bool isHighlighted = false,
   }) {
-    final theme = Theme.of(context);
     final int priceAsInt = double.tryParse(price)?.toInt() ?? 0;
     final int discountAsInt = discount.toInt();
     bool isSelected = index == selectedCardIndex;
@@ -348,14 +347,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              Text(
-                title,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.textTheme.bodyLarge?.color,
-                ),
-              ),
-              const SizedBox(height: 8),
+              Text(title,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 13)),
+              const SizedBox(height: 5),
 
               // Check if discount exists, otherwise show only the price
               if (discountAsInt > 0) ...[
@@ -367,17 +364,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 5),
                 Text(
                   localizations.translate('instead_of'),
                   style: const TextStyle(color: redcolor),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 5.h),
                 Text(
                   '$priceAsInt EGP',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: redcolor,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.lineThrough,
                   ),
@@ -386,22 +383,22 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 // Show the price only
                 Text(
                   '$priceAsInt EGP',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: redcolor,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 5),
               const Divider(
                 color: redcolor,
                 thickness: 2,
               ),
               SizedBox(
-                height: 60,
-                width: 730,
+                height: 45.h,
+                width: 680.w,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: redcolor,
@@ -430,6 +427,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             log('subid:$subid');
                             log('service: $service');
                             log('price: $selectedItemPrice');
+                            log("discount: $discountAsInt");
                             if (discountAsInt > 0) {
                               Navigator.push(
                                 context,

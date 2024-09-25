@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// TokenModel with token persistence
 class TokenModel with ChangeNotifier {
   String? _token;
   String? get token => _token;
@@ -37,7 +36,6 @@ class TokenModel with ChangeNotifier {
   }
 }
 
-// LoginModel with role handling and token saving
 class LoginModel with ChangeNotifier {
   String? _role;
   String? _name;
@@ -66,14 +64,14 @@ class LoginModel with ChangeNotifier {
     'Accept': 'application/json',
   };
 
-  Future<String> loginUser(
+  Future<void> loginUser(
       BuildContext context, String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
       String message = 'Invalid: ';
       if (email.isEmpty) message += 'Email is empty. ';
       if (password.isEmpty) message += 'Password is empty.';
       _showSnackbar(context, message);
-      return message;
+      return;
     }
 
     try {
@@ -85,12 +83,12 @@ class LoginModel with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
+        log(response.body);
+        log("token: ${responseData['_token']}");
 
         if (responseData.containsKey('faield')) {
-          final errorMessage = responseData['faield'];
-          log("Login Failed: $errorMessage");
           _showSnackbar(context, "خطأ في التسجيل");
-          return 'Login failed: خطأ في التسجيل';
+          return;
         }
 
         if (responseData.containsKey('_token')) {
@@ -98,31 +96,22 @@ class LoginModel with ChangeNotifier {
           Provider.of<TokenModel>(context, listen: false).setToken(token);
 
           final userDetails = responseData['user'] as Map<String, dynamic>;
-          int id = userDetails['id'];
           _name = userDetails['name'];
           _phone = userDetails['phone'];
           _email = userDetails['email'];
-          Provider.of<LoginModel>(context, listen: false).setId(id);
+          int id = userDetails['id'];
+          setId(id);
+
           _handleUserDetails(context, userDetails);
-
-          log("Response Data: $responseData");
-          log("Status Code: ${response.statusCode}");
-          log("Token: $token");
-          log("Role: $_role");
-          log("id: $id");
-          log("name: $_name");
-
-          return "دخول ناجح";
         } else {
-          return "Token not found in response";
+          _showSnackbar(context, "خطأ في البريد الالكتروني او الرقم السري");
         }
       } else {
-        log("Authentication failed with status code: ${response.statusCode}");
-        return 'خطأ في التسجيل';
+        _showSnackbar(context, "خطأ في البريد الالكتروني او الرقم السري");
       }
     } catch (error) {
-      log('Error occurred during authentication: $error');
-      return 'خطأ في التسجيل';
+      log('Error during authentication: $error');
+      _showSnackbar(context, "حدث خطأ في الاتصال، حاول مرة أخرى");
     }
   }
 
@@ -138,30 +127,33 @@ class LoginModel with ChangeNotifier {
   }
 
   void _navigateBasedOnRole(BuildContext context, String role) async {
-    if (role == 'student') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
-    } else if (role == 'parent') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const ChooseSon()),
-      );
-    } else if (role == 'affilate') {
-      // Save the role and token in SharedPreferences
+    try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_role', 'affilate');
-      await prefs.setString(
-          'auth_token', Provider.of<TokenModel>(context, listen: false).token!);
+      if (role == 'student') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else if (role == 'parent') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ChooseSon()),
+        );
+      } else if (role == 'affilate') {
+        await prefs.setString('user_role', 'affilate');
+        await prefs.setString('auth_token',
+            Provider.of<TokenModel>(context, listen: false).token!);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const AffiliateHomeScreen()),
-      );
-    } else {
-      log('Unknown user role: $role');
-      _showSnackbar(context, 'Unknown user role');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AffiliateHomeScreen()),
+        );
+      } else {
+        _showSnackbar(context, 'Unknown user role');
+      }
+    } catch (error) {
+      log('Error during navigation: $error');
+      _showSnackbar(context, 'خطأ أثناء التنقل');
     }
   }
 

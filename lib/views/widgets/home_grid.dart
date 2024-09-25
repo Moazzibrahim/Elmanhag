@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
 import 'package:flutter_application_1/views/screens/curriculum/mycurriculum/my_curriculum_screen.dart';
 import 'package:flutter_application_1/views/screens/homework/hw_my_cirriculam.dart';
+import 'package:flutter_application_1/views/screens/live/live_screen.dart';
 // import 'package:flutter_application_1/views/screens/live/live_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -58,14 +59,14 @@ class HomeGrid extends StatelessWidget {
             //   Navigator.of(context).push(MaterialPageRoute(
             //       builder: (ctx) => const AffiliateHomeScreen()));
             // }
-            // if (texts[index] == localizations.translate('live_classes')) {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (context) => const LiveScreen(),
-            //     ),
-            //   );
-            // }
+            if (texts[index] == localizations.translate('live_classes')) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LiveSessionsScreen(),
+                ),
+              );
+            }
           },
           child: Card(
             color: theme.scaffoldBackgroundColor,
@@ -90,7 +91,8 @@ class HomeGrid extends StatelessWidget {
                   ],
                 ),
                 texts[index] != localizations.translate('curriculum') &&
-                        texts[index] != localizations.translate('tasks')
+                        texts[index] != localizations.translate('tasks') &&
+                        texts[index] != localizations.translate('live_classes')
                     ? Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(

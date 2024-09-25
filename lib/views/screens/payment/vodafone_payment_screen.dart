@@ -281,6 +281,7 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
         ),
       );
       log("pay id:${widget.paymentmtethodid}");
+      log("price: ${widget.itemsprice}");
 
       final response = await request.send();
 
