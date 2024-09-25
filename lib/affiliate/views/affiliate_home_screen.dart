@@ -401,7 +401,7 @@ class AffiliateHomeScreen extends StatelessWidget {
 
   Widget _buildInfoCard(String amount, String description, IconData icon) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding:  EdgeInsets.symmetric(horizontal: 8.w),
       decoration: BoxDecoration(
         color: redcolor,
         borderRadius: BorderRadius.circular(16),
