@@ -4,6 +4,7 @@ import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Auth/sign_up_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/bundle/get_bundle_data.dart';
+import 'package:flutter_application_1/controller/live/purshased_live_controller.dart';
 import 'package:flutter_application_1/controller/notification_helper.dart';
 import 'package:flutter_application_1/controller/parent/get_children_provider.dart';
 import 'package:flutter_application_1/controller/parent/get_children_subjects.dart';
@@ -37,6 +38,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => GetChildrenProvider()),
         ChangeNotifierProvider(create: (_) => GetChildrenSubjects()),
         ChangeNotifierProvider(create: (_) => PaymentMethodsProvider()),
+        ChangeNotifierProvider(create: (_) => PurshasedLiveController()),
       ],
       child: const MyApp(),
     ),
