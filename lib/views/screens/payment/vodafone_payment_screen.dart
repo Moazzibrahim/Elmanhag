@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/bundle/get_bundle_data.dart';
+import 'package:flutter_application_1/controller/payment/payment_methods_provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
@@ -46,6 +47,8 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
         _isInitialized = true;
         Provider.of<GetBundleData>(context, listen: false)
             .fetchMainModel(context);
+        Provider.of<PaymentMethodsProvider>(context, listen: false)
+            .fetchPaymentMethods(context);
       }
     });
     super.initState();
@@ -85,161 +88,165 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.transparent : Colors.white,
-      body: Stack(
-        children: [
-          if (isDarkMode)
-            Positioned.fill(
-              child: Image.asset(
-                'assets/images/Ellipse 198.png',
-                fit: BoxFit.cover,
+      body: Consumer<PaymentMethodsProvider>(
+          builder: (BuildContext context, value, Widget? child) {
+        return Stack(
+          children: [
+            if (isDarkMode)
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/Ellipse 198.png',
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 25),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios, color: redcolor),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    Image.asset(
-                      'assets/images/vod.png',
-                      height: 50,
-                    ),
-                    Container(width: 50),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Row(
-                  children: [
-                    Text(
-                      'أدخل تفاصيل الدفع',
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: redcolor,
-                        fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios, color: redcolor),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                      Image.asset(
+                        'assets/images/vod.png',
+                        height: 50,
+                      ),
+                      Container(width: 50),
+                    ],
                   ),
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'رقم التليفون: ${user!.phone}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
+                  const SizedBox(height: 20),
+                  const Row(
+                    children: [
+                      Text(
+                        'أدخل تفاصيل الدفع',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: redcolor,
+                          fontWeight: FontWeight.bold,
                         ),
-                        // const SizedBox(height: 10),
-                        // Text(
-                        //   'البريد الإلكتروني: ${user.email}',
-                        //   style: const TextStyle(
-                        //     fontSize: 18,
-                        //     color: Colors.black,
-                        //   ),
-                        // ),
-                        const SizedBox(height: 20),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            _image != null
-                                ? Image.file(
-                                    _image!,
-                                    width: 200,
-                                    height: 200,
-                                  )
-                                : Text(
-                                    localizations.translate('Upload_receipt'),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      color: redcolor,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'رقم التليفون: ${value.paymentMethods.first.description}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
+                          // const SizedBox(height: 10),
+                          // Text(
+                          //   'البريد الإلكتروني: ${user.email}',
+                          //   style: const TextStyle(
+                          //     fontSize: 18,
+                          //     color: Colors.black,
+                          //   ),
+                          // ),
+                          const SizedBox(height: 20),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              _image != null
+                                  ? Image.file(
+                                      _image!,
+                                      width: 200,
+                                      height: 200,
+                                    )
+                                  : Text(
+                                      localizations.translate('Upload_receipt'),
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: redcolor,
+                                      ),
+                                    ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: _uploadFromGallery,
+                                    child: Text(
+                                      localizations
+                                          .translate('Upload from Gallery'),
+                                      style: const TextStyle(color: redcolor),
                                     ),
                                   ),
-                            const SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: _uploadFromGallery,
-                                  child: Text(
-                                    localizations
-                                        .translate('Upload from Gallery'),
-                                    style: const TextStyle(color: redcolor),
+                                  ElevatedButton(
+                                    onPressed: _takePhoto,
+                                    child: Text(
+                                      localizations.translate('Take_Photo'),
+                                      style: const TextStyle(color: redcolor),
+                                    ),
                                   ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: _takePhoto,
-                                  child: Text(
-                                    localizations.translate('Take_Photo'),
-                                    style: const TextStyle(color: redcolor),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      backgroundColor: redcolor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    onPressed: () {
-                      if (_image == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(localizations
-                                .translate('You should select a photo first!')),
-                            backgroundColor: redcolor,
-                          ),
-                        );
-                        return; // Exit if no image is selected
-                      }
-                      submitPayment();
-                      log('price: ${widget.itemsprice}');
-                      log('service: ${widget.services}');
-                      log('subid: ${widget.itemidsub}');
-                      log("bundleid:  ${widget.itemids}");
-                    },
-                    child: Text(
-                      localizations.translate('subscripe'),
-                      style: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        backgroundColor: redcolor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        if (_image == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(localizations.translate(
+                                  'You should select a photo first!')),
+                              backgroundColor: redcolor,
+                            ),
+                          );
+                          return; // Exit if no image is selected
+                        }
+                        submitPayment();
+                        log('price: ${widget.itemsprice}');
+                        log('service: ${widget.services}');
+                        log('subid: ${widget.itemidsub}');
+                        log("bundleid:  ${widget.itemids}");
+                      },
+                      child: Text(
+                        localizations.translate('subscripe'),
+                        style: const TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 
