@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter_application_1/views/screens/curriculum/video_screen.dart';
@@ -103,7 +102,7 @@ class _SectionsScreenState extends State<SectionsScreen> {
                               chapter: chapter,
                               lessons: lessons,
                               subjectId:
-                                  widget.subjectId, // Pass subjectId here
+                                  widget.subjectId,
                             );
                           },
                         ),
@@ -135,6 +134,109 @@ class ChapterTile extends StatefulWidget {
 }
 
 class _ChapterTileState extends State<ChapterTile> {
+  void showUnpaidDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'يجب عليك الاشتراك لتكملة تعلم هذا الدرس',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                ' لاحقا',
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SubscriptionScreen(
+                      subjectId: widget.subjectId,
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: redcolor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'اشترك الان',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showClosedMaterialDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'عفوا هذا الدرس غير متوفر حاليا.سوف يتوفر قريبا',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); 
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: redcolor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'موافق',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> postLessonData(String lessonId, String subjectId) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
@@ -161,6 +263,7 @@ class _ChapterTileState extends State<ChapterTile> {
       );
       log(response.body);
       log(response.statusCode.toString());
+
       if (response.statusCode == 200) {
         var responseData = json.decode(response.body);
         log('Response data: $responseData');
@@ -172,123 +275,20 @@ class _ChapterTileState extends State<ChapterTile> {
         );
       } else if (response.statusCode == 400) {
         var responseData = json.decode(response.body);
+
         if (responseData['faield'] == 'This Lesson Unpaid') {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                content: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text(
-                    'يجب عليك الاشتراك لتكملة تعلم هذا الدرس',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    child: Text(
-                      ' لاحقا',
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SubscriptionScreen(
-                            subjectId: widget.subjectId,
-                          ),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: redcolor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'اشترك الان',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
+          showUnpaidDialog();
+        } else if (responseData['faield'] ==
+            'This Material for This Lesson is Closed') {
+          showClosedMaterialDialog();
         } else {
           log('Unexpected response: $responseData');
         }
-        if (responseData['faield'] ==
-            'This Material for This Lesson is Closed') {
-          // Show dialog to the user
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                content: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text(
-                    'عفوا هذا الدرس غير متاح حالبا.سوف يتوفر لاحقا',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: redcolor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'موافق',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  LessonsVideos(lessonData: responseData['lesson']),
-            ),
-          );
-        }
       } else if (response.statusCode == 500) {
         var responseData = json.decode(response.body);
+
         if (responseData['lesson_not_solved'] ==
             'The previous lesson was not solved.') {
-          // Show dialog to the user when the previous lesson was not solved
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -330,8 +330,6 @@ class _ChapterTileState extends State<ChapterTile> {
               );
             },
           );
-        } else {
-          log('Unexpected response: $responseData');
         }
       } else {
         log('Request failed with status: ${response.statusCode}.');
