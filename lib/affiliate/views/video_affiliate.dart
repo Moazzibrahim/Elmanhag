@@ -21,10 +21,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     super.initState();
     _controller = VideoPlayerController.network(widget.videoUrl)
       ..initialize().then((_) {
-        setState(() {}); // Refresh UI after initialization
+        setState(() {}); 
       });
     _controller.addListener(() {
-      setState(() {}); // Keep the state updated with the video player's state
+      setState(() {});
     });
   }
 
@@ -48,7 +48,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back, color: redcolor),
+                    icon: const Icon(Icons.arrow_back, color: redcolor),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -85,7 +85,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                       )
                     : const Center(
                         child:
-                            CircularProgressIndicator()), // Show loader until video initializes
+                            CircularProgressIndicator()), 
               ),
               const SizedBox(height: 20),
               // Video Controls

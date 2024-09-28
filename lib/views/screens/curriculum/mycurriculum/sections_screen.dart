@@ -164,6 +164,12 @@ class _ChapterTileState extends State<ChapterTile> {
       if (response.statusCode == 200) {
         var responseData = json.decode(response.body);
         log('Response data: $responseData');
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                LessonsVideos(lessonData: responseData['lesson']),
+          ),
+        );
       } else if (response.statusCode == 400) {
         var responseData = json.decode(response.body);
         if (responseData['faield'] == 'This Lesson Unpaid') {
