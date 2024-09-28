@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/constants/colors.dart'; // for date formatting
+import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/live/purshased_live_controller.dart';
+import 'package:provider/provider.dart';
 
-class LiveSessionsScreen extends StatelessWidget {
+class LiveSessionsScreen extends StatefulWidget {
   const LiveSessionsScreen({super.key});
+
+  @override
+  State<LiveSessionsScreen> createState() => _LiveSessionsScreenState();
+}
+
+class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<PurshasedLiveController>(context).getLiveDatapurshased(context);
+  }
 
   // Function to get the day name in Arabic
   String getDayName(DateTime date) {
@@ -15,7 +28,7 @@ class LiveSessionsScreen extends StatelessWidget {
       "الخميس",
       "الجمعة"
     ];
-    return arabicDays[date.weekday % 7]; // % 7 to wrap days properly
+    return arabicDays[(date.weekday + 1) % 7]; // Adjust to start from Saturday
   }
 
   @override
@@ -70,7 +83,7 @@ class LiveSessionsScreen extends StatelessWidget {
               itemCount: 31, // Assuming a month with 31 days
               itemBuilder: (context, index) {
                 DateTime currentDate =
-                    DateTime(2024, 9, index ); // Mock March 2024
+                    DateTime(2024, 9, index); // Mock March 2024
                 String dayName = getDayName(currentDate);
 
                 return GestureDetector(
