@@ -1,6 +1,6 @@
 class IssuesData {
-  List<QuestionIssue> questionIssues;
-  List<VideoIssue> videoIssues;
+  final List<QuestionIssue> questionIssues;
+  final List<VideoIssue> videoIssues;
 
   IssuesData({
     required this.questionIssues,
@@ -8,8 +8,8 @@ class IssuesData {
   });
 
   factory IssuesData.fromJson(Map<String, dynamic> json) {
-    var questionIssuesList = json['question_issues'] as List;
-    var videoIssuesList = json['video_issues'] as List;
+    var questionIssuesList = json['question_issues'] as List? ?? [];
+    var videoIssuesList = json['video_issues'] as List? ?? [];
 
     return IssuesData(
       questionIssues: questionIssuesList
@@ -29,31 +29,31 @@ class IssuesData {
 }
 
 class QuestionIssue {
-  int? id;
-  String? title;
-  String? thumbnail;
-  String? description;
-  int? status;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  final int id;
+  final String title;
+  final String? thumbnail;
+  final String? description;
+  final int status;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   QuestionIssue({
-    this.id,
-    this.title,
+    required this.id,
+    required this.title,
     this.thumbnail,
     this.description,
-    this.status,
+    required this.status,
     this.createdAt,
     this.updatedAt,
   });
 
   factory QuestionIssue.fromJson(Map<String, dynamic> json) {
     return QuestionIssue(
-      id: json['id'],
-      title: json['title'],
+      id: json['id'] ?? 0,
+      title: json['title'] ?? 'No Title',
       thumbnail: json['thumbnail'],
       description: json['description'],
-      status: json['status'],
+      status: json['status'] ?? 0,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
@@ -77,31 +77,31 @@ class QuestionIssue {
 }
 
 class VideoIssue {
-  int? id;
-  String? title;
-  String? thumbnail;
-  String? description;
-  int? status;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  final int id;
+  final String title;
+  final String? thumbnail;
+  final String? description;
+  final int status;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   VideoIssue({
-    this.id,
-    this.title,
+    required this.id,
+    required this.title,
     this.thumbnail,
     this.description,
-    this.status,
+    required this.status,
     this.createdAt,
     this.updatedAt,
   });
 
   factory VideoIssue.fromJson(Map<String, dynamic> json) {
     return VideoIssue(
-      id: json['id'],
-      title: json['title'],
+      id: json['id'] ?? 0,
+      title: json['title'] ?? 'No Title',
       thumbnail: json['thumbnail'],
       description: json['description'],
-      status: json['status'],
+      status: json['status'] ?? 0,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,

@@ -8,7 +8,6 @@ import 'package:flutter_application_1/views/widgets/hw_levels_widget.dart';
 import 'package:flutter_application_1/views/widgets/lesson_content.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-
 class LessonsVideos extends StatefulWidget {
   final dynamic lessonData;
 
@@ -73,7 +72,6 @@ class _LessonsVideosState extends State<LessonsVideos> {
                     borderRadius: BorderRadius.circular(10.r),
                     boxShadow: const [
                       BoxShadow(
-                        //color: Colors.grey.withOpacity(0.2),
                         color: Colors.transparent,
                         spreadRadius: 1,
                         blurRadius: 5,
@@ -104,7 +102,10 @@ class _LessonsVideosState extends State<LessonsVideos> {
                     padding: EdgeInsets.symmetric(horizontal: 8.0.w),
                     child: TabBarView(
                       children: [
-                        IdeasContent(resources: widget.lessonData['resources']),
+                        IdeasContent(
+                          resources: widget.lessonData['resources'],
+                          lessonId: widget.lessonData['id'], // Pass lesson ID here
+                        ),
                         HomeWorkWidget(homework: widget.lessonData['homework']),
                         BockletScreen(
                             resources: widget.lessonData['resources']),

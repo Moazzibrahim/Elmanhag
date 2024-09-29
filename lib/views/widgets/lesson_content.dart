@@ -3,10 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../screens/curriculum/mycurriculum/report_video_screen.dart';
+
 class IdeasContent extends StatefulWidget {
   final List<dynamic> resources;
+  final int lessonId; // Accept lessonId here
 
-  const IdeasContent({super.key, required this.resources});
+  const IdeasContent(
+      {super.key, required this.resources, required this.lessonId});
 
   @override
   State<IdeasContent> createState() => _IdeasContentState();
@@ -87,24 +91,25 @@ class _IdeasContentState extends State<IdeasContent> {
           children: [
             if (videoResources.isNotEmpty)
               Container(
-                  height: 200,
-                  width: 300,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: WebViewWidget(
-                      controller: controller,
+                height: 200,
+                width: 300,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
                     ),
-                  ))
+                  ],
+                ),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: WebViewWidget(
+                    controller: controller,
+                  ),
+                ),
+              )
             else
               Container(
                 height: 200, // Adjust as needed
@@ -114,19 +119,41 @@ class _IdeasContentState extends State<IdeasContent> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.redAccent,
+                    color: redcolor,
                   ),
                 ),
               ),
             const SizedBox(height: 15),
-            const Row(
+            Row(
               children: [
-                SizedBox(width: 20),
-                CircleAvatar(
+                const SizedBox(width: 20),
+                const CircleAvatar(
                   backgroundImage: AssetImage('assets/images/amin2.png'),
                 ),
-                SizedBox(width: 10),
-                Text('المنهج', style: TextStyle(fontSize: 16)),
+                const SizedBox(width: 10),
+                const Text(
+                  'المنهج',
+                  style: TextStyle(fontSize: 16),
+                ),
+                const Spacer(), // This will push the report button to the right
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ReportVideoScreen(lessonId: widget.lessonId)),
+                    );
+                  },
+                  icon: const Icon(Icons.flag),
+                  label: const Text('Report'),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: redcolor, // Text color
+                  ),
+                ),
+                const SizedBox(
+                    width:
+                        20), // Add some padding between the button and the edge of the screen
               ],
             ),
             const SizedBox(height: 15),
