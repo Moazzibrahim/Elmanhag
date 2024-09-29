@@ -129,6 +129,8 @@ class Livess {
   String? createdAt;
   String? updatedAt;
   int? liveId;
+  Subjectss? subject;
+  Teacherss? teacher;
 
   Livess({
     this.id,
@@ -148,6 +150,8 @@ class Livess {
     this.createdAt,
     this.updatedAt,
     this.liveId,
+    this.subject,
+    this.teacher,
   });
 
   factory Livess.fromJson(Map<String, dynamic> json) {
@@ -169,6 +173,8 @@ class Livess {
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
       liveId: json['live_id'],
+      subject: json['subject'] != null ? Subjectss.fromJson(json['subject']) : null,
+      teacher: json['teacher'] != null ? Teacherss.fromJson(json['teacher']) : null,
     );
   }
 
@@ -191,6 +197,56 @@ class Livess {
       'created_at': createdAt,
       'updated_at': updatedAt,
       'live_id': liveId,
+      'subject': subject?.toJson(),
+      'teacher': teacher?.toJson(),
+    };
+  }
+}
+
+class Teacherss {
+  int? id;
+  String? name;
+  String? phone;
+  String? image;
+  String? role;
+  String? gender;
+  String? email;
+  String? imageLink;
+
+  Teacherss({
+    this.id,
+    this.name,
+    this.phone,
+    this.image,
+    this.role,
+    this.gender,
+    this.email,
+    this.imageLink,
+  });
+
+  factory Teacherss.fromJson(Map<String, dynamic> json) {
+    return Teacherss(
+      id: json['id'],
+      name: json['name'],
+      phone: json['phone'],
+      image: json['image'],
+      role: json['role'],
+      gender: json['gender'],
+      email: json['email'],
+      imageLink: json['image_link'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'phone': phone,
+      'image': image,
+      'role': role,
+      'gender': gender,
+      'email': email,
+      'image_link': imageLink,
     };
   }
 }

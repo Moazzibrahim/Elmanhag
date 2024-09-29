@@ -79,7 +79,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               CircleAvatar(
                 backgroundImage: _image != null
                     ? FileImage(_image!)
-                    : NetworkImage(user!.image!),
+                    : NetworkImage(user!.imageLink!),
                 radius: 20,
               ),
               IconButton(

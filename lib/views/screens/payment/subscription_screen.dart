@@ -64,7 +64,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             name: bundle.name,
             price: bundle.price.toString(),
             description: bundle.description,
-            coverPhoto: bundle.coverPhoto,
+            coverPhoto: bundle.thumbnaillink,
             expiredDate: bundle.expiredDate,
             discount: (bundle.discounts?.isNotEmpty ?? false)
                 ? bundle.discounts!.first.amount
@@ -283,7 +283,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             name: bundle.name,
             price: bundle.price.toString(),
             description: bundle.description,
-            coverPhoto: bundle.coverPhoto,
+            coverPhoto: bundle.coverphotolink,
             expiredDate: bundle.expiredDate,
             discount: (bundle.discounts?.isNotEmpty ?? false)
                 ? bundle.discounts!.first.amount

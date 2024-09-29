@@ -57,6 +57,8 @@ class Bundle {
   final int? status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? thumbnaillink;
+  final String? coverphotolink;
   final List<Discount>? discounts;
 
   Bundle({
@@ -77,6 +79,8 @@ class Bundle {
     this.createdAt,
     this.updatedAt,
     this.discounts,
+    this.thumbnaillink,
+    this.coverphotolink,
   });
 
   factory Bundle.fromJson(Map<String, dynamic> json) {
@@ -95,6 +99,8 @@ class Bundle {
       educationId: json['education_id'],
       expiredDate: json['expired_date'],
       status: json['status'],
+      thumbnaillink: json['thumbnail_link'],
+      coverphotolink: json['cover_photo_link'],
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
@@ -125,6 +131,8 @@ class Bundle {
       'education_id': educationId,
       'expired_date': expiredDate,
       'status': status,
+      'thumbnail_link': thumbnaillink,
+      'cover_photo_link': coverphotolink,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'discount': discounts?.map((discount) => discount.toJson()).toList(),
