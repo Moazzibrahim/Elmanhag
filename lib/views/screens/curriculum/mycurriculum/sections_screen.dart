@@ -10,7 +10,6 @@ import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-
 class SectionsScreen extends StatefulWidget {
   const SectionsScreen({
     super.key,
@@ -18,7 +17,6 @@ class SectionsScreen extends StatefulWidget {
     required this.subjectId,
     this.coverPhotoUrl,
   });
-
   final List<dynamic> chapters;
   final String subjectId;
   final String? coverPhotoUrl;
@@ -27,13 +25,11 @@ class SectionsScreen extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _SectionsScreenState createState() => _SectionsScreenState();
 }
-
 class _SectionsScreenState extends State<SectionsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDarkMode = themeProvider.isDarkMode;
-
     return Scaffold(
       body: Stack(
         children: [

@@ -49,7 +49,7 @@ class ApiService with ChangeNotifier {
       'parent_password': parentpassword,
       'parent_relation_id': selectedparentrealtionId,
       'gender': gender,
-      'student_job_id': jobId,
+      'student_jobs_id': jobId,
       'affilate_code': affilateCode
     });
 
