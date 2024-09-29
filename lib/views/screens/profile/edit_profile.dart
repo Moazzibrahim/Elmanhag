@@ -332,6 +332,8 @@ class _StudentTabContentState extends State<StudentTabContent> {
                   ),
 
                   const SizedBox(height: 15),
+
+// Disable city dropdown if no country is selected
                   DropdownButtonFormField<String>(
                     value: selectedCityId,
                     items: cities.map(
@@ -358,18 +360,27 @@ class _StudentTabContentState extends State<StudentTabContent> {
                         borderRadius: BorderRadius.circular(30.0),
                       ),
                     ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedCityId = newValue;
-                        selectedCityName = cities
-                            .firstWhere(
-                                (city) => city.id.toString() == newValue)
-                            .name;
-                      });
-                    },
-                    validator: (value) =>
-                        value == null ? 'Please select a city' : null,
+                    onChanged: selectedCountryId == null
+                        ? null // Disable city dropdown if no country is selected
+                        : (String? newValue) {
+                            setState(() {
+                              selectedCityId = newValue;
+                              selectedCityName = cities
+                                  .firstWhere(
+                                      (city) => city.id.toString() == newValue)
+                                  .name;
+                            });
+                          },
+                    validator: (value) => selectedCountryId == null
+                        ? 'Please select a country first'
+                        : value == null
+                            ? 'Please select a city'
+                            : null,
+                    onSaved: (value) {
+                      selectedCityId = value;
+                    }, // Disable city dropdown until country is selected
                   ),
+
                   const SizedBox(
                     height: 15,
                   ),

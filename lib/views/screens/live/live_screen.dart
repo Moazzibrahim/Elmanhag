@@ -1,10 +1,13 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
-
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/live/purshased_live_controller.dart';
+import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 class LiveSessionsScreen extends StatefulWidget {
   const LiveSessionsScreen({super.key});
@@ -29,33 +32,35 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
 
   // Function to get the day name in Arabic
   String getDayName(DateTime date) {
+    final localizations = AppLocalizations.of(context);
     List<String> arabicDays = [
-      "السبت",
-      "الأحد",
-      "الاثنين",
-      "الثلاثاء",
-      "الأربعاء",
-      "الخميس",
-      "الجمعة"
+      (localizations.translate('saturday')),
+      (localizations.translate('sunday')),
+      (localizations.translate('monday')),
+      (localizations.translate('tuesday')),
+      (localizations.translate('wednesday')),
+      (localizations.translate('thursday')),
+      (localizations.translate('friday'))
     ];
     return arabicDays[(date.weekday + 1) % 7]; // Adjust to start from Saturday
   }
 
   // Get the month name in Arabic
   String getMonthName(int month) {
+    final localizations = AppLocalizations.of(context);
     List<String> arabicMonths = [
-      "يناير",
-      "فبراير",
-      "مارس",
-      "أبريل",
-      "مايو",
-      "يونيو",
-      "يوليو",
-      "أغسطس",
-      "سبتمبر",
-      "أكتوبر",
-      "نوفمبر",
-      "ديسمبر"
+      (localizations.translate('january')),
+      (localizations.translate('february')),
+      (localizations.translate('march')),
+      (localizations.translate('april')),
+      (localizations.translate('may')),
+      (localizations.translate('june')),
+      (localizations.translate('july')),
+      (localizations.translate('august')),
+      (localizations.translate('september')),
+      (localizations.translate('october')),
+      (localizations.translate('november')),
+      (localizations.translate('december'))
     ];
     return arabicMonths[month - 1];
   }
@@ -71,6 +76,7 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
     DateTime startOfWeek = getStartOfWeek(currentDate);
     return List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
   }
+
   // Function to check if a session date is today
   bool isToday(DateTime sessionDate) {
     final now = DateTime.now();
@@ -81,29 +87,41 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
 
   // Function to format time to "hh:mm a" format (12-hour clock)
   String formatToHourMinute(String time) {
+    final localizations = AppLocalizations.of(context);
     final parts = time.split(':');
     if (parts.length >= 2) {
       final hour = int.parse(parts[0]);
       final minute = parts[1];
-
       // Determine AM or PM
-      final period = hour >= 12 ? 'pm' : 'am';
-
+      final period = hour >= 12
+          ? localizations.translate('pm')
+          : localizations.translate('am');
       // Convert hour to 12-hour format
       final formattedHour = hour % 12 == 0 ? 12 : hour % 12;
-
       return '$formattedHour:$minute $period'; // Return formatted time
     }
     return time; // Return the original time if format is not matched
   }
 
+  // Function to filter live sessions based on selected day
+  List liveSessionsForSelectedDay(List liveData) {
+    return liveData.where((session) {
+      DateTime sessionDate =
+          DateTime.parse(session.date!); // Parse session date
+      return sessionDate.year == selectedDate?.year &&
+          sessionDate.month == selectedDate?.month &&
+          sessionDate.day == selectedDate?.day;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'حصص لايف',
-          style: TextStyle(
+        title: Text(
+          ' ${localizations.translate('live_classes')}',
+          style: const TextStyle(
               color: redcolor, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
@@ -170,14 +188,22 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
                         itemBuilder: (context, index) {
                           DateTime day = getWeekDays(currentDate)[index];
                           String dayName = getDayName(day);
+
                           return GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                selectedDate = day; // Set selected date
+                                showSessions =
+                                    true; // Show sessions based on the date
+                              });
+                            },
                             child: Column(
                               children: [
                                 Text(
                                   dayName,
                                   style: const TextStyle(
                                       color: Colors.black,
+                                      fontSize: 11,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 5),
@@ -215,27 +241,40 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
                     // Live Sessions List (conditional rendering)
                     if (showSessions) // Only show if the flag is true
                       Expanded(
-                        child: liveData.isNotEmpty
-                            ? ListView.builder(
-                                itemCount:
-                                    liveData.length, // Number of live sessions
-                                itemBuilder: (context, index) {
-                                  final session = liveData[index];
-                                  return SessionCard(
-                                    fromTime: formatToHourMinute(session.from!),
-                                    toTime: formatToHourMinute(session.to!),
-                                    teacher: session.teacher?.name ?? "Unknown",
-                                    subject: session.subject?.name ?? "Unknown",
-                                    thumbnailUrl:
-                                        session.subject?.thumbnailUrl ?? '',
-                                    link: session.link ??
-                                        '', // Pass the link from the session
-                                  );
-                                },
-                              )
+                        child: selectedDate != null
+                            ? liveSessionsForSelectedDay(liveData).isNotEmpty
+                                ? ListView.builder(
+                                    itemCount:
+                                        liveSessionsForSelectedDay(liveData)
+                                            .length, // Number of live sessions
+                                    itemBuilder: (context, index) {
+                                      final session =
+                                          liveSessionsForSelectedDay(
+                                              liveData)[index];
+                                      return SessionCard(
+                                        fromTime:
+                                            formatToHourMinute(session.from!),
+                                        toTime: formatToHourMinute(session.to!),
+                                        teacher:
+                                            session.teacher?.name ?? "Unknown",
+                                        subject:
+                                            session.subject?.name ?? "Unknown",
+                                        thumbnailUrl:
+                                            session.subject?.thumbnailUrl ?? '',
+                                        link: session.link ?? '',
+                                      );
+                                    },
+                                  )
+                                : const Center(
+                                    child: Text(
+                                      'No live sessions available for this date',
+                                      style: TextStyle(
+                                          fontSize: 18, color: Colors.grey),
+                                    ),
+                                  )
                             : const Center(
                                 child: Text(
-                                  'No sessions available for this date',
+                                  'No live sessions available for this date',
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.grey),
                                 ),
@@ -244,7 +283,7 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
                     else
                       const Center(
                         child: Text(
-                          'No sessions available for this date',
+                          'No live sessions available for this date',
                           style: TextStyle(fontSize: 18, color: Colors.grey),
                         ),
                       ),
@@ -276,6 +315,26 @@ class SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> checkpaidlive() async {
+      const url = "https://bdev.elmanhag.shop/student/subscription/check/6";
+      final token = Provider.of<TokenModel>(context, listen: false).token;
+      try {
+        final response = await http.post(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          log(" message: ${response.body}");
+        } else {
+          log("error in posting session id ");
+        }
+      } catch (e) {
+        log("error ");
+      }
+    }
+
+    final localizations = AppLocalizations.of(context);
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -283,7 +342,7 @@ class SessionCard extends StatelessWidget {
         children: [
           ListTile(
             title: Text(
-              'from $fromTime - to $toTime',
+              '${localizations.translate('from')} $fromTime - ${localizations.translate('to')} $toTime',
               style: const TextStyle(
                 color: redcolor,
                 fontSize: 14,
@@ -315,6 +374,7 @@ class SessionCard extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () async {
+                checkpaidlive();
                 final url = Uri.parse(link); // Use the passed link
                 if (await canLaunch(url.toString())) {
                   await launch(url.toString());

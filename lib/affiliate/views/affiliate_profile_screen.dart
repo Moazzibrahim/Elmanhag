@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For Clipboard functionality
 import 'package:flutter_application_1/constants/colors.dart';
