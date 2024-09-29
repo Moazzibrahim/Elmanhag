@@ -21,13 +21,16 @@ class VodafonePaymentScreen extends StatefulWidget {
   final String itemsprice;
   final String services;
   final int? paymentmtethodid;
+  final String image;
+  final String title;
+  final String description;
   const VodafonePaymentScreen(
       {super.key,
       required this.itemids,
       required this.itemidsub,
       required this.itemsprice,
       required this.services,
-      this.paymentmtethodid});
+      this.paymentmtethodid, required this.image, required this.title, required this.description});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -114,8 +117,8 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                           Navigator.pop(context);
                         },
                       ),
-                      Image.asset(
-                        'assets/images/vod.png',
+                      Image.network(
+                        widget.image,
                         height: 50,
                       ),
                       Container(width: 50),
@@ -145,7 +148,7 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                       child: Column(
                         children: [
                           Text(
-                            'رقم التليفون: ${value.paymentMethods.first.description}',
+                            '${localizations.translate("details")} ${widget.description}',
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.black,

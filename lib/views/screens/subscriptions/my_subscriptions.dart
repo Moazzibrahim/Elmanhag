@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/live/purshased_live_controller.dart';
+import 'package:provider/provider.dart';
 import '../../../localization/app_localizations.dart';
 import '../payment/subscription_screen.dart';
 
@@ -13,66 +15,74 @@ class MySubscriptions extends StatelessWidget {
     final localization = AppLocalizations.of(context);
 
     return Scaffold(
-      body: Container(
-        decoration: isDarkMode
-            ? const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/Ellipse 198.png'),
-                  fit: BoxFit.cover,
+      body: Consumer<PurshasedLiveController>(
+        builder: (context, itemProvider, _) {
+          if(itemProvider.dataModelss == null){
+            return Container(
+          decoration: isDarkMode
+              ? const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/Ellipse 198.png'),
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 25.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 20,
                 ),
-              )
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 25.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: redcolor,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    iconSize: 28.0, // Increased size to make it pop
-                  ),
-                  Text(
-                    localization.translate("my_subscriptions"),
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: redcolor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20, // Increased font size for emphasis
-                    ),
-                  ),
-                  const SizedBox(
-                      width: 48), // Invisible space to balance the row
-                ],
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: ListView(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SubscriptionCard(
-                      title: localization.translate("materials_package"),
-                      description:
-                          localization.translate("materials_description"),
-                      buttonText: localization.translate("subscribe_now"),
-                      imagePath: 'assets/images/materials.png',
-                      isPrimary: true,
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: redcolor,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      iconSize: 28.0, 
                     ),
+                    Text(
+                      localization.translate("my_subscriptions"),
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        color: redcolor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20, // Increased font size for emphasis
+                      ),
+                    ),
+                    const SizedBox(
+                        width: 48), // Invisible space to balance the row
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      SubscriptionCard(
+                        title: localization.translate("materials_package"),
+                        description:
+                            localization.translate("materials_description"),
+                        buttonText: localization.translate("subscribe_now"),
+                        imagePath: 'assets/images/materials.png',
+                        isPrimary: true,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+        );
+          }else{
+            return Center(child: Text('My sub'),);
+          }
+        },
       ),
     );
   }

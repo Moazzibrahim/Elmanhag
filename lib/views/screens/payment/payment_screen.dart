@@ -34,6 +34,7 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   int _selectedIndex = -1; // Initialize with -1 (none selected)
+  String? _selectedPaymentMethod;
   final TextEditingController _promoCodeController = TextEditingController();
   String? _promoCodeError;
   int? itemPriceAsInt; // Variable to store converted price
@@ -302,9 +303,54 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             child: SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: _selectedIndex != -1
-                                    ? _navigateToSelectedScreen
-                                    : null,
+                                onPressed: () {
+                                  final localizations =
+                                      AppLocalizations.of(context);
+                                  String priceToSend;
+                                  if (_selectedIndex == -1) {
+                                    // If no payment method is selected, show a message or prevent navigation
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(localizations.translate(
+                                            'you must choose payment method')),
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                  if (isapplied) {
+                                    priceToSend = newprice
+                                        .toString(); // If promo code is applied, return new price
+                                  } else if (widget.itemdiscount != null &&
+                                      widget.itemdiscount! > 0) {
+                                    // If there's a discount, calculate the price after discount
+                                    priceToSend =
+                                        (itemPriceAsInt! - widget.itemdiscount!)
+                                            .toString();
+                                  } else {
+                                    // If no discount, return the original item price
+                                    priceToSend = widget.itemprice!;
+                                  }
+                                  if(_selectedPaymentMethod == 'fawry'){
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (ctx)=> const FawryPaymentScreen())
+                                    );
+                                  }else{
+                                    final chosenPaymentMethod = provider.paymentMethods.firstWhere((e) => e.id == _selectedIndex,);
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (ctx)=> VodafonePaymentScreen(
+                                      itemids: widget.itemidbundle,
+                                      description: chosenPaymentMethod.description,
+                                      image: chosenPaymentMethod.thumbnailLink,
+                                      title: '_selectedPaymentMethod!',
+                                      itemsprice: priceToSend, // Send the correct price
+                                      services: widget.itemservice,
+                                      itemidsub: widget.itemidsubject,
+                                      paymentmtethodid: _selectedIndex,
+                                    )
+                                    )
+                                    );
+                                  }
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: redcolor,
                                   padding:
@@ -338,66 +384,66 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  void _navigateToSelectedScreen() {
-    final localizations = AppLocalizations.of(context);
-    String priceToSend;
-    if (_selectedIndex == -1) {
-      // If no payment method is selected, show a message or prevent navigation
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(localizations.translate('you must choose payment method')),
-        ),
-      );
-      return;
-    }
-    if (isapplied) {
-      priceToSend =
-          newprice.toString(); // If promo code is applied, return new price
-    } else if (widget.itemdiscount != null && widget.itemdiscount! > 0) {
-      // If there's a discount, calculate the price after discount
-      priceToSend= (itemPriceAsInt! - widget.itemdiscount!).toString();
-    } else {
-      // If no discount, return the original item price
-      priceToSend= widget.itemprice!;
-    }
+  // void _navigateToSelectedScreen() {
+  //   final localizations = AppLocalizations.of(context);
+  //   String priceToSend;
+  //   if (_selectedIndex == -1) {
+  //     // If no payment method is selected, show a message or prevent navigation
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content:
+  //             Text(localizations.translate('you must choose payment method')),
+  //       ),
+  //     );
+  //     return;
+  //   }
+  //   if (isapplied) {
+  //     priceToSend =
+  //         newprice.toString(); // If promo code is applied, return new price
+  //   } else if (widget.itemdiscount != null && widget.itemdiscount! > 0) {
+  //     // If there's a discount, calculate the price after discount
+  //     priceToSend = (itemPriceAsInt! - widget.itemdiscount!).toString();
+  //   } else {
+  //     // If no discount, return the original item price
+  //     priceToSend = widget.itemprice!;
+  //   }
 
-    // Determine the price to send: use new price if the promo code was applied, otherwise use the original price
-    // final priceToSend =
-    //     newprice != -1 ? newprice.toString() : widget.itemprice!;
+  //   // Determine the price to send: use new price if the promo code was applied, otherwise use the original price
+  //   // final priceToSend =
+  //   //     newprice != -1 ? newprice.toString() : widget.itemprice!;
 
-    switch (_selectedIndex) {
-      case 0:
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (ctx) => const VisaPaymentScreen()),
-        );
-        break;
-      case 1:
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (ctx) => VodafonePaymentScreen(
-              itemids: widget.itemidbundle,
-              itemsprice: priceToSend, // Send the correct price
-              services: widget.itemservice,
-              itemidsub: widget.itemidsubject,
-              paymentmtethodid:
-                  _selectedIndex, // Pass selected payment method ID here
-            ),
-          ),
-        );
-        log("Payment method ID: $_selectedIndex");
-        break;
-      case 2:
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (ctx) => const FawryPaymentScreen()),
-        );
-        log("Payment method ID: $_selectedIndex");
-        break;
-      default:
-        // Handle the default case if needed
-        break;
-    }
-  }
+  //   switch (_selectedIndex) {
+  //     case 0:
+  //       Navigator.of(context).push(
+  //         MaterialPageRoute(builder: (ctx) => const VisaPaymentScreen()),
+  //       );
+  //       break;
+  //     case 1:
+  //       Navigator.of(context).push(
+  //         MaterialPageRoute(
+  //           builder: (ctx) => VodafonePaymentScreen(
+  //             itemids: widget.itemidbundle,
+  //             itemsprice: priceToSend, // Send the correct price
+  //             services: widget.itemservice,
+  //             itemidsub: widget.itemidsubject,
+  //             paymentmtethodid:
+  //                 _selectedIndex, // Pass selected payment method ID here
+  //           ),
+  //         ),
+  //       );
+  //       log("Payment method ID: $_selectedIndex");
+  //       break;
+  //     case 2:
+  //       Navigator.of(context).push(
+  //         MaterialPageRoute(builder: (ctx) => const FawryPaymentScreen()),
+  //       );
+  //       log("Payment method ID: $_selectedIndex");
+  //       break;
+  //     default:
+  //       // Handle the default case if needed
+  //       break;
+  //   }
+  // }
 
   Widget _buildPaymentOption(int index, PaymentMethodstudent paymentMethod) {
     final theme = Theme.of(context);
@@ -427,6 +473,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           onChanged: (int? value) {
             setState(() {
               _selectedIndex = value!;
+              _selectedPaymentMethod = paymentMethod.title;
             });
           },
         ),

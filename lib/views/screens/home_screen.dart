@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
+import 'package:flutter_application_1/controller/live/purshased_live_controller.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_application_1/views/screens/curriculum/allcurriculum/filter_curriclums_screen.dart';
@@ -270,7 +271,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              onPressed: () {
+                              onPressed: () async{
+                                await Provider.of<PurshasedLiveController>(context,listen: false).getLiveDatapurshased(context);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -366,7 +368,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async{
+                              await Provider.of<PurshasedLiveController>(context,listen: false).getLiveDatapurshased(context);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
