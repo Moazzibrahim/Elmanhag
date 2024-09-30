@@ -8,7 +8,6 @@ import 'package:flutter_application_1/controller/payment/payment_methods_provide
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/models/payment_methods_model.dart';
 import 'package:flutter_application_1/views/screens/payment/fawry_payment_screen.dart';
-import 'package:flutter_application_1/views/screens/payment/visa_payment_screen.dart';
 import 'package:flutter_application_1/views/screens/payment/vodafone_payment_screen.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -20,13 +19,16 @@ class PaymentScreen extends StatefulWidget {
   final String itemservice;
   final int itemidsubject;
   final int? itemdiscount;
-  const PaymentScreen(
-      {super.key,
-      required this.itemidbundle,
-      required this.itemidsubject,
-      this.itemprice,
-      required this.itemservice,
-      this.itemdiscount});
+  final int? sessionliveid;
+  const PaymentScreen({
+    super.key,
+    required this.itemidbundle,
+    required this.itemidsubject,
+    this.itemprice,
+    required this.itemservice,
+    this.itemdiscount,
+    this.sessionliveid,
+  });
 
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
@@ -144,6 +146,52 @@ class _PaymentScreenState extends State<PaymentScreen> {
       }
     }
 
+    Widget buildPaymentOption(int index, PaymentMethodstudent paymentMethod) {
+      final theme = Theme.of(context);
+      bool isSelected = _selectedIndex == paymentMethod.id;
+
+      return Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        color: isSelected ? Colors.red.shade200 : theme.cardColor,
+        elevation: isSelected ? 5 : 2,
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        child: ListTile(
+          leading:
+              Image.network(paymentMethod.thumbnailLink, width: 30, height: 30),
+          title: Text(
+            paymentMethod.title, // Handle null title
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: redcolor,
+            ),
+          ),
+          trailing: Radio<int>(
+            value: paymentMethod.id,
+            groupValue: _selectedIndex,
+            activeColor: redcolor,
+            onChanged: (int? value) {
+              setState(() {
+                _selectedIndex = value!;
+                _selectedPaymentMethod =
+                    paymentMethod.title; // Set the selected payment method
+                print(
+                    'Selected Payment Method: $_selectedPaymentMethod'); // Debug print
+              });
+            },
+          ),
+          onTap: () {
+            setState(() {
+              _selectedIndex = paymentMethod.id;
+              _selectedPaymentMethod =
+                  paymentMethod.title; // Set the selected payment method
+            });
+          },
+        ),
+      );
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -249,7 +297,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             height: 8,
                           ),
                           ...provider.paymentMethods.map((paymentMethod) =>
-                              _buildPaymentOption(
+                              buildPaymentOption(
                                   paymentMethod.id, paymentMethod)),
                           const SizedBox(height: 16),
                           Text(
@@ -330,25 +378,47 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     // If no discount, return the original item price
                                     priceToSend = widget.itemprice!;
                                   }
-                                  if(_selectedPaymentMethod == 'fawry'){
+                                  if (_selectedPaymentMethod == 'fawry') {
                                     Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (ctx)=> const FawryPaymentScreen())
+                                        MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                const FawryPaymentScreen()));
+                                  } else {
+                                    final chosenPaymentMethod =
+                                        provider.paymentMethods.firstWhere(
+                                      (e) => e.id == _selectedIndex,
                                     );
-                                  }else{
-                                    final chosenPaymentMethod = provider.paymentMethods.firstWhere((e) => e.id == _selectedIndex,);
+                                    print('Item IDs: ${widget.itemidbundle}');
+                                    print(
+                                        'Description: ${chosenPaymentMethod.description}');
+                                    print(
+                                        'Image: ${chosenPaymentMethod.thumbnailLink}');
+                                    print('Title: $_selectedPaymentMethod');
+                                    print('Price: $priceToSend');
+                                    print('Services: ${widget.itemservice}');
+                                    print(
+                                        'Subject IDs: ${widget.itemidsubject}');
+                                    print('Payment Method ID: $_selectedIndex');
                                     Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (ctx)=> VodafonePaymentScreen(
-                                      itemids: widget.itemidbundle,
-                                      description: chosenPaymentMethod.description,
-                                      image: chosenPaymentMethod.thumbnailLink,
-                                      title: '_selectedPaymentMethod!',
-                                      itemsprice: priceToSend, // Send the correct price
-                                      services: widget.itemservice,
-                                      itemidsub: widget.itemidsubject,
-                                      paymentmtethodid: _selectedIndex,
-                                    )
-                                    )
-                                    );
+                                        MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                VodafonePaymentScreen(
+                                                  itemids: widget.itemidbundle,
+                                                  description:
+                                                      chosenPaymentMethod
+                                                          .description,
+                                                  image: chosenPaymentMethod
+                                                      .thumbnailLink,
+                                                  title:
+                                                      _selectedPaymentMethod!,
+                                                  itemsprice:
+                                                      priceToSend, // Send the correct price
+                                                  services: widget.itemservice,
+                                                  itemidsub:
+                                                      widget.itemidsubject,
+                                                  paymentmtethodid:
+                                                      _selectedIndex,
+                                                )));
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -444,45 +514,4 @@ class _PaymentScreenState extends State<PaymentScreen> {
   //       break;
   //   }
   // }
-
-  Widget _buildPaymentOption(int index, PaymentMethodstudent paymentMethod) {
-    final theme = Theme.of(context);
-    bool isSelected = _selectedIndex == paymentMethod.id;
-
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      color: isSelected ? Colors.red.shade200 : theme.cardColor,
-      elevation: isSelected ? 5 : 2,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        leading:
-            Image.network(paymentMethod.thumbnailLink, width: 30, height: 30),
-        title: Text(
-          paymentMethod.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: redcolor,
-          ),
-        ),
-        trailing: Radio<int>(
-          value: paymentMethod.id,
-          groupValue: _selectedIndex,
-          activeColor: redcolor,
-          onChanged: (int? value) {
-            setState(() {
-              _selectedIndex = value!;
-              _selectedPaymentMethod = paymentMethod.title;
-            });
-          },
-        ),
-        onTap: () {
-          setState(() {
-            _selectedIndex = paymentMethod.id;
-          });
-        },
-      ),
-    );
-  }
 }

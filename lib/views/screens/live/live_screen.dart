@@ -1,10 +1,12 @@
-// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use, unused_local_variable
+import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/live/purshased_live_controller.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
+import 'package:flutter_application_1/views/screens/payment/payment_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -24,9 +26,26 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
   @override
   void initState() {
     super.initState();
+    selectedDate = DateTime.now(); // Automatically select today's date
     Future.delayed(Duration.zero, () {
       Provider.of<PurshasedLiveController>(context, listen: false)
-          .getLiveDatapurshased(context);
+          .getLiveDatapurshased(context)
+          .then((_) {
+        // Check if there are any live sessions for today and display them
+        if (liveSessionsForSelectedDay(
+                Provider.of<PurshasedLiveController>(context, listen: false)
+                    .dataModelss!
+                    .live!)
+            .isNotEmpty) {
+          setState(() {
+            showSessions = true; // Automatically show sessions if they exist
+          });
+        } else {
+          setState(() {
+            showSessions = false; // Hide sessions if none exist for today
+          });
+        }
+      });
     });
   }
 
@@ -104,13 +123,22 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
   }
 
   // Function to filter live sessions based on selected day
+  // Function to filter live sessions based on selected day and current time
   List liveSessionsForSelectedDay(List liveData) {
     return liveData.where((session) {
       DateTime sessionDate =
           DateTime.parse(session.date!); // Parse session date
+      DateTime sessionStartTime = DateTime.parse(
+          "${session.date!} ${session.from!}"); // Parse session start time
+      DateTime sessionEndTime = DateTime.parse(
+          "${session.date!} ${session.to!}"); // Parse session end time
+
+      // Filter sessions that are on the selected date and haven't ended
       return sessionDate.year == selectedDate?.year &&
           sessionDate.month == selectedDate?.month &&
-          sessionDate.day == selectedDate?.day;
+          sessionDate.day == selectedDate?.day &&
+          DateTime.now().isBefore(
+              sessionEndTime); // Only show sessions that have not ended
     }).toList();
   }
 
@@ -238,7 +266,6 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Live Sessions List (conditional rendering)
                     if (showSessions) // Only show if the flag is true
                       Expanded(
                         child: selectedDate != null
@@ -262,6 +289,8 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
                                         thumbnailUrl:
                                             session.subject?.thumbnailUrl ?? '',
                                         link: session.link ?? '',
+                                        sessionId: session.id ?? 0,
+                                        sessionPrice: session.price ?? 0,
                                       );
                                     },
                                   )
@@ -301,7 +330,9 @@ class SessionCard extends StatelessWidget {
   final String teacher;
   final String subject;
   final String thumbnailUrl;
-  final String link; // Add this line
+  final String link;
+  final int sessionId;
+  final int sessionPrice; // Add sessionPrice here
 
   const SessionCard({
     super.key,
@@ -310,29 +341,102 @@ class SessionCard extends StatelessWidget {
     required this.teacher,
     required this.subject,
     required this.thumbnailUrl,
-    required this.link, // Add this line
+    required this.link,
+    required this.sessionId,
+    required this.sessionPrice, // Add this line
   });
 
   @override
   Widget build(BuildContext context) {
+    void navigateToPaymentScreen(BuildContext context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentScreen(
+            itemservice: 'Live session',
+            sessionliveid: sessionId,
+            itemidbundle: 0,
+            itemidsubject: 0,
+            itemprice: sessionPrice.toString(),
+          ), // Pass sessionId and price to the PaymentScreen
+        ),
+      );
+    }
+
+    // Function to show the "Buy" dialog
+    void showBuyDialog(BuildContext context, String errorMessage) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("You must buy live first"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(errorMessage),
+                const SizedBox(height: 10),
+                Text(
+                  "Price: $sessionPrice", // Show session price
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  navigateToPaymentScreen(
+                      context); // Navigate to the payment screen
+                },
+                child: const Text("Buy Now"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     Future<void> checkpaidlive() async {
-      const url = "https://bdev.elmanhag.shop/student/subscription/check/6";
+      final url =
+          "https://bdev.elmanhag.shop/student/subscription/check/$sessionId";
       final token = Provider.of<TokenModel>(context, listen: false).token;
+
       try {
         final response = await http.post(Uri.parse(url), headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         });
+
         if (response.statusCode == 200) {
-          log(" message: ${response.body}");
+          final responseBody = jsonDecode(response.body);
+
+          if (responseBody.containsKey('success') &&
+              responseBody['success'] == "You are allowed to attend") {
+            // If allowed to attend, open the session link
+            final uri = Uri.parse(link);
+            if (await canLaunch(uri.toString())) {
+              await launch(uri.toString());
+            } else {
+              // If the URL can't be launched, log the error and show a snackbar
+              log('Could not launch $uri');
+            }
+          }
         } else {
-          log("error in posting session id ");
+          log("Error in posting session ID. Status code: ${response.statusCode}");
+          showBuyDialog(context, 'You must buy live first');
         }
       } catch (e) {
-        log("error ");
+        log("Error: $e");
       }
     }
+
+    // Function to navigate to the payment screen
 
     final localizations = AppLocalizations.of(context);
     return Card(
@@ -374,13 +478,7 @@ class SessionCard extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () async {
-                checkpaidlive();
-                final url = Uri.parse(link); // Use the passed link
-                if (await canLaunch(url.toString())) {
-                  await launch(url.toString());
-                } else {
-                  throw 'Could not launch $url';
-                }
+                await checkpaidlive();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: redcolor,
