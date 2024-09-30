@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -27,7 +28,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> pickImage() async {
     final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery, // or ImageSource.camera for camera
+      source: ImageSource.gallery,
     );
 
     if (pickedFile != null) {
@@ -124,7 +125,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 }
 
-class StudentTabContent extends StatefulWidget {
+class StudentTabContent extends StatefulWidget { 
   final File? image;
   const StudentTabContent({super.key, this.image});
 
@@ -134,6 +135,9 @@ class StudentTabContent extends StatefulWidget {
 
 class _StudentTabContentState extends State<StudentTabContent> {
   String? selectedCountryId;
+  String? selectedStudentJobId;
+  String? selectedStudentJobName;
+
   String? selectedCityId;
   String? selectedCategoryId;
   String? selectedEducationId;
@@ -152,6 +156,8 @@ class _StudentTabContentState extends State<StudentTabContent> {
 
   List<Country> countries = [];
   List<City> cities = [];
+  List<StudentJob> StudentJobs = [];
+
   List<Category> categories = [];
   List<Education> educations = [];
 
@@ -169,6 +175,7 @@ class _StudentTabContentState extends State<StudentTabContent> {
         cities = dataProvider.dataModel?.cities ?? [];
         categories = dataProvider.dataModel?.categories ?? [];
         educations = dataProvider.dataModel?.educations ?? [];
+        StudentJobs = dataProvider.dataModel?.studentJobs ?? [];
       });
     });
   }
@@ -179,10 +186,10 @@ class _StudentTabContentState extends State<StudentTabContent> {
     Future<void> saveProfile() async {
       const url = 'https://bdev.elmanhag.shop/student/profile/modify';
       final token = Provider.of<TokenModel>(context, listen: false).token;
-
-      // Print selected IDs and image path
       print('Selected Country ID: $selectedCountryId');
       print('Selected City ID: $selectedCityId');
+      log(selectedStudentJobId.toString());
+
       if (widget.image != null) {
         print('Selected Image Path: ${widget.image!.path}');
       } else {
@@ -204,6 +211,7 @@ class _StudentTabContentState extends State<StudentTabContent> {
         'city_id': selectedCityId ?? '',
         'category_id': selectedCategoryId ?? '',
         'education_id': selectedEducationId ?? '',
+        'sudent_jobs_id': selectedStudentJobId ?? '',
       };
 
       request.fields.addAll(fieldsMap);
@@ -333,7 +341,6 @@ class _StudentTabContentState extends State<StudentTabContent> {
 
                   const SizedBox(height: 15),
 
-// Disable city dropdown if no country is selected
                   DropdownButtonFormField<String>(
                     value: selectedCityId,
                     items: cities.map(
@@ -378,7 +385,58 @@ class _StudentTabContentState extends State<StudentTabContent> {
                             : null,
                     onSaved: (value) {
                       selectedCityId = value;
-                    }, // Disable city dropdown until country is selected
+                    },
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  DropdownButtonFormField<String>(
+                    value: selectedStudentJobId,
+                    items: StudentJobs.map((StudentJob StudentJob) {
+                      return DropdownMenuItem<String>(
+                        value: StudentJob.id.toString(),
+                        child: Text(
+                          truncateString(
+                              StudentJob.job, 30), // Truncate the country name
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 12
+                                .sp, // Use ScreenUtil for responsive font size
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      labelText: 'نفسك تطلع اي؟',
+                      prefixIcon: const Icon(Icons.public, color: redcolor),
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 12.h, horizontal: 16.w),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: redcolor),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: redcolor),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedStudentJobId = newValue;
+                        selectedStudentJobName = StudentJobs.firstWhere(
+                            (StudentJob) =>
+                                StudentJob.id.toString() == newValue).job;
+
+                        print('Selected Job ID: $selectedStudentJobId');
+                        print('Selected Job Name: $selectedStudentJobName');
+                      });
+                    },
+                    validator: (value) =>
+                        value == null ? 'Please select a country' : null,
                   ),
 
                   const SizedBox(
