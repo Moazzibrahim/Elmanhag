@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
+// ignore_for_file: avoid_print, use_build_context_synchronously, unused_local_variable
 
 import 'dart:developer';
 
@@ -30,7 +30,10 @@ class VodafonePaymentScreen extends StatefulWidget {
       required this.itemidsub,
       required this.itemsprice,
       required this.services,
-      this.paymentmtethodid, required this.image, required this.title, required this.description});
+      this.paymentmtethodid,
+      required this.image,
+      required this.title,
+      required this.description});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -50,8 +53,10 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
         _isInitialized = true;
         Provider.of<GetBundleData>(context, listen: false)
             .fetchMainModel(context);
-        Provider.of<PaymentMethodsProvider>(context, listen: false)
-            .fetchPaymentMethods(context);
+        Future.microtask(() {
+          Provider.of<PaymentMethodsProvider>(context, listen: false)
+              .fetchPaymentMethods(context);
+        });
       }
     });
     super.initState();
