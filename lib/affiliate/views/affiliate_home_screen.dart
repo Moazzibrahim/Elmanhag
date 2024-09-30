@@ -339,7 +339,6 @@ class AffiliateHomeScreen extends StatelessWidget {
                   text: ') واحصل على ',
                   style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
-                // Replace 'iphone' with the current bonus title
                 TextSpan(
                   text: bonusData.affiliateBonus.bonus, // Display bonus title
                   style: const TextStyle(
