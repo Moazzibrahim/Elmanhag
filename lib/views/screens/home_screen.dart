@@ -1,7 +1,11 @@
-// ignore_for_file: unnecessary_string_interpolations, use_build_context_synchronously, unused_element, deprecated_member_use
+// ignore_for_file: unnecessary_string_interpolations, use_build_context_synchronously, unused_element, deprecated_member_use, avoid_print
+import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 // ignore: unnecessary_import
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
+import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/Auth/logout_provider.dart';
 import 'package:flutter_application_1/controller/Locale_Provider.dart';
 import 'package:flutter_application_1/controller/live/purshased_live_controller.dart';
@@ -15,6 +19,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/profile/profile_screen.dart';
 import 'package:flutter_application_1/views/widgets/home_grid.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,6 +41,71 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
     super.initState();
+  }
+
+  Future<void> becomeAffiliate(BuildContext context) async {
+    final url = Uri.parse("https://bdev.elmanhag.shop/api/createAffilate");
+    final token = Provider.of<TokenModel>(context, listen: false).token;
+    final userId = Provider.of<LoginModel>(context, listen: false).id;
+
+    // Log the user ID for debugging purposes
+    log("User ID: $userId");
+
+    // Check if the userId is null before proceeding
+    if (userId == null) {
+      _showSnackbar(context, 'User ID is not available. Please log in again.');
+      return; // Exit the method if the user ID is null
+    }
+
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          "user_id": userId,
+        }),
+      );
+
+      // Dismiss loading indicator
+      Navigator.of(context).pop();
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final affiliateCode = data['affilate_code'];
+        log('Affiliate Code: $affiliateCode');
+        // Navigate to AffiliateHomeScreen
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const AffiliateHomeScreen(),
+          ),
+        );
+      } else {
+        _showSnackbar(context,
+            'failed due to internet connection: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Dismiss loading indicator on error
+      Navigator.of(context).pop();
+      log('Error occurred: $e'); // Log error for debugging
+      _showSnackbar(context, 'Error: $e');
+    }
+  }
+
+  void _showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -136,15 +206,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.book),
+                leading: const Icon(Icons.book),
                 title: Text(
                     AppLocalizations.of(context).translate('all_curriculums')),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => FilterCurriculumsScreen()),
+                        builder: (context) => const FilterCurriculumsScreen()),
                   );
+                },
+              ),
+              ListTile(
+                leading: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: Image.asset('assets/images/dollar.png'),
+                ),
+                title: Text(
+                    AppLocalizations.of(context).translate('become_affilate')),
+                onTap: () {
+                  becomeAffiliate(context);
                 },
               ),
               ListTile(
@@ -271,8 +353,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                               ),
-                              onPressed: () async{
-                                await Provider.of<PurshasedLiveController>(context,listen: false).getLiveDatapurshased(context);
+                              onPressed: () async {
+                                await Provider.of<PurshasedLiveController>(
+                                        context,
+                                        listen: false)
+                                    .getLiveDatapurshased(context);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -368,8 +453,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                             ),
-                            onPressed: () async{
-                              await Provider.of<PurshasedLiveController>(context,listen: false).getLiveDatapurshased(context);
+                            onPressed: () async {
+                              await Provider.of<PurshasedLiveController>(
+                                      context,
+                                      listen: false)
+                                  .getLiveDatapurshased(context);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
