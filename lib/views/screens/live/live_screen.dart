@@ -369,31 +369,38 @@ class SessionCard extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("You must buy live first"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(errorMessage),
                 const SizedBox(height: 10),
                 Text(
-                  "Price: $sessionPrice", // Show session price
+                  "Price: $sessionPrice L.E", // Show session price
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             actions: <Widget>[
-              TextButton(
-                child: const Text("Cancel"),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: redcolor),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.white),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: redcolor),
                 onPressed: () {
                   navigateToPaymentScreen(
                       context); // Navigate to the payment screen
                 },
-                child: const Text("Buy Now"),
+                child: const Text(
+                  "Buy Now",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           );
