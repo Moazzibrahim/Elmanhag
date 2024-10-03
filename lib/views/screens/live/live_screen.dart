@@ -497,9 +497,9 @@ class SessionCard extends StatelessWidget {
                   ),
                 ),
               ),
-              child: const Text(
-                'حضور',
-                style: TextStyle(
+              child: Text(
+                localizations.translate('attend'),
+                style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
