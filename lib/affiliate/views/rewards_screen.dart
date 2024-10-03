@@ -182,12 +182,14 @@ class RewardLevel extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
-            Text(
-              'حقق $target واحصل علي مكافاة $reward جنية',
-              style: TextStyle(
-                color: Colors.grey[800],
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+            Center(
+              child: Text(
+                'حقق $target واحصل علي مكافاة $reward جنية',
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             const SizedBox(height: 10),
