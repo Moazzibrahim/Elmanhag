@@ -183,7 +183,7 @@ class RewardLevel extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Text(
-              'حقق $target واحصل علي مكافاة $reward',
+              'حقق $target واحصل علي مكافاة $reward جنية',
               style: TextStyle(
                 color: Colors.grey[800],
                 fontSize: 16,
@@ -218,7 +218,7 @@ class RewardLevel extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8), 
+            const SizedBox(height: 8),
           ],
         ),
       ),

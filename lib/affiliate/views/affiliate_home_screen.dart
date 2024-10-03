@@ -310,9 +310,7 @@ class AffiliateHomeScreen extends StatelessWidget {
           Align(
             alignment: Alignment.topRight,
             child: Text(
-              bonusData
-                  .affiliateBonus.title, // Use the title from the bonus data
-
+              bonusData.affiliateBonus.title,
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -340,12 +338,25 @@ class AffiliateHomeScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
                 TextSpan(
-                  text: bonusData.affiliateBonus.bonus, // Display bonus title
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: redcolor,
-                  ),
+                  children: [
+                    TextSpan(
+                      text:
+                          bonusData.affiliateBonus.bonus, // Display bonus title
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: redcolor,
+                      ),
+                    ),
+                    const TextSpan(
+                      text: ' جنية', // Display pound symbol as text
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: redcolor,
+                      ),
+                    ),
+                  ],
                 ),
                 const TextSpan(
                   text: '  هدية',
