@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For Clipboard functionality
+import 'package:flutter_application_1/affiliate/views/edit_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/affiliate/models/affiliate_model.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
@@ -111,38 +112,54 @@ class _AffiliateProfileScreenState extends State<AffiliateProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(user.imageLink),
-                        radius: 30,
-                        backgroundColor: Colors.grey.shade200,
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'اهلا بك ${user.name}',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: redcolor,
-                            ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(user.imageLink),
+                          radius: 30,
+                          backgroundColor: Colors.grey.shade200,
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'اهلا بك ${user.name}',
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: redcolor,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                user.role,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            user.role,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                    ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: redcolor),
+                          onPressed: () {
+                            // Navigate to the edit profile screen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EditAffiliateProfileScreen()), // Ensure you have this screen created
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 20),
                   _buildProfileItem('الاسم: ${user.name}', true),

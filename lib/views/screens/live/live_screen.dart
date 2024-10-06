@@ -7,6 +7,7 @@ import 'package:flutter_application_1/controller/Auth/login_provider.dart';
 import 'package:flutter_application_1/controller/live/purshased_live_controller.dart';
 import 'package:flutter_application_1/localization/app_localizations.dart';
 import 'package:flutter_application_1/views/screens/payment/payment_screen.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -369,31 +370,38 @@ class SessionCard extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("You must buy live first"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(errorMessage),
                 const SizedBox(height: 10),
                 Text(
-                  "Price: $sessionPrice", // Show session price
+                  "Price: $sessionPrice L.E", // Show session price
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             actions: <Widget>[
-              TextButton(
-                child: const Text("Cancel"),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: redcolor),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.white),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: redcolor),
                 onPressed: () {
                   navigateToPaymentScreen(
                       context); // Navigate to the payment screen
                 },
-                child: const Text("Buy Now"),
+                child: const Text(
+                  "Buy Now",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           );
@@ -406,7 +414,17 @@ class SessionCard extends StatelessWidget {
           "https://bdev.elmanhag.shop/student/subscription/check/$sessionId";
       final token = Provider.of<TokenModel>(context, listen: false).token;
 
+      DateTime now = DateTime.now();
+
+      // Helper function to convert Arabic AM/PM to English
+      String convertArabicToEnglishTime(String time) {
+        // Replace Arabic AM/PM with English equivalents
+        time = time.replaceAll('ص', 'AM').replaceAll('م', 'PM');
+        return time;
+      }
+
       try {
+        // Call the API and check if the user is allowed to attend
         final response = await http.post(Uri.parse(url), headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -418,14 +436,38 @@ class SessionCard extends StatelessWidget {
 
           if (responseBody.containsKey('success') &&
               responseBody['success'] == "You are allowed to attend") {
-            // If allowed to attend, open the session link
-            final uri = Uri.parse(link);
-            if (await canLaunch(uri.toString())) {
-              await launch(uri.toString());
+            // Proceed to the 10-minute time check only if the API response is successful
+
+            // Convert the Arabic fromTime to English AM/PM
+            String convertedFromTime = convertArabicToEnglishTime(fromTime);
+
+            // Create a DateFormat object for parsing the time (now using standard AM/PM format)
+            DateFormat timeFormat =
+                DateFormat('hh:mm a'); // For 12-hour format with AM/PM
+
+            // Parse the convertedFromTime
+            DateTime sessionStartTime = timeFormat.parse(convertedFromTime);
+
+            // Check if the current time is within 10 minutes before the session start time
+            Duration timeDifference = sessionStartTime.difference(now);
+
+            if (timeDifference.inMinutes <= 10 &&
+                timeDifference.inMinutes >= 0) {
+              // Open the session link
+              final uri = Uri.parse(link);
+              if (await canLaunch(uri.toString())) {
+                await launch(uri.toString());
+              } else {
+                log('Could not launch $uri');
+              }
             } else {
-              // If the URL can't be launched, log the error and show a snackbar
-              log('Could not launch $uri');
+              // If the user is trying to enter more than 10 minutes before the session starts
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text(
+                      'You can only join 10 minutes before the session starts.')));
             }
+          } else {
+            showBuyDialog(context, 'You must buy live first');
           }
         } else {
           log("Error in posting session ID. Status code: ${response.statusCode}");
@@ -490,9 +532,9 @@ class SessionCard extends StatelessWidget {
                   ),
                 ),
               ),
-              child: const Text(
-                'حضور',
-                style: TextStyle(
+              child: Text(
+                localizations.translate('attend'),
+                style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
