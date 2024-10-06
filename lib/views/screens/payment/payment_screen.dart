@@ -379,10 +379,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     priceToSend = widget.itemprice!;
                                   }
                                   if (_selectedPaymentMethod == 'fawry') {
+                                    provider.postFawryData(context,
+                                        id: widget.itemservice == 'Bundle'
+                                            ? widget.itemidbundle
+                                            : widget.itemidsubject,
+                                        service: widget.itemservice);
+                                    // Provider.of<PaymentMethodsProvider>(context)
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (ctx) =>
-                                                const FawryPaymentScreen()));
+                                                FawryPaymentScreen(
+                                                  itemId: widget.itemservice ==
+                                                          'Bundle'
+                                                      ? widget.itemidbundle
+                                                      : widget.itemidsubject,
+                                                  service: widget.itemservice,
+                                                )));
                                   } else {
                                     final chosenPaymentMethod =
                                         provider.paymentMethods.firstWhere(

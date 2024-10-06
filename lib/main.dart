@@ -10,6 +10,7 @@ import 'package:flutter_application_1/controller/parent/get_children_provider.da
 import 'package:flutter_application_1/controller/parent/get_children_subjects.dart';
 import 'package:flutter_application_1/controller/payment/payment_methods_provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
+import 'package:flutter_application_1/controller/sessions_controller.dart';
 import 'package:flutter_application_1/controller/theme/theme_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'localization/app_localizations.dart';
@@ -39,6 +40,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => GetChildrenSubjects()),
         ChangeNotifierProvider(create: (_) => PaymentMethodsProvider()),
         ChangeNotifierProvider(create: (_) => PurshasedLiveController()),
+        ChangeNotifierProvider(create: (_) => SessionsController()),
       ],
       child: const MyApp(),
     ),

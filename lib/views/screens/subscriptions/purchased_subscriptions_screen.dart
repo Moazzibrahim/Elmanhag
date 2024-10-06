@@ -29,7 +29,7 @@ class PurchasedSubscriptionsScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 25.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(
                       height: 20,
@@ -57,6 +57,57 @@ class PurchasedSubscriptionsScreen extends StatelessWidget {
                         ),
                         const SizedBox(width: 48), // Invisible space to balance the row
                       ],
+                    ),
+                    const SizedBox(height: 30,),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Image.asset('assets/images/allsubjects.png'),
+                        const Column(
+                          children: [
+                            Align(alignment: Alignment.topCenter,child: Text('كل المواد',style: TextStyle(fontSize: 20,color: redcolor),)),
+                            SizedBox(height: 95,)
+                          ],
+                        )
+                      ],
+                    ),
+                    Expanded(
+                      child: GridView.builder(
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 20,
+                            ),
+                            itemCount: subProvider.dataModelss!.subjects!.length,
+                            itemBuilder: (context, index) {
+                              final subject = subProvider.dataModelss!.subjects![index];
+                              return Card(
+                                color: theme.scaffoldBackgroundColor,
+                                elevation: 3,
+                                shadowColor: redcolor,
+                                child: Stack(
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                      subject.name!,
+                      style: const TextStyle(color: redcolor, fontSize: 20),
+                                        ),
+                                        const SizedBox(height: 7),
+                                        Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.network(subProvider.dataModelss!.subjects![index].thumbnailUrl!),
+                      ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                     ),
                   ],
                 ),
