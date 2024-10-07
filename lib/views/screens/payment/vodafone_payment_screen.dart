@@ -24,6 +24,9 @@ class VodafonePaymentScreen extends StatefulWidget {
   final String image;
   final String title;
   final String description;
+  final List<int>? selectedSubjectIds;
+  final List<String>? selectedPrices;
+  final List<double>? selectedDiscounts;
   const VodafonePaymentScreen(
       {super.key,
       required this.itemids,
@@ -33,7 +36,10 @@ class VodafonePaymentScreen extends StatefulWidget {
       this.paymentmtethodid,
       required this.image,
       required this.title,
-      required this.description});
+      required this.description,
+      this.selectedDiscounts,
+      this.selectedPrices,
+      this.selectedSubjectIds});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -235,10 +241,10 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
                           return; // Exit if no image is selected
                         }
                         submitPayment();
-                        log('price: ${widget.itemsprice}');
+                        log('price: ${widget.selectedPrices}');
                         log('service: ${widget.services}');
-                        log('subid: ${widget.itemidsub}');
-                        log("bundleid:  ${widget.itemids}");
+                        log('subid: ${widget.selectedSubjectIds}');
+                        log("bundleid:  ${widget.selectedSubjectIds}");
                       },
                       child: Text(
                         localizations.translate('subscripe'),
@@ -276,16 +282,16 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
 
       // Add fields
       request.fields['amount'] =
-          widget.itemsprice.toString(); // Replace with the actual amount
+          widget.selectedPrices.toString(); // Replace with the actual amount
       request.fields['service'] =
           widget.services.toString(); // Replace with the actual service
       request.fields['payment_method_id'] = widget.paymentmtethodid
           .toString(); // Replace with the actual payment method ID
-      if (widget.itemidsub == 0) {
+      if (widget.services == 'Bundle') {
         request.fields['bundle_id'] =
-            widget.itemids.toString(); // Pass the bundle ID
-      } else if (widget.itemids == 0) {
-        request.fields['subject_id'] = widget.itemidsub.toString();
+            widget.selectedSubjectIds.toString(); // Pass the bundle ID
+      } else if (widget.services == 'Subject') {
+        request.fields['subject_id'] = widget.selectedSubjectIds.toString();
       }
 
       // Add receipt (image file)

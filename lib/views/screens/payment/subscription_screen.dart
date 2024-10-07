@@ -21,12 +21,16 @@ class SubscriptionScreen extends StatefulWidget {
 }
 
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
-  int selectedCardIndex = -1;
+  int selectedBundleIndex = -1; // Track selected bundle index
+  List<int> selectedSubjectsIndices = []; // Track selected subjects indices
   bool _isInitialized = false;
   String selectedItemPrice = '0';
   String service = '';
   int bundleid = 0;
-  int subid = 0;
+  // List for selected subject IDs
+  List<int> selectedSubjectIds = [];
+  List<String> selectedSubjectPrices = [];
+  List<double> selectedSubjectDiscounts = [];
 
   @override
   void initState() {
@@ -182,6 +186,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           return Container();
                         }
                         final item = combinedList[index];
+                        bool isBundle = item.type == 'bundle';
+                        bool isHighlighted = isBundle
+                            ? index == selectedBundleIndex
+                            : selectedSubjectsIndices.contains(index);
                         return buildSubscriptionCard(
                           context,
                           index: index,
@@ -192,61 +200,72 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           coverPhoto: item.coverPhoto ?? '',
                           expiredDate: item.expiredDate ?? 'No Expiry Date',
                           color: theme.primaryColor,
-                          isHighlighted: index == selectedCardIndex,
+                          isHighlighted: isHighlighted,
+                          isBundle: isBundle,
                         );
                       },
                     ),
                   const SizedBox(height: 16),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: redcolor,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 120)),
+                      onPressed: () {
+                        // Clear the lists before adding new selections
+                        selectedSubjectIds.clear();
+                        selectedSubjectPrices.clear();
+                        selectedSubjectDiscounts.clear();
+
+                        // Add selected bundles/subjects based on the selection
+                        if (selectedBundleIndex != -1) {
+                          // A bundle is selected
+                          final bundle = combinedList[selectedBundleIndex];
+                          selectedSubjectIds.add(bundle.id!);
+                          selectedSubjectPrices.add(bundle.price!);
+                          selectedSubjectDiscounts.add(bundle.discount!);
+                        } else {
+                          // Subjects are selected
+                          for (var index in selectedSubjectsIndices) {
+                            final subject = combinedList[index];
+                            selectedSubjectIds.add(subject.id!);
+                            selectedSubjectPrices.add(subject.price!);
+                            selectedSubjectDiscounts.add(subject.discount!);
+                          }
+                        }
+
+                        // Log the selected data for debugging
+                        log('Selected Subject IDs: $selectedSubjectIds');
+                        log('Selected Subject Prices: $selectedSubjectPrices');
+                        log('Selected Subject Discounts: $selectedSubjectDiscounts');
+                        log('service:$service');
+
+                        // Navigate to PaymentScreen and pass the selected data
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PaymentScreen(
+                              selectedSubjectIds: selectedSubjectIds,
+                              selectedPrices: selectedSubjectPrices,
+                              selectedDiscounts: selectedSubjectDiscounts,
+                              itemservice: service,
+                              itemidbundle: 0,
+                              itemidsubject: 0,
+                              itemdiscount: 0,
+                              itemprice: '',
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        localizations.translate('next'),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 22),
+                      ))
                 ],
               ),
             ),
           ),
-          // Align(
-          //   alignment: Alignment.bottomCenter,
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(16.0),
-          //     child: SizedBox(
-          //       width: double.infinity,
-          //       child: ElevatedButton(
-          //         onPressed: selectedCardIndex != -1
-          //             ? () {
-          //                 final selectedItem = combinedList[selectedCardIndex];
-          //                 selectedItemPrice = selectedItem.price ?? '0';
-          //                 service = selectedItem.type == 'bundle'
-          //                     ? 'Bundle'
-          //                     : 'Subject';
-          //                 if (selectedItem.type == 'bundle') {
-          //                   bundleid = selectedItem.id!;
-          //                   subid = 0;
-          //                 } else {
-          //                   subid = selectedItem.id!;
-          //                   bundleid = 0;
-          //                 }
-          //                 log('bundle id: $bundleid');
-          //                 log('subid:$subid');
-          //                 log('service: $service');
-          //                 log('price: $selectedItemPrice');
-          //               }
-          //             : null,
-          //         style: ElevatedButton.styleFrom(
-          //           backgroundColor: redcolor,
-          //           padding: const EdgeInsets.symmetric(vertical: 16),
-          //           shape: RoundedRectangleBorder(
-          //             borderRadius: BorderRadius.circular(12),
-          //           ),
-          //         ),
-          //         child: Text(
-          //           localizations.translate('next'),
-          //           style: const TextStyle(
-          //             fontSize: 18,
-          //             fontWeight: FontWeight.bold,
-          //             color: Colors.white,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -262,11 +281,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     required String coverPhoto,
     required String expiredDate,
     required Color color,
-    bool isHighlighted = false,
+    required bool isHighlighted,
+    required bool isBundle,
   }) {
     final int priceAsInt = double.tryParse(price)?.toInt() ?? 0;
     final int discountAsInt = discount.toInt();
-    bool isSelected = index == selectedCardIndex;
     final localizations = AppLocalizations.of(context);
     final bundleDataProvider = Provider.of<GetBundleData>(context);
     List<Bundle> bundles = bundleDataProvider.getBundles() ?? [];
@@ -320,15 +339,31 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          selectedCardIndex = index;
+          if (isBundle) {
+            // Only one bundle can be selected, so deselect subjects
+            selectedBundleIndex = selectedBundleIndex == index ? -1 : index;
+            selectedSubjectsIndices.clear(); // Deselect all subjects
+            service = 'Bundle';
+          } else {
+            // Allow multiple subjects but deselect bundle
+            if (selectedBundleIndex != -1) {
+              selectedBundleIndex = -1; // Deselect the bundle
+            }
+            if (selectedSubjectsIndices.contains(index)) {
+              selectedSubjectsIndices.remove(index); // Deselect subject
+            } else {
+              selectedSubjectsIndices.add(index); // Select subject
+              service = 'Subject';
+            }
+          }
         });
       },
       child: Card(
-        elevation: isSelected ? 12 : 4,
-        color: isSelected ? Colors.red.shade100 : Colors.white,
+        elevation: isHighlighted ? 12 : 4,
+        color: isHighlighted ? Colors.red.shade100 : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: isSelected ? color : Colors.red.shade700),
+          side: BorderSide(color: isHighlighted ? color : Colors.red.shade700),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -390,7 +425,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   ),
                 ),
               ],
-
               const SizedBox(height: 5),
               const Divider(
                 color: redcolor,
@@ -408,52 +442,69 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                     ),
-                    onPressed: selectedCardIndex != -1
+                    onPressed: selectedBundleIndex != -1 ||
+                            selectedSubjectsIndices.isNotEmpty
                         ? () {
-                            final selectedItem =
-                                combinedList[selectedCardIndex];
-                            selectedItemPrice = selectedItem.price ?? '0';
-                            service = selectedItem.type == 'bundle'
-                                ? 'Bundle'
-                                : 'Subject';
-                            if (selectedItem.type == 'bundle') {
-                              bundleid = selectedItem.id!;
-                              subid = 0;
-                            } else {
-                              subid = selectedItem.id!;
-                              bundleid = 0;
+                            if (selectedBundleIndex != -1) {
+                              final selectedBundle =
+                                  combinedList[selectedBundleIndex];
+                              selectedItemPrice = selectedBundle.price ?? '0';
+                              service = 'Bundle';
+                            } else if (selectedSubjectsIndices.isNotEmpty) {
+                              // Handle selected subjects logic
+                              final selectedSubject =
+                                  combinedList[selectedSubjectsIndices.first];
+                              selectedItemPrice = selectedSubject.price ?? '0';
+                              service = 'Subject';
                             }
                             log('bundle id: $bundleid');
-                            log('subid:$subid');
                             log('service: $service');
                             log('price: $selectedItemPrice');
                             log("discount: $discountAsInt");
-                            if (discountAsInt > 0) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PaymentScreen(
-                                    itemidbundle: bundleid,
-                                    itemidsubject: subid,
-                                    itemprice: selectedItemPrice,
-                                    itemservice: service,
-                                    itemdiscount: discountAsInt,
-                                  ),
-                                ),
-                              );
+                            // Clear the lists before adding new selections
+                            selectedSubjectIds.clear();
+                            selectedSubjectPrices.clear();
+                            selectedSubjectDiscounts.clear();
+
+                            // Add selected bundles/subjects based on the selection
+                            if (selectedBundleIndex != -1) {
+                              // A bundle is selected
+                              final bundle = combinedList[selectedBundleIndex];
+                              selectedSubjectIds.add(bundle.id!);
+                              selectedSubjectPrices.add(bundle.price!);
+                              selectedSubjectDiscounts.add(bundle.discount!);
                             } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PaymentScreen(
-                                    itemidbundle: bundleid,
-                                    itemidsubject: subid,
-                                    itemprice: selectedItemPrice,
-                                    itemservice: service,
-                                  ),
-                                ),
-                              );
+                              // Subjects are selected
+                              for (var index in selectedSubjectsIndices) {
+                                final subject = combinedList[index];
+                                selectedSubjectIds.add(subject.id!);
+                                selectedSubjectPrices.add(subject.price!);
+                                selectedSubjectDiscounts.add(subject.discount!);
+                              }
                             }
+
+                            // Log the selected data for debugging
+                            log('Selected Subject IDs: $selectedSubjectIds');
+                            log('Selected Subject Prices: $selectedSubjectPrices');
+                            log('Selected Subject Discounts: $selectedSubjectDiscounts');
+                            log('service: $service');
+
+                            // Navigate to PaymentScreen and pass the selected data
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PaymentScreen(
+                                  selectedSubjectIds: selectedSubjectIds,
+                                  selectedPrices: selectedSubjectPrices,
+                                  selectedDiscounts: selectedSubjectDiscounts,
+                                  itemservice: service,
+                                  itemdiscount: discountAsInt,
+                                  itemidbundle: 0,
+                                  itemidsubject: 0,
+                                  itemprice: '',
+                                ),
+                              ),
+                            );
                           }
                         : null,
                     child: Text(

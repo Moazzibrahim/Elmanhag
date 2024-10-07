@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, avoid_print
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, avoid_print, must_be_immutable
 
 import 'dart:developer';
 import 'package:flutter/material.dart';
@@ -14,20 +14,26 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class PaymentScreen extends StatefulWidget {
-  final int itemidbundle;
+  final int? itemidbundle;
   final String? itemprice;
-  final String itemservice;
-  final int itemidsubject;
-  final int? itemdiscount;
+  final String? itemservice;
+  final int? itemidsubject;
+  int? itemdiscount;
   final int? sessionliveid;
-  const PaymentScreen({
+  final List<int>? selectedSubjectIds;
+  final List<String>? selectedPrices;
+  final List<double>? selectedDiscounts;
+  PaymentScreen({
     super.key,
-    required this.itemidbundle,
-    required this.itemidsubject,
+    this.itemidbundle,
+    this.itemidsubject,
     this.itemprice,
-    required this.itemservice,
+    this.itemservice,
     this.itemdiscount,
     this.sessionliveid,
+    this.selectedPrices,
+    this.selectedSubjectIds,
+    this.selectedDiscounts,
   });
 
   @override
@@ -47,8 +53,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void initState() {
     super.initState();
 
-    // Check if the item price is not null and not empty
-    if (widget.itemprice != null && widget.itemprice!.isNotEmpty) {
+    // If selectedPrices and selectedDiscounts are not null, replace itemprice and itemdiscount
+    if (widget.selectedPrices != null &&
+        widget.selectedPrices!.isNotEmpty &&
+        widget.selectedDiscounts != null &&
+        widget.selectedDiscounts!.isNotEmpty) {
+      // Sum selectedPrices and assign to itemPriceAsInt
+      double totalPrice = widget.selectedPrices!
+          .fold(0, (sum, price) => sum + double.tryParse(price.trim())!);
+      itemPriceAsInt = totalPrice.round(); // or use .toInt() for truncating
+
+      // Sum selectedDiscounts and assign to a variable for display
+      double totalDiscount =
+          widget.selectedDiscounts!.fold(0, (sum, discount) => sum + discount);
+      widget.itemdiscount = totalDiscount.round();
+
+      print('Updated Price: $itemPriceAsInt');
+      print('Updated Discount: ${widget.itemdiscount}');
+    } else if (widget.itemprice != null && widget.itemprice!.isNotEmpty) {
       String cleanedPrice = widget.itemprice!.trim();
 
       // Attempt to parse the price as a double
@@ -56,8 +78,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
       if (itemPriceAsDouble != null) {
         // Convert to int by rounding or truncating, depending on your requirement
-        itemPriceAsInt =
-            itemPriceAsDouble.round(); // Or use .toInt() for truncating
+        itemPriceAsInt = itemPriceAsDouble.round();
         print('Parsed Item Price as Integer: $itemPriceAsInt');
       } else {
         print('Failed to parse price as double: $cleanedPrice');
@@ -244,7 +265,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           const SizedBox(height: 16),
                           Column(
                             children: [
-                              if (widget.itemdiscount != null)
+                              if (widget.itemdiscount != null &&
+                                  widget.itemdiscount! > 0)
                                 Row(
                                   children: [
                                     Text(
@@ -397,13 +419,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     print('Price: $priceToSend');
                                     print('Services: ${widget.itemservice}');
                                     print(
-                                        'Subject IDs: ${widget.itemidsubject}');
+                                        'Subject IDs: ${widget.selectedSubjectIds}');
                                     print('Payment Method ID: $_selectedIndex');
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (ctx) =>
                                                 VodafonePaymentScreen(
-                                                  itemids: widget.itemidbundle,
+                                                  itemids: widget.itemidbundle!,
                                                   description:
                                                       chosenPaymentMethod
                                                           .description,
@@ -413,11 +435,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       _selectedPaymentMethod!,
                                                   itemsprice:
                                                       priceToSend, // Send the correct price
-                                                  services: widget.itemservice,
+                                                  services: widget.itemservice!,
                                                   itemidsub:
-                                                      widget.itemidsubject,
+                                                      widget.itemidsubject!,
                                                   paymentmtethodid:
                                                       _selectedIndex,
+                                                  selectedDiscounts:
+                                                      widget.selectedDiscounts,
+                                                  selectedPrices:
+                                                      widget.selectedPrices,
+                                                  selectedSubjectIds:
+                                                      widget.selectedSubjectIds,
                                                 )));
                                   }
                                 },
@@ -453,65 +481,4 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
     );
   }
-
-  // void _navigateToSelectedScreen() {
-  //   final localizations = AppLocalizations.of(context);
-  //   String priceToSend;
-  //   if (_selectedIndex == -1) {
-  //     // If no payment method is selected, show a message or prevent navigation
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content:
-  //             Text(localizations.translate('you must choose payment method')),
-  //       ),
-  //     );
-  //     return;
-  //   }
-  //   if (isapplied) {
-  //     priceToSend =
-  //         newprice.toString(); // If promo code is applied, return new price
-  //   } else if (widget.itemdiscount != null && widget.itemdiscount! > 0) {
-  //     // If there's a discount, calculate the price after discount
-  //     priceToSend = (itemPriceAsInt! - widget.itemdiscount!).toString();
-  //   } else {
-  //     // If no discount, return the original item price
-  //     priceToSend = widget.itemprice!;
-  //   }
-
-  //   // Determine the price to send: use new price if the promo code was applied, otherwise use the original price
-  //   // final priceToSend =
-  //   //     newprice != -1 ? newprice.toString() : widget.itemprice!;
-
-  //   switch (_selectedIndex) {
-  //     case 0:
-  //       Navigator.of(context).push(
-  //         MaterialPageRoute(builder: (ctx) => const VisaPaymentScreen()),
-  //       );
-  //       break;
-  //     case 1:
-  //       Navigator.of(context).push(
-  //         MaterialPageRoute(
-  //           builder: (ctx) => VodafonePaymentScreen(
-  //             itemids: widget.itemidbundle,
-  //             itemsprice: priceToSend, // Send the correct price
-  //             services: widget.itemservice,
-  //             itemidsub: widget.itemidsubject,
-  //             paymentmtethodid:
-  //                 _selectedIndex, // Pass selected payment method ID here
-  //           ),
-  //         ),
-  //       );
-  //       log("Payment method ID: $_selectedIndex");
-  //       break;
-  //     case 2:
-  //       Navigator.of(context).push(
-  //         MaterialPageRoute(builder: (ctx) => const FawryPaymentScreen()),
-  //       );
-  //       log("Payment method ID: $_selectedIndex");
-  //       break;
-  //     default:
-  //       // Handle the default case if needed
-  //       break;
-  //   }
-  // }
 }
