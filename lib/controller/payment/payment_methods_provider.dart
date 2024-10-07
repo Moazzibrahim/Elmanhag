@@ -86,6 +86,7 @@ class PaymentMethodsProvider with ChangeNotifier {
 
     } else {
       _errorMessage = 'Failed to load payment methods';
+      log('error with status: ${response.statusCode}');
     }
   } catch (e) {
     _errorMessage = 'An error occurred: $e';
