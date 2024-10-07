@@ -27,9 +27,9 @@ class ApiService with ChangeNotifier {
     required String parentpassword,
     required String parentphone,
     required String? selectedparentrealtionId,
-    required String gender,
     required String jobId,
     required String affilateCode,
+    required String gender,
     required BuildContext context,
   }) async {
     const url = 'https://bdev.elmanhag.shop/student/auth/signup/create';
@@ -47,9 +47,9 @@ class ApiService with ChangeNotifier {
       'parent_phone': parentphone,
       'parent_email': parentemail,
       'parent_password': parentpassword,
-      'parent_relation_id': selectedparentrealtionId,
       'gender': gender,
-      'student_jobs_id': jobId,
+      'parent_relation_id': selectedparentrealtionId,
+      'sudent_jobs_id': jobId,
       'affilate_code': affilateCode
     });
 
@@ -120,15 +120,13 @@ class ApiService with ChangeNotifier {
   String? previousCity;
   String? previousCategory;
   String? previousEdu;
-  String? previousGender;
   String? previousjob;
   void saveFormData(String? prevCountry, String? prevCity, String? prevCategory,
-      String? prevEdu, String? prevGender, String? prevjob) {
+      String? prevEdu, String? prevjob) {
     previousCountry = prevCountry;
     previousCity = prevCity;
     previousCategory = prevCategory;
     previousEdu = prevEdu;
-    previousGender = prevGender;
     previousjob = prevjob;
     print('previous country: $prevCountry');
   }

@@ -13,7 +13,7 @@ class ProgressCircles extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize:
             MainAxisSize.min, // Ensures the Row takes up minimal space
-        children: List.generate(3, (index) {
+        children: List.generate(2, (index) {
           return Row(
             children: [
               CircleAvatar(
@@ -24,7 +24,7 @@ class ProgressCircles extends StatelessWidget {
                   style: const TextStyle(color: Colors.white),
                 ),
               ),
-              if (index < 2)
+              if (index < 1)
                 Container(
                   width: 80, // Adjust this to control the line width
                   height: 2,
