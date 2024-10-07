@@ -226,6 +226,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           selectedSubjectIds.add(bundle.id!);
                           selectedSubjectPrices.add(bundle.price!);
                           selectedSubjectDiscounts.add(bundle.discount!);
+                          selectedBundleId=bundle.id!;
                         } else {
                           // Subjects are selected
                           for (var index in selectedSubjectsIndices) {
@@ -233,6 +234,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             selectedSubjectIds.add(subject.id!);
                             selectedSubjectPrices.add(subject.price!);
                             selectedSubjectDiscounts.add(subject.discount!);
+                            selectedSubjectId=subject.id!;
                           }
                         }
 
@@ -241,6 +243,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         log('Selected Subject Prices: $selectedSubjectPrices');
                         log('Selected Subject Discounts: $selectedSubjectDiscounts');
                         log('service:$service');
+                        log('itemidbundle:$selectedBundleId');
+                        log('subjectid: $selectedSubjectId');
 
                         // Navigate to PaymentScreen and pass the selected data
                         Navigator.push(

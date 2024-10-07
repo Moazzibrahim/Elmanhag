@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -52,7 +54,7 @@ class PaymentMethodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> postFawryData(BuildContext context, {required List<int> id, required String service,required int quantity}) async {
+  Future<void> postFawryData(BuildContext context, {required int id, required String service,required int quantity}) async {
   final tokenProvider = Provider.of<TokenModel>(context, listen: false);
   final String? token = tokenProvider.token;
   final List chargeItems = [
