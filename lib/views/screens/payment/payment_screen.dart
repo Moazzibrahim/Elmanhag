@@ -403,9 +403,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   if (_selectedPaymentMethod == 'fawry') {
                                     provider.postFawryData(context,
                                         id: widget.itemservice == 'Bundle'
-                                            ? widget.itemidbundle
-                                            : widget.itemidsubject,
-                                        service: widget.itemservice);
+                                            ? widget.itemidbundle!
+                                            : widget.itemidsubject!,
+                                        service: widget.itemservice!);
                                     // Provider.of<PaymentMethodsProvider>(context)
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
@@ -413,9 +413,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 FawryPaymentScreen(
                                                   itemId: widget.itemservice ==
                                                           'Bundle'
-                                                      ? widget.itemidbundle
-                                                      : widget.itemidsubject,
-                                                  service: widget.itemservice,
+                                                      ? widget.itemidbundle!
+                                                      : widget.itemidsubject!,
+                                                  service: widget.itemservice!,
                                                 )));
                                   } else {
                                     final chosenPaymentMethod =

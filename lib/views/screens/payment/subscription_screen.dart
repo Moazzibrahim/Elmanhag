@@ -31,6 +31,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   List<int> selectedSubjectIds = [];
   List<String> selectedSubjectPrices = [];
   List<double> selectedSubjectDiscounts = [];
+  int selectedBundleId = 0;
+  int selectedSubjectId = 0;
 
   @override
   void initState() {
@@ -249,8 +251,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                               selectedPrices: selectedSubjectPrices,
                               selectedDiscounts: selectedSubjectDiscounts,
                               itemservice: service,
-                              itemidbundle: 0,
-                              itemidsubject: 0,
+                              itemidbundle: selectedBundleId,
+                              itemidsubject: selectedSubjectId,
                               itemdiscount: 0,
                               itemprice: '',
                             ),
@@ -470,6 +472,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             if (selectedBundleIndex != -1) {
                               // A bundle is selected
                               final bundle = combinedList[selectedBundleIndex];
+                              selectedBundleId = bundle.id!;
                               selectedSubjectIds.add(bundle.id!);
                               selectedSubjectPrices.add(bundle.price!);
                               selectedSubjectDiscounts.add(bundle.discount!);
@@ -477,6 +480,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                               // Subjects are selected
                               for (var index in selectedSubjectsIndices) {
                                 final subject = combinedList[index];
+                                selectedSubjectId = subject.id!;
                                 selectedSubjectIds.add(subject.id!);
                                 selectedSubjectPrices.add(subject.price!);
                                 selectedSubjectDiscounts.add(subject.discount!);
@@ -488,6 +492,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             log('Selected Subject Prices: $selectedSubjectPrices');
                             log('Selected Subject Discounts: $selectedSubjectDiscounts');
                             log('service: $service');
+                            log("sub id: $selectedSubjectId");
+                            log('bundle id: $selectedBundleId');
 
                             // Navigate to PaymentScreen and pass the selected data
                             Navigator.push(
@@ -499,8 +505,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                   selectedDiscounts: selectedSubjectDiscounts,
                                   itemservice: service,
                                   itemdiscount: discountAsInt,
-                                  itemidbundle: 0,
-                                  itemidsubject: 0,
+                                  itemidbundle: selectedBundleId,
+                                  itemidsubject: selectedSubjectId,
                                   itemprice: '',
                                 ),
                               ),
