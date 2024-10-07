@@ -50,7 +50,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
 
     if (_selectedPaymentMethodId == null || _walletBalance <= 0) {
       // Handle validation error
-      _showErrorDialog("Please fill all required fields.");
+      _showErrorDialog("يجب عليك ادخال كل البيانات.");
       return;
     }
 
@@ -58,19 +58,17 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
     final description = _descriptionController.text.trim();
 
     if (amount.isEmpty || description.isEmpty) {
-      _showErrorDialog("Please enter valid data.");
+      _showErrorDialog("يجب عليك ادخال كل البيانات.");
       return;
     }
 
     final double parsedAmount = double.tryParse(amount) ?? 0.0;
 
-    // Check if amount exceeds wallet balance
     if (parsedAmount > _walletBalance) {
       _showErrorDialog("رصيدك غير كافي لتنفيذ تلك العملية");
       return;
     }
 
-    // Check if amount is less than the minimum payout
     if (_minPayout != null && parsedAmount < _minPayout!) {
       _showErrorDialog(" يجب تخطي الحد الادني للسحب");
       return;
@@ -210,7 +208,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                 const SizedBox(height: 16),
                 Center(
                   child: Text(
-                    'الحد الادني للسحب: $_minPayout',
+                    'الحد الادني للسحب: ${_minPayout!.toInt()}',
                     style: const TextStyle(fontSize: 18, color: redcolor),
                   ),
                 ),

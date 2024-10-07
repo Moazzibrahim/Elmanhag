@@ -149,13 +149,16 @@ class MySubscriptions extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => const SubscriptionScreen(),
                         ),
-                                          );
+                      );
                         }, 
                         style: ElevatedButton.styleFrom(
                           backgroundColor: redcolor,
-                          foregroundColor: Colors.white
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)
+                          )
                         ),
-                        child: const Text('عرض بقية الباقات')),
+                        child: const Text('اشترك الان',style: TextStyle(fontSize: 18),)),
                       ],
                     )
                   ],

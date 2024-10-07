@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/affiliate/views/affiliate_home_screen.dart';
+import 'package:flutter_application_1/teacher/screens/home_teacher_screen.dart';
 import 'package:flutter_application_1/views/parent%20screens/choose_son.dart';
 import 'package:flutter_application_1/views/screens/home_screen.dart';
 import 'package:http/http.dart' as http;
@@ -148,7 +149,12 @@ class LoginModel with ChangeNotifier {
           context,
           MaterialPageRoute(builder: (context) => const AffiliateHomeScreen()),
         );
-      } else {
+      }else if(role == 'teacher'){
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (ctx)=> const HomeTeacherScreen())
+        );
+      }
+      else {
         _showSnackbar(context, 'Unknown user role');
       }
     } catch (error) {
