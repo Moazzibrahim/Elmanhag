@@ -310,7 +310,7 @@ class _VodafonePaymentScreenState extends State<VodafonePaymentScreen> {
         print('Payment successful');
         _showSuccessDialog(context);
       } else {
-        print('Failed to submit payment: ${response.statusCode}');
+        print('Failed to submit payment: ${response.statusCode} ');
         _showfilDialog(context);
       }
     } catch (e) {

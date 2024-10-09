@@ -54,79 +54,72 @@ class PaymentMethodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> postFawryData(BuildContext context, {required int id, required String service,required int quantity}) async {
-  final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-  final String? token = tokenProvider.token;
-  final List chargeItems = [
-    {
-      "itemId": id, 
-      "description": service, 
-      "quantity": quantity
-    }
-  ];
-  
-  try {
-    final response = await http.post(
-      Uri.parse('https://bdev.elmanhag.shop/api/pay-at-fawry'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({
-        'chargeItems': chargeItems
-      })
-    );
+  Future<void> postFawryData(BuildContext context,
+      {required String id,
+      required String service,
+      required int quantity,
+      required int amount}) async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final String? token = tokenProvider.token;
+    final List chargeItems = [
+      {
+        "itemId": id,
+        "description": service,
+        "quantity": quantity,
+      }
+    ];
 
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);  // Parse the JSON response
-      referenceNumber = responseData['referenceNumber'];
-      merchantRefNumber = responseData['merchantRefNumber'];
-      notifyListeners();
-      log('Reference Number: $referenceNumber');
-      log('Merchant Ref Number: $merchantRefNumber');
+    try {
+      final response = await http.post(
+          Uri.parse('https://bdev.elmanhag.shop/api/pay-at-fawry'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'amount': amount, 'chargeItems': chargeItems}));
 
-    } else {
-      _errorMessage = 'Failed to load payment methods';
-      log('error with status: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final responseData =
+            jsonDecode(response.body); // Parse the JSON response
+        referenceNumber = responseData['referenceNumber'];
+        merchantRefNumber = responseData['merchantRefNumber'];
+        notifyListeners();
+        log('Reference Number: $referenceNumber');
+        log('Merchant Ref Number: $merchantRefNumber');
+      } else {
+        _errorMessage = 'Failed to load payment methods';
+        log('error with status: ${response.statusCode}');
+        log('error in body ${response.body} ');
+      }
+    } catch (e) {
+      _errorMessage = 'An error occurred: $e';
     }
-  } catch (e) {
-    _errorMessage = 'An error occurred: $e';
   }
-}
 
-Future<void> postMerchantNum(BuildContext context, {required String merchantRefNum}) async {
-  final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-  final String? token = tokenProvider.token;
-  
-  
-  
-  try {
-    final response = await http.post(
-      Uri.parse('https://bdev.elmanhag.shop/api/fawry/check-status'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({
-        'merchantRefNum': merchantRefNum
-      })
-    );
+  Future<void> postMerchantNum(BuildContext context,
+      {required String merchantRefNum}) async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final String? token = tokenProvider.token;
 
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
-      notifyListeners();
+    try {
+      final response = await http.post(
+          Uri.parse('https://bdev.elmanhag.shop/api/fawry/check-status'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({'merchantRefNum': merchantRefNum}));
 
-
-    } else {
-      _errorMessage = 'Failed to load payment methods';
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        notifyListeners();
+      } else {
+        _errorMessage = 'Failed to load payment methods';
+      }
+    } catch (e) {
+      _errorMessage = 'An error occurred: $e';
     }
-  } catch (e) {
-    _errorMessage = 'An error occurred: $e';
   }
-}
-
-
-
 }
