@@ -3,36 +3,41 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Auth/sign_up_provider.dart';
 import 'package:flutter_application_1/views/widgets/progress_widget.dart';
+import 'package:flutter_application_1/views/widgets/text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Auth/country_provider.dart';
 import 'package:flutter_application_1/models/sign_up_model.dart';
-import 'package:flutter_application_1/views/screens/login/third_sign_screen.dart';
 
 class SecondSignScreen extends StatefulWidget {
   final String name;
   final String email;
-  final String password;
-  final String confpassword;
   final String phone;
+  final String parentName;
+  final String parentPhone;
+  final String parentEmail;
+  final String gender;
 
   const SecondSignScreen({
     super.key,
     required this.email,
-    required this.password,
-    required this.confpassword,
     required this.name,
     required this.phone,
+    required this.parentName,
+    required this.parentPhone,
+    required this.parentEmail,
+    required this.gender,
   });
 
   @override
-  // ignore: library_private_types_in_public_api
   _SecondSignScreenState createState() => _SecondSignScreenState();
 }
 
 class _SecondSignScreenState extends State<SecondSignScreen> {
-  final TextEditingController _studentPhoneController = TextEditingController();
-
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _codecontroller = TextEditingController();
   String? selectedCountryId;
   String? selectedCityId;
   String? selectedCategoryId;
@@ -42,7 +47,6 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
   String? selectedCityName;
   String? selectedCategoryName;
   String? selectedEducationName;
-  String? selectedGender;
   String? selectedJobId;
   String? selectedJobName;
 
@@ -83,9 +87,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
     if (savedData.previousEdu != null) {
       selectedEducationName = savedData.previousEdu;
     }
-    if (savedData.previousGender != null) {
-      selectedGender = savedData.previousGender;
-    }
+
     if (savedData.previousjob != null) {
       selectedJobName = savedData.previousjob;
     }
@@ -93,48 +95,6 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
 
   String truncateString(String text, int length) {
     return text.length > length ? '${text.substring(0, length)}...' : text;
-  }
-
-  void signUp() {
-    log(selectedGender.toString());
-    log(selectedJobId.toString());
-
-    if (selectedCountryId != null &&
-        selectedCityId != null &&
-        selectedCategoryId != null &&
-        selectedEducationId != null &&
-        selectedJobId != null &&
-        selectedGender != null) {
-      // Add this condition
-      String phoneToPass = _studentPhoneController.text.isNotEmpty
-          ? _studentPhoneController.text
-          : widget.phone;
-
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ThirdSignUp(
-            name: widget.name,
-            email: widget.email,
-            password: widget.password,
-            confpassword: widget.confpassword,
-            phone: phoneToPass,
-            countryId: selectedCountryId!,
-            cityId: selectedCityId!,
-            categoryId: selectedCategoryId!,
-            educationId: selectedEducationId!,
-            jobId: selectedJobId!, // Pass the selected job ID
-            gender: selectedGender!, // Pass the selected gender
-          ),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('يجب ملء جميع البيانات '),
-          backgroundColor: redcolor,
-        ),
-      );
-    }
   }
 
   @override
@@ -167,85 +127,94 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                 color: Colors.grey,
               ),
             ),
-            const SizedBox(height: 30),
-            DropdownButtonFormField<String>(
-              value: selectedCountryId,
-              items: countries.map((Country country) {
-                return DropdownMenuItem<String>(
-                  value: country.id.toString(),
-                  child: Text(truncateString(country.name, 30)),
-                );
-              }).toList(),
-              decoration: InputDecoration(
-                labelText: 'البلد',
-                prefixIcon: const Icon(Icons.public, color: redcolor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedCountryId = newValue;
-                  selectedCountryName = countries
-                      .firstWhere(
-                          (country) => country.id.toString() == newValue)
-                      .name;
-                  // Access the provider here
-                  final dataProvider = context.read<DataProvider>();
-                  // Filter cities based on selected country
-                  cities = dataProvider.dataModel?.cities
-                          .where((city) =>
-                              city.countryId.toString() == selectedCountryId)
-                          .toList() ??
-                      [];
-                  selectedCityId = null; // Reset selected city
-                });
-              },
-              validator: (value) =>
-                  value == null ? 'Please select a country' : null,
-            ),
             const SizedBox(height: 15),
-            DropdownButtonFormField<String>(
-              value: selectedCityId,
-              items: cities.map((City city) {
-                return DropdownMenuItem<String>(
-                  value: city.id.toString(),
-                  child: Text(truncateString(city.name, 20)),
-                );
-              }).toList(),
-              decoration: InputDecoration(
-                labelText: 'المدينة',
-                prefixIcon: const Icon(Icons.location_city, color: redcolor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
+            Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: selectedCountryId,
+                    items: countries.map((Country country) {
+                      return DropdownMenuItem<String>(
+                        value: country.id.toString(),
+                        child: Text(truncateString(country.name, 30)),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      labelText: 'البلد',
+                      prefixIcon: const Icon(Icons.public, color: redcolor),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: redcolor),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: redcolor),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedCountryId = newValue;
+                        selectedCountryName = countries
+                            .firstWhere(
+                                (country) => country.id.toString() == newValue)
+                            .name;
+                        final dataProvider = context.read<DataProvider>();
+                        cities = dataProvider.dataModel?.cities
+                                .where((city) =>
+                                    city.countryId.toString() ==
+                                    selectedCountryId)
+                                .toList() ??
+                            [];
+                        selectedCityId = null;
+                      });
+                    },
+                    validator: (value) =>
+                        value == null ? 'Please select a country' : null,
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: selectedCityId,
+                    items: cities.map((City city) {
+                      return DropdownMenuItem<String>(
+                        value: city.id.toString(),
+                        child: Text(truncateString(city.name, 20)),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      labelText: 'المدينة',
+                      prefixIcon:
+                          const Icon(Icons.location_city, color: redcolor),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: redcolor),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: redcolor),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedCityId = newValue;
+                        selectedCityName = cities
+                            .firstWhere(
+                                (city) => city.id.toString() == newValue)
+                            .name;
+                      });
+                    },
+                    validator: (value) =>
+                        value == null ? 'Please select a city' : null,
+                  ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedCityId = newValue;
-                  selectedCityName = cities
-                      .firstWhere((city) => city.id.toString() == newValue)
-                      .name;
-                });
-              },
-              validator: (value) =>
-                  value == null ? 'Please select a city' : null,
+              ],
             ),
             const SizedBox(height: 15),
             DropdownButtonFormField<String>(
@@ -319,40 +288,6 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               validator: (value) =>
                   value == null ? 'Please select an education' : null,
             ),
-
-            const SizedBox(height: 15),
-            // New gender dropdown
-            DropdownButtonFormField<String>(
-              value: selectedGender,
-              items: genderOptions.map((String gender) {
-                return DropdownMenuItem<String>(
-                  value: gender,
-                  child: Text(gender),
-                );
-              }).toList(),
-              decoration: InputDecoration(
-                labelText: 'النوع',
-                prefixIcon: const Icon(Icons.person, color: redcolor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: redcolor),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedGender = newValue;
-                });
-              },
-              validator: (value) =>
-                  value == null ? 'Please select a gender' : null,
-            ),
             const SizedBox(height: 15),
             DropdownButtonFormField<String>(
               value: selectedJobId,
@@ -388,27 +323,31 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
               validator: (value) =>
                   value == null ? 'Please select a job' : null,
             ),
-
             const SizedBox(
-              height: 30,
+              height: 10,
+            ),
+            PasswordField(
+                controller: _passwordController, labelText: 'الرقم السري'),
+            const SizedBox(
+              height: 10,
+            ),
+            PasswordField(
+                controller: _confirmPasswordController,
+                labelText: 'تاكيد الرقم السري'),
+            const SizedBox(
+              height: 10,
+            ),
+            buildTextField(
+                controller: _codecontroller, labelText: 'كود التسويق'),
+            const SizedBox(
+              height: 10,
             ),
             Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      Provider.of<ApiService>(context, listen: false)
-                          .saveFormData(
-                        selectedCountryName,
-                        selectedCityName,
-                        selectedCategoryName,
-                        selectedEducationName,
-                        selectedGender,
-                        selectedJobName,
-                      );
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: redcolor,
                       padding: const EdgeInsets.symmetric(
@@ -422,7 +361,46 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                         style: TextStyle(color: Colors.white)),
                   ),
                   ElevatedButton(
-                    onPressed: signUp,
+                    onPressed: () {
+                      print('Name: ${widget.name}');
+                      print('Name: ${widget.gender}');
+
+                      print('Email: ${widget.email}');
+                      print('Password: ${_passwordController.text}');
+                      print(
+                          'Confirm Password: ${_confirmPasswordController.text}');
+                      print('Phone: ${widget.phone}');
+                      print('Country ID: $selectedCountryId');
+                      print('City ID: $selectedCityId');
+                      print('Category ID: $selectedCategoryId');
+                      print('Education ID: $selectedEducationId');
+                      print('Parent Name: ${widget.parentName}');
+                      print('Parent Email: ${widget.parentEmail}');
+                      print('Parent Password: ${_passwordController.text}');
+                      print('Parent Phone: ${widget.parentPhone}');
+                      print('Parent Relation ID: 1');
+                      print('Job ID: ${selectedJobId.toString()}');
+                      print('Affiliate Code: ${_codecontroller.text}');
+                      ApiService.signUp(
+                          name: widget.name,
+                          email: widget.email,
+                          password: _passwordController.text,
+                          confpassword: _confirmPasswordController.text,
+                          phone: widget.phone,
+                          selectedCountryId: selectedCountryId,
+                          selectedCityId: selectedCityId,
+                          selectedCategoryId: selectedCategoryId,
+                          selectedEducationId: selectedEducationId,
+                          parentname: widget.parentName,
+                          parentemail: widget.parentEmail,
+                          parentpassword: _passwordController.text,
+                          parentphone: widget.parentPhone,
+                          selectedparentrealtionId: '1',
+                          jobId: selectedJobId.toString(),
+                          affilateCode: _codecontroller.text,
+                          context: context,
+                          gender: widget.gender);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: redcolor,
                       padding: const EdgeInsets.symmetric(
@@ -433,7 +411,7 @@ class _SecondSignScreenState extends State<SecondSignScreen> {
                       ),
                     ),
                     child: const Text(
-                      'التالي',
+                      'تسجيل',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

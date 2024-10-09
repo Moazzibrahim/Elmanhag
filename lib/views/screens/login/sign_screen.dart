@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/views/screens/login/second_sign_screen.dart';
@@ -16,31 +14,38 @@ class SignScreen extends StatefulWidget {
 class _SignScreenState extends State<SignScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _parentNameController = TextEditingController();
+  final TextEditingController _parentPhoneController = TextEditingController();
+  final TextEditingController _parentEmailController = TextEditingController();
 
-  // Regex for email and phone validation
+  String? _selectedGender;
+
   final RegExp emailRegExp =
       RegExp(r"^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[cC][oO][mM]$");
-  // Simple phone validation regex
-  final RegExp phoneRegExp =
-      RegExp(r'^[0-9]{11}$'); // Updated: 11-digit phone number validation
+  final RegExp phoneRegExp = RegExp(r'^[0-9]{11}$');
 
   @override
   void initState() {
     super.initState();
-    // Add a listener to the phone controller to update the email field
+
+    // Generate student email based on phone number
     _phoneController.addListener(() {
       String phoneNumber = _phoneController.text;
       if (phoneRegExp.hasMatch(phoneNumber)) {
-        // Update email controller with the phone number + email domain
-        _emailController.text =
-            '$phoneNumber@elmanhag.com'; // Change to your desired domain
+        _emailController.text = '$phoneNumber@elmanhag.com';
       } else {
-        // Clear email field if phone number is invalid
         _emailController.clear();
+      }
+    });
+
+    // Generate parent email based on parent's phone number
+    _parentPhoneController.addListener(() {
+      String parentPhoneNumber = _parentPhoneController.text;
+      if (phoneRegExp.hasMatch(parentPhoneNumber)) {
+        _parentEmailController.text = '$parentPhoneNumber@elmanhag.com';
+      } else {
+        _parentEmailController.clear();
       }
     });
   }
@@ -76,10 +81,48 @@ class _SignScreenState extends State<SignScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            buildTextField(
-              controller: _nameController,
-              labelText: 'اسم الطالب',
-              prefixIcon: const Icon(Icons.person, color: redcolor),
+            Row(
+              children: [
+                Expanded(
+                  child: buildTextField(
+                    controller: _nameController,
+                    labelText: 'اسم الطالب',
+                    prefixIcon: const Icon(Icons.person, color: redcolor),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'الجنس',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: redcolor),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: redcolor),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                    value: _selectedGender,
+                    hint: const Text('اختار الجنس'),
+                    items: ['ذكر', 'أنثى'].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedGender = newValue;
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 15),
             buildTextField(
@@ -95,22 +138,35 @@ class _SignScreenState extends State<SignScreen> {
               prefixIcon: const Icon(Icons.email, color: redcolor),
             ),
             const SizedBox(height: 15),
-            PasswordField(
-                controller: _passwordController, labelText: "الرقم السري"),
+            buildTextField(
+              controller: _parentNameController,
+              labelText: 'اسم ولي الامر',
+              prefixIcon: const Icon(Icons.person, color: redcolor),
+            ),
             const SizedBox(height: 15),
-            PasswordField(
-                controller: _confirmPasswordController,
-                labelText: "تاكيدالرقم السري"),
-            const SizedBox(height: 30),
+            buildTextField(
+              controller: _parentPhoneController,
+              labelText: 'رقم ولي الامر',
+              prefixIcon: const Icon(Icons.phone, color: redcolor),
+            ),
+            const SizedBox(height: 15),
+            buildTextField(
+              controller: _parentEmailController,
+              labelText: 'ايميل ولي الامر',
+              textdirection: TextDirection.ltr,
+              prefixIcon: const Icon(Icons.email, color: redcolor),
+            ),
+            const SizedBox(height: 15),
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  print('email: $_emailController');
                   if (_nameController.text.isEmpty ||
                       _emailController.text.isEmpty ||
-                      _passwordController.text.isEmpty ||
-                      _confirmPasswordController.text.isEmpty ||
-                      _phoneController.text.isEmpty) {
+                      _phoneController.text.isEmpty ||
+                      _parentNameController.text.isEmpty ||
+                      _parentPhoneController.text.isEmpty ||
+                      _parentEmailController.text.isEmpty ||
+                      _selectedGender == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('يجب ملء جميع البيانات'),
@@ -131,24 +187,21 @@ class _SignScreenState extends State<SignScreen> {
                         backgroundColor: redcolor,
                       ),
                     );
-                  } else if (_passwordController.text !=
-                      _confirmPasswordController.text) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('كلمتا السر غير متطابقتين'),
-                        backgroundColor: redcolor,
-                      ),
-                    );
                   } else {
+                    String genderToSend =
+                        _selectedGender == 'ذكر' ? 'male' : 'female';
+
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => SecondSignScreen(
                           name: _nameController.text,
                           email: _emailController.text,
-                          password: _passwordController.text,
-                          confpassword: _confirmPasswordController.text,
                           phone: _phoneController.text,
+                          parentName: _parentNameController.text,
+                          parentPhone: _parentPhoneController.text,
+                          parentEmail: _parentEmailController.text,
+                          gender: genderToSend, // Send "male" or "female"
                         ),
                       ),
                     );
@@ -160,11 +213,13 @@ class _SignScreenState extends State<SignScreen> {
                             result['email'] ?? _emailController.text;
                         _phoneController.text =
                             result['phone'] ?? _phoneController.text;
-                        _passwordController.text =
-                            result['password'] ?? _passwordController.text;
-                        _confirmPasswordController.text =
-                            result['confpassword'] ??
-                                _confirmPasswordController.text;
+                        _parentNameController.text =
+                            result['parentName'] ?? _parentNameController.text;
+                        _parentPhoneController.text = result['parentPhone'] ??
+                            _parentPhoneController.text;
+                        _parentEmailController.text = result['parentEmail'] ??
+                            _parentEmailController.text;
+                        _selectedGender = result['gender'] ?? _selectedGender;
                       });
                     }
                   }
