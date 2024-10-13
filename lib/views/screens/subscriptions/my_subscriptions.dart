@@ -1,6 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/live/purshased_live_controller.dart';
+import 'package:flutter_application_1/controller/payment/payment_methods_provider.dart';
+import 'package:flutter_application_1/views/screens/payment/fawry_payment_screen.dart';
 import 'package:flutter_application_1/views/screens/subscriptions/purchased_subscriptions_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../localization/app_localizations.dart';
@@ -140,26 +144,37 @@ class MySubscriptions extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(onPressed: (){
-                          Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SubscriptionScreen(),
-                        ),
+                    Consumer<PaymentMethodsProvider>(
+                      builder: (context, provider, _) {
+                        return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(onPressed: () async{
+                            await provider.getSavedData();
+                            if(provider.savedmerchantRefNumber == null){
+                              Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SubscriptionScreen(),
+                          ),
+                        );
+                            }else{
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (ctx)=> const FawryPaymentScreen())
+                              );
+                            }
+                          }, 
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: redcolor,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)
+                            )
+                          ),
+                          child: const Text('اشترك الان',style: TextStyle(fontSize: 18),)),
+                        ],
                       );
-                        }, 
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: redcolor,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14)
-                          )
-                        ),
-                        child: const Text('اشترك الان',style: TextStyle(fontSize: 18),)),
-                      ],
+                      },
                     )
                   ],
                 ),

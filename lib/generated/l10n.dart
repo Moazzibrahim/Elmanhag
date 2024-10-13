@@ -213,6 +213,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Payment is Done`
+  String get PaymentisDone {
+    return Intl.message(
+      'Payment is Done',
+      name: 'PaymentisDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `pleasepayfirst`
+  String get pleasepayfirst {
+    return Intl.message(
+      'pleasepayfirst',
+      name: 'pleasepayfirst',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -8,6 +8,7 @@ import 'package:flutter_application_1/models/payment_methods_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PaymentMethodsProvider with ChangeNotifier {
   List<PaymentMethodstudent> _paymentMethods = [];
@@ -15,6 +16,8 @@ class PaymentMethodsProvider with ChangeNotifier {
   String _errorMessage = '';
   String? referenceNumber;
   String? merchantRefNumber;
+  String? savedreferenceNumber;
+  String? savedmerchantRefNumber;
 
   List<PaymentMethodstudent> get paymentMethods => _paymentMethods;
   bool get isLoading => _isLoading;
@@ -96,7 +99,7 @@ class PaymentMethodsProvider with ChangeNotifier {
       _errorMessage = 'An error occurred: $e';
     }
   }
-
+  bool isPaid = false;
   Future<void> postMerchantNum(BuildContext context,
       {required String merchantRefNum}) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -113,7 +116,10 @@ class PaymentMethodsProvider with ChangeNotifier {
           body: jsonEncode({'merchantRefNum': merchantRefNum}));
 
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
+        isPaid = true;
+        notifyListeners();
+      }else if(response.statusCode == 498){
+          isPaid = false;
         notifyListeners();
       } else {
         _errorMessage = 'Failed to load payment methods';
@@ -121,5 +127,11 @@ class PaymentMethodsProvider with ChangeNotifier {
     } catch (e) {
       _errorMessage = 'An error occurred: $e';
     }
+  }
+
+  Future<void> getSavedData() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    savedmerchantRefNumber = prefs.getString('merchantRefNum');
+    savedreferenceNumber = prefs.getString('refNumber');
   }
 }

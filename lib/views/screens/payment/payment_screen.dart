@@ -402,51 +402,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   }
                                   if (_selectedPaymentMethod == 'fawry') {
                                     if (widget.itemservice == 'Subject') {
-                                      provider.postFawryData(context,
-                                          id: "${widget.selectedSubjectIds}",
-                                          service: widget.itemservice!,
-                                          quantity:
-                                              widget.selectedSubjectIds!.length,
-                                          amount: itemPriceAsInt! -
-                                              widget.itemdiscount!);
-                                      log('amount: ${itemPriceAsInt! - widget.itemdiscount!}');
-
-                                      // Provider.of<PaymentMethodsProvider>(context)
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (ctx) =>
                                                   FawryPaymentScreen(
-                                                    itemId: widget
-                                                                .itemservice ==
-                                                            'Bundle'
-                                                        ? widget.itemidbundle!
-                                                        : widget.itemidsubject!,
-                                                    service:
-                                                        widget.itemservice!,
+                                                    id: "${widget.selectedSubjectIds}",
+                                          service: widget.itemservice!,
+                                          quantity:
+                                              widget.selectedSubjectIds!.length,
+                                          amount: itemPriceAsInt! -
+                                              widget.itemdiscount!
                                                   )));
                                     } else {
-                                      provider.postFawryData(context,
-                                          id: "${widget.itemidbundle}",
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  FawryPaymentScreen( id: "${widget.itemidbundle}",
                                           service: widget.itemservice!,
                                           quantity:
                                               widget.selectedSubjectIds!.length,
                                           amount: itemPriceAsInt! -
-                                              widget.itemdiscount!);
-                                      log('amount: ${itemPriceAsInt! - widget.itemdiscount!}');
-
-                                      // Provider.of<PaymentMethodsProvider>(context)
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (ctx) =>
-                                                  FawryPaymentScreen(
-                                                    itemId: widget
-                                                                .itemservice ==
-                                                            'Bundle'
-                                                        ? widget.itemidbundle!
-                                                        : widget.itemidsubject!,
-                                                    service:
-                                                        widget.itemservice!,
-                                                  )));
+                                              widget.itemdiscount!)));
                                     }
                                   } else {
                                     final chosenPaymentMethod =
