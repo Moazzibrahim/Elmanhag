@@ -84,6 +84,9 @@ class _FawryPaymentScreenState extends State<FawryPaymentScreen> {
                           await provider.postMerchantNum(context, merchantRefNum: provider.merchantRefNumber?? provider.savedmerchantRefNumber!);
                           if(provider.isPaid){
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment is Done')));
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.remove('merchantRefNum');
+                            await prefs.remove('refNumber');
                           }else{
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('please pay first')));
                           }
