@@ -125,6 +125,7 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
 
   // Function to filter live sessions based on selected day
   // Function to filter live sessions based on selected day and current time
+  
   List liveSessionsForSelectedDay(List liveData) {
     return liveData.where((session) {
       DateTime sessionDate =
@@ -133,13 +134,29 @@ class _LiveSessionsScreenState extends State<LiveSessionsScreen> {
           "${session.date!} ${session.from!}"); // Parse session start time
       DateTime sessionEndTime = DateTime.parse(
           "${session.date!} ${session.to!}"); // Parse session end time
+      DateTime endDate = session.endDate != null
+          ? DateTime.parse(session.endDate!)
+          : sessionDate; // End date if available
 
-      // Filter sessions that are on the selected date and haven't ended
-      return sessionDate.year == selectedDate?.year &&
+      bool isFixed = session.fixed == 1; // Check if the session is repeating
+      bool isTodaySession = sessionDate.year == selectedDate?.year &&
           sessionDate.month == selectedDate?.month &&
-          sessionDate.day == selectedDate?.day &&
+          sessionDate.day == selectedDate?.day;
+
+      // If the session is fixed, check if it repeats every week
+      if (isFixed) {
+        int differenceInDays = selectedDate!.difference(sessionDate).inDays;
+        bool isRepeatingSession =
+            differenceInDays % 7 == 0 && selectedDate!.isBefore(endDate);
+        return isRepeatingSession &&
+            DateTime.now().isBefore(
+                sessionEndTime); // Check if it's a valid repeating session
+      }
+
+      // If the session is not fixed, it's only valid on its specific date
+      return isTodaySession &&
           DateTime.now().isBefore(
-              sessionEndTime); // Only show sessions that have not ended
+              sessionEndTime); // Show non-fixed session if it's today and hasn't ended
     }).toList();
   }
 
@@ -413,6 +430,7 @@ class SessionCard extends StatelessWidget {
       final url =
           "https://bdev.elmanhag.shop/student/subscription/check/$sessionId";
       final token = Provider.of<TokenModel>(context, listen: false).token;
+      final localizations = AppLocalizations.of(context);
 
       DateTime now = DateTime.now();
 
@@ -462,9 +480,9 @@ class SessionCard extends StatelessWidget {
               }
             } else {
               // If the user is trying to enter more than 10 minutes before the session starts
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text(
-                      'You can only join 10 minutes before the session starts.')));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(localizations.translate(
+                      'You can only join 10 minutes before the session starts.'))));
             }
           } else {
             showBuyDialog(context, 'You must buy live first');

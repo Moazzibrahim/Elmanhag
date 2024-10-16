@@ -129,6 +129,8 @@ class Livess {
   String? createdAt;
   String? updatedAt;
   int? liveId;
+  int? fixed;
+  String? endDate;
   Subjectss? subject;
   Teacherss? teacher;
 
@@ -150,6 +152,8 @@ class Livess {
     this.createdAt,
     this.updatedAt,
     this.liveId,
+    this.fixed,
+    this.endDate,
     this.subject,
     this.teacher,
   });
@@ -173,6 +177,8 @@ class Livess {
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
       liveId: json['live_id'],
+      fixed: json['fixed'],
+      endDate: json['end_date'],
       subject: json['subject'] != null ? Subjectss.fromJson(json['subject']) : null,
       teacher: json['teacher'] != null ? Teacherss.fromJson(json['teacher']) : null,
     );
@@ -197,11 +203,14 @@ class Livess {
       'created_at': createdAt,
       'updated_at': updatedAt,
       'live_id': liveId,
+      'fixed': fixed,
+      'end_date': endDate,
       'subject': subject?.toJson(),
       'teacher': teacher?.toJson(),
     };
   }
 }
+
 
 class Teacherss {
   int? id;
